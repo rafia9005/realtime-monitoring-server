@@ -1,35 +1,54 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { createRoot } from 'react-dom/client'
+import './assets/globals.css'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
+import Index from './pages'
+import Dashboard from './pages/dashboard'
+import Monitoring from './pages/monitoring'
+import ServerPage from './pages/server'
+import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-react'
+import { ThemeProvider } from './components/theme-provider'
 
-function App() {
-  const [count, setCount] = useState(0)
+const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+if (!PUBLISHABLE_KEY) {
+  throw new Error('Add your Clerk Publishable Key to the .env file')
 }
 
-export default App
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <SignedIn>{children}</SignedIn>
+      <SignedOut><Navigate to="/" replace /></SignedOut>
+    </>
+  );
+}
+
+createRoot(document.getElementById('root')!).render(
+  <ThemeProvider defaultTheme="system" storageKey="servermon-theme">
+    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={
+            <>
+              <SignedOut>
+                <Index />
+              </SignedOut>
+              <SignedIn>
+                <Navigate to="/dashboard" replace />
+              </SignedIn>
+            </>
+          } />
+          <Route path='/dashboard' element={
+            <ProtectedRoute><Dashboard /></ProtectedRoute>
+          } />
+          <Route path='/monitoring' element={
+            <ProtectedRoute><Monitoring /></ProtectedRoute>
+          } />
+          <Route path='/server' element={
+            <ProtectedRoute><ServerPage /></ProtectedRoute>
+          } />
+        </Routes>
+      </BrowserRouter>
+    </ClerkProvider>
+  </ThemeProvider>
+)

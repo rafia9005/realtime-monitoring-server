@@ -226,40 +226,43 @@ export default function Monitoring() {
       {fullscreenSection && fullscreenSectionData && (
         <div className="fixed inset-0 z-50 bg-background">
           {/* Fullscreen Header */}
-          <div className="sticky top-0 z-10 flex items-center justify-between p-4 border-b border-border bg-background">
-            <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-lg ${fullscreenSectionData.bgColor}`}>
-                <fullscreenSectionData.icon className={`w-5 h-5 ${fullscreenSectionData.color}`} />
+          <div className="sticky top-0 z-10 border-b border-border bg-background">
+            <div className="flex items-center justify-between p-3 md:p-4 gap-2 md:gap-4">
+              <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+                <div className={`p-1.5 md:p-2 rounded-lg ${fullscreenSectionData.bgColor} flex-shrink-0`}>
+                  <fullscreenSectionData.icon className={`w-4 h-4 md:w-5 md:h-5 ${fullscreenSectionData.color}`} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-base md:text-xl font-semibold truncate">{fullscreenSectionData.title}</h2>
+                  <p className="text-xs md:text-sm text-muted-foreground truncate hidden sm:block">{fullscreenSectionData.subtitle}</p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-xl font-semibold">{fullscreenSectionData.title}</h2>
-                <p className="text-sm text-muted-foreground">{fullscreenSectionData.subtitle}</p>
+              <div className="flex items-center gap-1.5 md:gap-3 flex-shrink-0">
+                <Badge variant="outline" className="text-emerald-500 border-emerald-500/30 bg-emerald-500/10 hidden sm:inline-flex">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
+                  Live
+                </Badge>
+                <span className={`text-base md:text-2xl font-bold tabular-nums ${fullscreenSectionData.color}`}>
+                  {fullscreenSectionData.value}
+                </span>
+                <Button onClick={() => refetch()} size="sm" variant="ghost" className="hidden sm:inline-flex">
+                  <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  className="h-8 w-8 md:h-10 md:w-10"
+                  onClick={() => setFullscreenSection(null)}
+                >
+                  <X className="w-4 h-4 md:w-5 md:h-5" />
+                </Button>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="text-emerald-500 border-emerald-500/30 bg-emerald-500/10">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
-                Live
-              </Badge>
-              <span className={`text-2xl font-bold tabular-nums ${fullscreenSectionData.color}`}>
-                {fullscreenSectionData.value}
-              </span>
-              <Button onClick={() => refetch()} size="sm" variant="ghost">
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={() => setFullscreenSection(null)}
-              >
-                <X className="w-5 h-5" />
-              </Button>
             </div>
           </div>
 
           {/* Fullscreen Content */}
-          <div className="overflow-auto h-[calc(100vh-73px)]">
-            <div className="max-w-6xl mx-auto">
+          <div className="overflow-auto h-[calc(100vh-57px)] md:h-[calc(100vh-73px)]">
+            <div className="max-w-6xl mx-auto px-2 md:px-0">
               {fullscreenSectionData.fullscreenComponent}
             </div>
           </div>

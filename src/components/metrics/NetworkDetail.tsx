@@ -111,51 +111,53 @@ export function NetworkDetail({ network, fullscreen = false }: NetworkDetailProp
         {/* Connection States */}
         <div className="p-4 rounded-lg bg-card border border-border">
           <h3 className="font-semibold mb-4">Connection States</h3>
-          <div className="flex flex-col lg:flex-row items-center gap-6">
+          <div className="flex flex-col gap-6">
             {connectionData.length > 0 && (
-              <ResponsiveContainer width="100%" height={200} className="lg:w-1/3">
-                <PieChart>
-                  <Pie
-                    data={connectionData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={80}
-                    paddingAngle={2}
-                    dataKey="value"
-                  >
-                    {connectionData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: isDark ? "#1f2937" : "white",
-                      border: isDark ? "1px solid #374151" : "1px solid #e5e7eb",
-                      borderRadius: "6px",
-                      fontSize: "12px",
-                      color: isDark ? "#f3f4f6" : "#1f2937"
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+              <div className="flex justify-center">
+                <ResponsiveContainer width="100%" height={250} maxHeight={250}>
+                  <PieChart>
+                    <Pie
+                      data={connectionData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {connectionData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: isDark ? "#1f2937" : "white",
+                        border: isDark ? "1px solid #374151" : "1px solid #e5e7eb",
+                        borderRadius: "6px",
+                        fontSize: "12px",
+                        color: isDark ? "#f3f4f6" : "#1f2937"
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             )}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 flex-1">
-              <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                <p className="text-xs text-muted-foreground">Established</p>
-                <p className="text-2xl font-bold text-emerald-500">{network.connections.established}</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                <p className="text-xs text-muted-foreground mb-1">Established</p>
+                <p className="text-2xl md:text-3xl font-bold text-emerald-500">{network.connections.established}</p>
               </div>
-              <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                <p className="text-xs text-muted-foreground">Listening</p>
-                <p className="text-2xl font-bold text-blue-500">{network.connections.listen}</p>
+              <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/20">
+                <p className="text-xs text-muted-foreground mb-1">Listening</p>
+                <p className="text-2xl md:text-3xl font-bold text-blue-500">{network.connections.listen}</p>
               </div>
-              <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                <p className="text-xs text-muted-foreground">Time Wait</p>
-                <p className="text-2xl font-bold text-amber-500">{network.connections.time_wait}</p>
+              <div className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                <p className="text-xs text-muted-foreground mb-1">Time Wait</p>
+                <p className="text-2xl md:text-3xl font-bold text-amber-500">{network.connections.time_wait}</p>
               </div>
-              <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                <p className="text-xs text-muted-foreground">Close Wait</p>
-                <p className="text-2xl font-bold text-red-500">{network.connections.close_wait}</p>
+              <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20">
+                <p className="text-xs text-muted-foreground mb-1">Close Wait</p>
+                <p className="text-2xl md:text-3xl font-bold text-red-500">{network.connections.close_wait}</p>
               </div>
             </div>
           </div>

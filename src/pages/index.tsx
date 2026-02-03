@@ -30,19 +30,19 @@ export default function Index() {
         <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
       </Button>
 
-      <div className="w-full max-w-md relative z-10 p-4">
-        {/* Floating icons decoration */}
-        <div className="absolute -top-10 -left-10 w-20 h-20 bg-card rounded-2xl border border-border shadow-lg flex items-center justify-center animate-float opacity-60">
+      <div className="w-full max-w-[min(450px,calc(100%-2rem))] relative z-10 mx-4">
+        {/* Floating icons decoration - hidden on mobile */}
+        <div className="hidden sm:flex absolute -top-10 -left-10 w-20 h-20 bg-card rounded-2xl border border-border shadow-lg items-center justify-center animate-float opacity-60">
           <Cpu className="w-8 h-8 text-blue-500" />
         </div>
-        <div className="absolute -top-5 -right-8 w-16 h-16 bg-card rounded-2xl border border-border shadow-lg flex items-center justify-center animate-float opacity-60" style={{ animationDelay: "0.5s" }}>
+        <div className="hidden sm:flex absolute -top-5 -right-8 w-16 h-16 bg-card rounded-2xl border border-border shadow-lg items-center justify-center animate-float opacity-60" style={{ animationDelay: "0.5s" }}>
           <Activity className="w-6 h-6 text-green-500" />
         </div>
-        <div className="absolute -bottom-8 -left-5 w-14 h-14 bg-card rounded-xl border border-border shadow-lg flex items-center justify-center animate-float opacity-60" style={{ animationDelay: "1s" }}>
+        <div className="hidden sm:flex absolute -bottom-8 -left-5 w-14 h-14 bg-card rounded-xl border border-border shadow-lg items-center justify-center animate-float opacity-60" style={{ animationDelay: "1s" }}>
           <Monitor className="w-5 h-5 text-violet-500" />
         </div>
 
-        <Card className="border border-border/50 shadow-2xl bg-card/80 backdrop-blur-xl">
+        <Card className="border border-border/50 shadow-2xl bg-card/80 backdrop-blur-xl overflow-hidden">
           <CardHeader className="space-y-1 text-center pb-6">
             <div className="flex justify-center mb-6">
               <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-xl glow-blue">
@@ -56,12 +56,12 @@ export default function Index() {
               Sign in to access the monitoring dashboard
             </CardDescription>
           </CardHeader>
-          <CardContent className="pb-8">
+          <CardContent className="pb-8 overflow-hidden">
             <SignIn 
               appearance={{
                 elements: {
-                  rootBox: "w-full",
-                  card: "shadow-none bg-transparent",
+                  rootBox: "w-full max-w-full overflow-hidden",
+                  card: "shadow-none bg-transparent p-0 w-full max-w-full",
                   headerTitle: "hidden",
                   headerSubtitle: "hidden",
                   socialButtonsBlockButton: 

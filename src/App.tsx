@@ -5,6 +5,7 @@ import Index from './pages'
 import Dashboard from './pages/dashboard'
 import Monitoring from './pages/monitoring'
 import ServerPage from './pages/server'
+import Terminal from './pages/terminal'
 import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-react'
 import { ThemeProvider } from './components/theme-provider'
 
@@ -46,6 +47,9 @@ createRoot(document.getElementById('root')!).render(
           } />
           <Route path='/server' element={
             <ProtectedRoute><ServerPage /></ProtectedRoute>
+          } />
+          <Route path='/terminal' element={
+            <ProtectedRoute><Terminal /></ProtectedRoute>
           } />
         </Routes>
       </BrowserRouter>

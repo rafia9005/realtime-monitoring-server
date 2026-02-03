@@ -27,21 +27,18 @@ func main() {
 	// Initialize repository
 	envMetricsRepo := supabase.NewEnvMetricsRepository(cfg.Supabase)
 
-	// Initialize handler
+	// Initialize handlers
 	systemMetricsHandler := handler.NewSystemMetricsHandler(envMetricsRepo)
+	terminalHandler := handler.NewTerminalHandler()
 
 	// Initialize Echo
 	e := echo.New()
 
 	// Setup routes
-	http.SetupRouter(e, systemMetricsHandler)
+	http.SetupRouter(e, systemMetricsHandler, terminalHandler)
 
 	// Start server
 	address := fmt.Sprintf(":%s", cfg.App.Port)
-	log.Printf("Server starting on %s", address)
-	log.Printf("Available endpoints:")
-	log.Printf("  - GET  /health")
-	log.Printf("  - GET  /api/v1/system-metrics")
 	if err := e.Start(address); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}

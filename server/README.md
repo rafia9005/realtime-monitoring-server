@@ -95,6 +95,95 @@ GET /health
 
 ---
 
+### WebSocket Terminal
+
+Interactive shell terminal melalui WebSocket.
+
+```
+WS /api/v1/terminal
+```
+
+**WebSocket Message Format:**
+
+Client → Server:
+```json
+{
+  "type": "input",
+  "data": "ls -la\n"
+}
+```
+
+Server → Client:
+```json
+{
+  "type": "output",
+  "data": "total 48\ndrwxr-xr-x 12 user user 4096 Feb  3 10:30 .\n",
+  "session": "20260203103045-abc123"
+}
+```
+
+**Message Types:**
+
+Client Messages:
+- `input` - Send command to terminal
+- `ping` - Keep connection alive
+- `close` - Close terminal session
+
+Server Messages:
+- `connected` - Connection established
+- `output` - Terminal stdout
+- `error` - Terminal stderr
+- `pong` - Response to ping
+
+**Example Usage (JavaScript):**
+
+```javascript
+const ws = new WebSocket('ws://localhost:8080/api/v1/terminal');
+
+ws.onopen = () => {
+  console.log('Terminal connected');
+};
+
+ws.onmessage = (event) => {
+  const msg = JSON.parse(event.data);
+  
+  if (msg.type === 'connected') {
+    console.log('Session:', msg.session);
+    // Send command
+    ws.send(JSON.stringify({
+      type: 'input',
+      data: 'echo "Hello from terminal"\n'
+    }));
+  } else if (msg.type === 'output') {
+    console.log('Output:', msg.data);
+  } else if (msg.type === 'error') {
+    console.error('Error:', msg.data);
+  }
+};
+
+ws.onerror = (error) => {
+  console.error('WebSocket error:', error);
+};
+
+ws.onclose = () => {
+  console.log('Terminal disconnected');
+};
+
+// Close terminal when done
+setTimeout(() => {
+  ws.send(JSON.stringify({ type: 'close' }));
+  ws.close();
+}, 10000);
+```
+
+**Session Management:**
+- Sessions auto-cleanup after 30 minutes of inactivity
+- Each WebSocket connection gets a unique session ID
+- Sessions run in isolated shell processes
+- Supports multiple concurrent connections
+
+---
+
 ### Get System Metrics
 
 Endpoint tunggal untuk mendapatkan **semua metrics** sistem dan environmental data.

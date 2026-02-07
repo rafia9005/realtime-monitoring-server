@@ -1,0 +1,33 @@
+[Unit]
+Description=ServerMon Monitoring Agent (%i)
+After=network.target
+Documentation=https://github.com/your-repo/monitoring-suhu
+
+[Service]
+Type=simple
+User=monitoring
+Group=monitoring
+WorkingDirectory=/opt/monitoring-agent
+Environment="SERVER_URL=http://main-server:8080"
+Environment="AGENT_NAME=%i"
+Environment="METRICS_INTERVAL=30"
+Environment="HEARTBEAT_INTERVAL=60"
+ExecStart=/opt/monitoring-agent/monitoring-agent -server $SERVER_URL -name $AGENT_NAME -metrics-interval $METRICS_INTERVAL -heartbeat-interval $HEARTBEAT_INTERVAL
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=monitoring-agent-%i
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+# Resource limits
+LimitNOFILE=4096
+TasksMax=512
+
+[Install]
+WantedBy=multi-user.target

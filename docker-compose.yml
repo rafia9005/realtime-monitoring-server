@@ -1,0 +1,28 @@
+services:
+  monitoring-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: monitoring-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - PORT=8080
+      - ENV=production
+      - DB_PATH=/app/data/monitoring.db
+    restart: unless-stopped
+
+  monitoring-agent:
+    build:
+      context: ./server
+      dockerfile: Dockerfile.agent
+    container_name: monitoring-agent-1
+    depends_on:
+      - monitoring-server
+    environment:
+      - SERVER_URL=http://monitoring-server:8080
+      - AGENT_NAME=Docker Agent 1
+      - AGENT_DESCRIPTION=Agent running in Docker
+    restart: unless-stopped

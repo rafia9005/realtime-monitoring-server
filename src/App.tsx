@@ -26,7 +26,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 createRoot(document.getElementById('root')!).render(
-  <ThemeProvider defaultTheme="system" storageKey="servermon-theme">
+  <ThemeProvider defaultTheme="system" storageKey="watchtower-theme">
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <BrowserRouter>
         <Routes>

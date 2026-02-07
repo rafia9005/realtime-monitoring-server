@@ -65,7 +65,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Server className="w-4 h-4 text-primary-foreground" />
               </div>
-              <span className="font-semibold">ServerMon</span>
+              <span className="font-semibold">Watchtower</span>
             </Link>
             <button 
               className="lg:hidden p-1.5 hover:bg-accent rounded-md transition-colors"

@@ -30,15 +30,15 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 <Link to="/home" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
                   Home
                 </Link>
-                <a href="#about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   About Us
-                </a>
+                </Link>
                 <Link to="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   Dashboard
                 </Link>
-                <a href="#contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   Contact
-                </a>
+                </Link>
               </nav>
             </div>
             {/* Right side actions */}

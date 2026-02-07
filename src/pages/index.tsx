@@ -56,11 +56,11 @@ export default function Index() {
               Sign in to access the monitoring dashboard
             </CardDescription>
           </CardHeader>
-          <CardContent className="pb-8 overflow-hidden">
+          <CardContent className="pb-8 overflow-hidden justify-center flex items-center ">
             <SignIn 
               appearance={{
                 elements: {
-                  rootBox: "w-full max-w-full overflow-hidden",
+                  rootBox: "w-full max-w-full items-center justify-center flex overflow-hidden",
                   card: "shadow-none bg-transparent p-0 w-full max-w-full",
                   headerTitle: "hidden",
                   headerSubtitle: "hidden",

@@ -50,7 +50,7 @@ export default function Index() {
               </div>
             </div>
             <CardTitle className="text-3xl font-bold gradient-text">
-              ServerMon
+              Watchtower
             </CardTitle>
             <CardDescription className="text-base text-muted-foreground">
               Sign in to access the monitoring dashboard

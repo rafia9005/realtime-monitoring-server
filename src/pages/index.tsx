@@ -43,13 +43,13 @@ export default function Index() {
         </div>
 
         <Card className="border-none shadow-2xl bg-white/90 dark:bg-card/80 backdrop-blur-xl overflow-hidden max-w-md w-full mx-auto animate-slideUp animate-delay-200">
-          <CardHeader className="space-y-1 text-center pb-6">
+          <CardHeader className="space-y-1 text-center pb-6 mt-6">
             <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-xl glow-blue">
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-400 rounded-2xl flex items-center justify-center shadow-xl glow-blue">
                 <Server className="w-10 h-10 text-white" />
               </div>
             </div>
-            <CardTitle className="text-3xl font-bold gradient-text">
+            <CardTitle className="text-3xl font-bold gradient-text-primary">
               Watchtower
             </CardTitle>
             <CardDescription className="text-base text-muted-foreground">

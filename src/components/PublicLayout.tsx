@@ -20,7 +20,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         style={{ pointerEvents: 'none' }}
       />
       {/* Header */}
-      <header className="fixed left-0 right-0 top-5 flex justify-center z-20">
+      <header className="fixed left-0 right-0 lg:top-5 flex justify-center z-20">
         <div className="max-w-5xl w-full bg-background/50 backdrop-blur-sm border-b border-border rounded-xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex items-center justify-center h-16">
             {/* Logo & Nav */}

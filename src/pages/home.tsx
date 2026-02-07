@@ -3,7 +3,8 @@ import PublicLayout from "@/components/PublicLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Server, Activity, Monitor, Cpu, HardDrive, Network, Shield, Zap, BarChart3, Sparkles } from "lucide-react";
+import { Server, Activity, Monitor, Cpu, HardDrive, Network, Shield, Zap, BarChart3, Sparkles, Mail } from "lucide-react";
+import { Check, Phone, Clock, MessageCircle, Send } from "lucide-react";
 
 export default function Home() {
     const [sensorCount, setSensorCount] = useState<number | null>(null);
@@ -180,6 +181,118 @@ export default function Home() {
                                 </CardContent>
                             </Card>
                         ))}
+                    </div>
+                </div>
+
+                {/* Let's Talk Section */}
+                <div id="about" className="relative z-10 w-full max-w-6xl mx-auto px-4 mb-16 animate-slideUp animate-delay-700">
+                    <div className="text-center mb-12">
+                        <h2 className="text-4xl md:text-5xl font-bold mb-4">
+                            Let's <span className="gradient-text-primary">talk</span>
+                        </h2>
+                        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                            Multiple ways to reach us. Pick what works best for you.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {/* Email */}
+                        <Card className="bg-card/50 border-border/50 backdrop-blur-sm animate-slideUp animate-delay-700 overflow-hidden">
+                            <CardContent className="p-8">
+                                <div className="w-12 h-12 bg-blue-500/20 rounded-lg flex items-center justify-center mb-6">
+                                    <Mail color="#2b80ff" />
+                                </div>
+                                <h3 className="text-xl font-semibold mb-1">Email Us</h3>
+                                <p className="text-sm text-blue-500 font-medium mb-4">Primary</p>
+                                <p className="text-xl font-semibold mb-4">projects.watchtower@gmail.com</p>
+                                <p className="text-sm text-muted-foreground mb-6">Our main inbox. We typically respond within 2 hours during business days.</p>
+                                <div className="space-y-2 mb-6">
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <Check className="w-4 h-4 text-green-500" />
+                                        Average response: 2 hours
+                                    </div>
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <Shield className="w-4 h-4 text-green-500" />
+                                        Secure & confidential
+                                    </div>
+                                </div>
+                                <a 
+                                    href="mailto:projects.watchtower@gmail.com"
+                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                                >
+                                    <Mail />
+                                    Send Email
+                                </a>
+                            </CardContent>
+                        </Card>
+
+                        {/* Call */}
+                        <Card className="bg-card/50 border-border/50 backdrop-blur-sm animate-slideUp animate-delay-[800ms] overflow-hidden">
+                            <CardContent className="p-8">
+                                <div className="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center mb-6">
+                                        <Phone className="w-6 h-6 text-cyan-500" />
+                                </div>
+                                <h3 className="text-xl font-semibold mb-4">Call Us</h3>
+                                <p className="text-2xl font-bold mb-2">+62 857-9126-8077</p>
+                                <p className="text-sm text-muted-foreground mb-6">Mon-Fri, 9AM-10PM PST</p>
+                                <button className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-3 rounded-lg transition-colors mb-6">
+                                    Call Now
+                                </button>
+                                <div className="bg-card/50 border border-border/50 rounded-lg p-4">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <Clock className="w-5 h-5 text-cyan-500" />
+                                        <h4 className="text-sm font-semibold">Business Hours</h4>
+                                    </div>
+                                    <div className="space-y-2 text-sm text-muted-foreground">
+                                        <div className="flex justify-between">
+                                            <span>Weekdays</span>
+                                            <span>9:00 AM - 10:00 PM PST</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Weekends</span>
+                                            <span>9:00 AM - 8:00 PM PST</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* WhatsApp */}
+                        <Card className="bg-card/50 border-border/50 backdrop-blur-sm animate-slideUp animate-delay-[900ms] overflow-hidden">
+                            <CardContent className="p-8">
+                                <div className="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center mb-6">
+                                        <MessageCircle className="w-6 h-6 text-green-500" />
+                                </div>
+                                <h3 className="text-xl font-semibold mb-1">WhatsApp</h3>
+                                <p className="text-sm text-green-500 font-medium mb-4">Instant messaging</p>
+                                <p className="text-sm text-muted-foreground mb-6">Chat with our support team in real-time for instant assistance.</p>
+                                <a 
+                                    href="https://wa.me/6285791268077"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2"
+                                >
+                                    <Send className="w-4 h-4" />
+                                    Message
+                                </a>
+                                <div className="bg-card/50 border border-border/50 rounded-lg p-4 mt-6">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <Clock className="w-5 h-5 text-green-600" />
+                                        <h4 className="text-sm font-semibold">Business Hours</h4>
+                                    </div>
+                                    <div className="space-y-2 text-sm text-muted-foreground">
+                                        <div className="flex justify-between">
+                                            <span>Weekdays</span>
+                                            <span>9:00 AM - 10:00 PM PST</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span>Weekends</span>
+                                            <span>9:00 AM - 8:00 PM PST</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
                     </div>
                 </div>
             </div>

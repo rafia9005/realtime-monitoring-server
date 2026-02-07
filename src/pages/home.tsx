@@ -84,7 +84,7 @@ export default function Home() {
                         <Card className="bg-card/50 border-border/50 backdrop-blur-sm w-fit h-fit">
                             <CardContent className="py-4 text-center">
                                 <a href="https://www.terarush.studio/" target="blank" className="w-full justify-center items-center flex gap-6">
-                                    <img className="w-10 rounded-full" src="/img/terarush.webp" alt="Company 1" />
+                                    <img className="w-10 rounded-full" src="/img/terarush.webp" alt="Terarush" />
                                     <p className="font-bold">Terarush</p>
                                 </a>
                             </CardContent>
@@ -92,7 +92,7 @@ export default function Home() {
                         <Card className="bg-card/50 border-border/50 backdrop-blur-sm w-fit h-fit">
                             <CardContent className="py-4 text-center">
                                 <a href="https://pkl.senvada.id" target="blank" className="w-full justify-center items-center flex gap-6">
-                                    <img className="w-10 rounded-full" src="/img/senvada.webp" alt="Company 1" />
+                                    <img className="w-10 rounded-full" src="/img/senvada.webp" alt="Senvada" />
                                     <p className="font-bold">Senvada</p>
                                 </a>
                             </CardContent>

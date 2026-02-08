@@ -3,22 +3,23 @@ module github.com/rafia9005/realtime-monitoring-server
 go 1.25.6
 
 require (
+	github.com/creack/pty v1.1.24
 	github.com/go-playground/validator/v10 v10.30.1
+	github.com/google/uuid v1.6.0
+	github.com/gorilla/websocket v1.5.3
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v5 v5.0.1
+	github.com/mattn/go-sqlite3 v1.14.33
 	github.com/shirou/gopsutil/v3 v3.24.5
 	github.com/supabase-community/postgrest-go v0.0.11
 	github.com/supabase-community/supabase-go v0.0.4
 )
 
 require (
-	github.com/creack/pty v1.1.24 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.12 // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/google/uuid v1.6.0 // indirect
-	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0 // indirect
 	github.com/power-devops/perfstat v0.0.0-20210106213030-5aafc221ea8c // indirect

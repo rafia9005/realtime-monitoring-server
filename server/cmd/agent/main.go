@@ -1,13 +1,18 @@
-package handler
+package main
 
 import (
+	"context"
+	"encoding/json"
+	"flag"
+	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
-	"github.com/labstack/echo/v5"
 	"github.com/rafia9005/realtime-monitoring-server/internal/domain"
-	"github.com/rafia9005/realtime-monitoring-server/internal/pkg/response"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/disk"
 	"github.com/shirou/gopsutil/v3/host"
@@ -17,32 +22,25 @@ import (
 	"github.com/shirou/gopsutil/v3/process"
 )
 
-type SystemMetricsHandler struct {
-	envRepo domain.EnvMetricsRepository
+const version = "1.0.0"
+
+type AgentServer struct {
+	name     string
+	hostname string
+	port     string
 }
 
-func NewSystemMetricsHandler(envRepo domain.EnvMetricsRepository) *SystemMetricsHandler {
-	return &SystemMetricsHandler{
-		envRepo: envRepo,
+func NewAgentServer(name, port string) *AgentServer {
+	hostname, _ := os.Hostname()
+	return &AgentServer{
+		name:     name,
+		hostname: hostname,
+		port:     port,
 	}
 }
 
-// GetMetrics handles GET /api/v1/system-metrics
-func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
-	ctx := (*c).Request().Context()
-
-	// Get environmental metrics from database
-	envMetrics, err := h.envRepo.GetLatest(ctx)
-	if err != nil {
-		// Log error but don't fail the request
-		println("Error getting env metrics:", err.Error())
-	}
-	if envMetrics != nil {
-		println("Found env metrics with ID:", envMetrics.ID)
-	} else {
-		println("No env metrics found in database")
-	}
-
+// CollectMetrics collects system metrics
+func (a *AgentServer) CollectMetrics() (*domain.SystemMetrics, error) {
 	// Get CPU metrics
 	cpuPercent, _ := cpu.Percent(time.Second, false)
 	cpuPerCore, _ := cpu.Percent(time.Second, true)
@@ -73,7 +71,7 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 	vmem, _ := mem.VirtualMemory()
 	swap, _ := mem.SwapMemory()
 
-	// Get Disk metrics for all partitions
+	// Get Disk metrics
 	partitions, _ := disk.Partitions(false)
 	var diskMetrics []domain.DiskMetrics
 	for _, partition := range partitions {
@@ -118,14 +116,12 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 		ifaceMetric.Name = iface.Name
 		ifaceMetric.MTU = iface.MTU
 
-		// Get addresses
 		var addrs []string
 		for _, addr := range iface.Addrs {
 			addrs = append(addrs, addr.Addr)
 		}
 		ifaceMetric.Addrs = addrs
 
-		// Get stats for this interface
 		for _, stat := range ifaceStats {
 			if stat.Name == iface.Name {
 				ifaceMetric.BytesSent = stat.BytesSent
@@ -187,7 +183,7 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 		Load15: loadAvg.Load15,
 	}
 
-	// Get temperature (CPU thermal)
+	// Get temperature
 	var thermalMetrics domain.ThermalMetrics
 	temps, err := host.SensorsTemperatures()
 	if err == nil && len(temps) > 0 {
@@ -199,7 +195,6 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 				High:        temp.High,
 				Critical:    temp.Critical,
 			})
-			// Use first CPU temp as main temp
 			if thermalMetrics.CPUTemp == 0 && (temp.SensorKey == "coretemp" || temp.SensorKey == "cpu_thermal" || temp.SensorKey == "k10temp") {
 				thermalMetrics.CPUTemp = temp.Temperature
 			}
@@ -207,14 +202,11 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 		thermalMetrics.Sensors = sensors
 	}
 
-	// Get Host/System info
+	// Get Host info
 	hostInfo, _ := host.Info()
-	hostname, _ := os.Hostname()
 
-	// Build comprehensive system metrics
-	metrics := domain.SystemMetrics{
-		Timestamp:   time.Now(),
-		Environment: envMetrics,
+	metrics := &domain.SystemMetrics{
+		Timestamp: time.Now(),
 		CPU: domain.CPUMetrics{
 			UsagePercent: cpuPercent[0],
 			PerCore:      cpuPerCore,
@@ -247,7 +239,7 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 		Load:        loadMetrics,
 		Temperature: thermalMetrics,
 		System: domain.SystemInfo{
-			Hostname:        hostname,
+			Hostname:        a.hostname,
 			OS:              hostInfo.OS,
 			Platform:        hostInfo.Platform,
 			PlatformFamily:  hostInfo.PlatformFamily,
@@ -261,5 +253,133 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 		},
 	}
 
-	return response.Success(c, http.StatusOK, "System metrics retrieved successfully", metrics)
+	return metrics, nil
+}
+
+// CORS middleware
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
+// HealthHandler handles GET /health
+func (a *AgentServer) HealthHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"status": "ok",
+		"time":   time.Now(),
+	})
+}
+
+// InfoHandler handles GET /info
+func (a *AgentServer) InfoHandler(w http.ResponseWriter, r *http.Request) {
+	// Get IP address
+	ipAddress := "unknown"
+	interfaces, err := net.Interfaces()
+	if err == nil {
+		for _, iface := range interfaces {
+			if len(iface.Addrs) > 0 && iface.Name != "lo" {
+				ipAddress = iface.Addrs[0].Addr
+				break
+			}
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"data": map[string]interface{}{
+			"name":       a.name,
+			"hostname":   a.hostname,
+			"ip_address": ipAddress,
+			"version":    version,
+		},
+	})
+}
+
+// MetricsHandler handles GET /metrics
+func (a *AgentServer) MetricsHandler(w http.ResponseWriter, r *http.Request) {
+	metrics, err := a.CollectMetrics()
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"success": true,
+		"data":    metrics,
+	})
+}
+
+func (a *AgentServer) Start() error {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/health", a.HealthHandler)
+	mux.HandleFunc("/info", a.InfoHandler)
+	mux.HandleFunc("/metrics", a.MetricsHandler)
+
+	// Wrap with CORS
+	handler := corsMiddleware(mux)
+
+	server := &http.Server{
+		Addr:    fmt.Sprintf(":%s", a.port),
+		Handler: handler,
+	}
+
+	// Graceful shutdown
+	go func() {
+		sigChan := make(chan os.Signal, 1)
+		signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
+		<-sigChan
+		log.Println("Shutting down agent server...")
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		if err := server.Shutdown(ctx); err != nil {
+			log.Printf("Error during shutdown: %v", err)
+		}
+	}()
+
+	log.Printf("Agent Server starting on port %s", a.port)
+	log.Printf("Agent Name: %s", a.name)
+	log.Printf("Hostname: %s", a.hostname)
+	log.Printf("Endpoints:")
+	log.Printf("  - GET http://localhost:%s/health", a.port)
+	log.Printf("  - GET http://localhost:%s/info", a.port)
+	log.Printf("  - GET http://localhost:%s/metrics", a.port)
+
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		return fmt.Errorf("failed to start server: %w", err)
+	}
+
+	return nil
+}
+
+func main() {
+	port := flag.String("port", "9090", "Agent server port")
+	name := flag.String("name", "", "Agent name (required)")
+
+	flag.Parse()
+
+	if *name == "" {
+		log.Fatal("Agent name is required (use -name flag)")
+	}
+
+	agent := NewAgentServer(*name, *port)
+	if err := agent.Start(); err != nil {
+		log.Fatalf("Agent error: %v", err)
+	}
 }

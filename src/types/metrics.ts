@@ -142,3 +142,25 @@ export interface ApiResponse<T> {
   message: string;
   data: T;
 }
+
+// Agent related types
+export interface Agent {
+  id: string;
+  name: string;
+  hostname: string;
+  ip_address: string;
+  status: "online" | "offline" | "error";
+  last_seen: string;
+  version: string;
+  tags?: string[];
+  description?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AgentMetrics {
+  agent_id: string;
+  agent_name: string;
+  metrics: SystemMetrics;
+  received_at: string;
+}

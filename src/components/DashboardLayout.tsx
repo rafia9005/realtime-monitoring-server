@@ -13,7 +13,8 @@ import {
   Moon,
   Sun,
   Server,
-  Terminal
+  Terminal,
+  Boxes
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
@@ -39,6 +40,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { icon: Activity, label: "Monitoring", href: "/monitoring" },
     { icon: Server, label: "Server", href: "/server" },
     { icon: Terminal, label: "Terminal", href: "/terminal" },
+    { icon: Boxes, label: "Agents", href: "/agents" },
   ];
 
   return (

@@ -12,21 +12,58 @@ import {
   ChevronDown,
   ChevronUp,
   Maximize2,
-  X
+  X,
+  Server,
+  Check
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useSystemMetrics } from "@/lib/hooks/useSystemMetrics";
+import { useAgentMetrics } from "@/lib/hooks/useAgentMetrics";
 import { CPUDetail } from "@/components/metrics/CPUDetail";
 import { MemoryDetail } from "@/components/metrics/MemoryDetail";
 import { DiskDetail } from "@/components/metrics/DiskDetail";
 import { NetworkDetail } from "@/components/metrics/NetworkDetail";
 import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 
 type MetricSection = "cpu" | "memory" | "disk" | "network";
 
 export default function Monitoring() {
-  const { data: metrics, loading, error, refetch } = useSystemMetrics(true, 5000);
+  const { id: agentIdFromUrl } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [viewMode, setViewMode] = useState<"local" | "agents">(agentIdFromUrl ? "agents" : "local");
+  const { data: localMetrics, loading: localLoading, error: localError, refetch: refetchLocal } = useSystemMetrics(viewMode === "local", 5000);
+  const { agents, selectedAgent, metrics: agentMetrics, loading: agentLoading, error: agentError, selectAgent, refetch: refetchAgent } = useAgentMetrics(viewMode === "agents", 5000);
+  
   const [expandedSections, setExpandedSections] = useState<MetricSection[]>(["cpu", "memory", "disk", "network"]);
   const [fullscreenSection, setFullscreenSection] = useState<MetricSection | null>(null);
+
+  // Auto-select agent from URL if present
+  useEffect(() => {
+    if (agentIdFromUrl && agents.length > 0) {
+      const agent = agents.find(a => a.id === agentIdFromUrl);
+      if (agent) {
+        setViewMode("agents");
+        selectAgent(agentIdFromUrl);
+      } else {
+        // Agent not found, redirect to agents page
+        navigate("/agents");
+      }
+    }
+  }, [agentIdFromUrl, agents, selectAgent, navigate]);
+
+  // Determine which metrics to display
+  const metrics = viewMode === "local" ? localMetrics : (agentMetrics?.metrics || null);
+  const loading = viewMode === "local" ? localLoading : agentLoading;
+  const error = viewMode === "local" ? localError : agentError;
+  const refetch = viewMode === "local" ? refetchLocal : refetchAgent;
 
   // Handle escape key to close fullscreen
   useEffect(() => {
@@ -65,6 +102,15 @@ export default function Monitoring() {
     const sizes = ["B", "KB", "MB", "GB", "TB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "online": return "text-emerald-500";
+      case "offline": return "text-gray-500";
+      case "error": return "text-destructive";
+      default: return "text-muted-foreground";
+    }
   };
 
   if (loading && !metrics) {
@@ -155,9 +201,66 @@ export default function Monitoring() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Monitoring</h1>
-            <p className="text-sm text-muted-foreground mt-1">Detailed system metrics</p>
+            <p className="text-sm text-muted-foreground mt-1">
+              {viewMode === "local" ? "Local server" : selectedAgent ? selectedAgent.name : "Select an agent"} - Detailed system metrics
+            </p>
           </div>
           <div className="flex items-center gap-2">
+            {/* Server/Agent Selector */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <Server className="w-4 h-4 mr-2" />
+                  {viewMode === "local" ? "Local Server" : selectedAgent?.name || "Select Agent"}
+                  <ChevronDown className="w-4 h-4 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Monitor Source</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={() => setViewMode("local")}
+                  className="cursor-pointer"
+                >
+                  <Server className="w-4 h-4 mr-2" />
+                  Local Server
+                  {viewMode === "local" && <Check className="w-4 h-4 ml-auto" />}
+                </DropdownMenuItem>
+                {agents.length > 0 && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel>Remote Agents</DropdownMenuLabel>
+                    {agents.map((agent) => (
+                      <DropdownMenuItem
+                        key={agent.id}
+                        onClick={() => {
+                          setViewMode("agents");
+                          selectAgent(agent.id);
+                        }}
+                        className="cursor-pointer"
+                      >
+                        <div className="flex items-center gap-2 flex-1">
+                          <span className={`w-2 h-2 rounded-full ${agent.status === 'online' ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                          <span className="truncate">{agent.name}</span>
+                        </div>
+                        {viewMode === "agents" && selectedAgent?.id === agent.id && (
+                          <Check className="w-4 h-4 ml-2" />
+                        )}
+                      </DropdownMenuItem>
+                    ))}
+                  </>
+                )}
+                {agents.length === 0 && viewMode === "agents" && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                      No agents available
+                    </div>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Badge variant="outline" className="text-emerald-500 border-emerald-500/30 bg-emerald-500/10">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse" />
               Live
@@ -167,6 +270,31 @@ export default function Monitoring() {
             </Button>
           </div>
         </div>
+
+        {/* Agent Info Banner (only for agent mode) */}
+        {viewMode === "agents" && selectedAgent && (
+          <div className="rounded-lg border border-border bg-card p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <span className={`w-2.5 h-2.5 rounded-full ${selectedAgent.status === 'online' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'}`} />
+                  <span className="font-medium">{selectedAgent.name}</span>
+                  <Badge variant="secondary" className={getStatusColor(selectedAgent.status)}>
+                    {selectedAgent.status}
+                  </Badge>
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {selectedAgent.hostname} • {selectedAgent.ip_address}
+                </div>
+              </div>
+              {agentMetrics && (
+                <div className="text-xs text-muted-foreground">
+                  Last update: {new Date(agentMetrics.received_at).toLocaleTimeString()}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Collapsible Sections */}
         <div className="space-y-3">

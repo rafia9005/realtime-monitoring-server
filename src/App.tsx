@@ -6,6 +6,7 @@ import Dashboard from './pages/dashboard'
 import Monitoring from './pages/monitoring'
 import ServerPage from './pages/server'
 import Terminal from './pages/terminal'
+import AgentsPage from './pages/agents'
 import HomePage from './pages/home'
 import AboutPage from './pages/about'
 import ContactPage from './pages/contact'
@@ -56,11 +57,17 @@ createRoot(document.getElementById('root')!).render(
           <Route path='/monitoring' element={
             <ProtectedRoute><Monitoring /></ProtectedRoute>
           } />
+          <Route path='/server/:id' element={
+            <ProtectedRoute><Monitoring /></ProtectedRoute>
+          } />
           <Route path='/server' element={
             <ProtectedRoute><ServerPage /></ProtectedRoute>
           } />
           <Route path='/terminal' element={
             <ProtectedRoute><Terminal /></ProtectedRoute>
+          } />
+          <Route path='/agents' element={
+            <ProtectedRoute><AgentsPage /></ProtectedRoute>
           } />
         </Routes>
       </BrowserRouter>

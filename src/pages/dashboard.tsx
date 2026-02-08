@@ -17,10 +17,12 @@ import {
   Server
 } from "lucide-react";
 import { useSystemMetrics } from "@/lib/hooks/useSystemMetrics";
+import { useAgentMetrics } from "@/lib/hooks/useAgentMetrics";
 import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const { data: metrics, loading, error, refetch } = useSystemMetrics(true, 5000);
+  const { agents, loading: agentsLoading } = useAgentMetrics(true, 10000);
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return "0 B";
@@ -282,6 +284,89 @@ export default function Dashboard() {
                 <p className="text-lg font-semibold">{metrics.environment.second_humidity?.toFixed(1) || "N/A"}%</p>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Agent Servers */}
+        {agents.length > 0 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold">Connected Servers</h2>
+                <p className="text-sm text-muted-foreground">
+                  {agents.filter(a => a.status === 'online').length} of {agents.length} servers online
+                </p>
+              </div>
+              <Link to="/agents">
+                <Button variant="outline" size="sm">
+                  Manage Agents
+                  <ArrowUpRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {agents.map((agent) => (
+                <Link
+                  key={agent.id}
+                  to={`/server/${agent.id}`}
+                  className="group p-4 rounded-lg border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-lg ${agent.status === 'online' ? 'bg-emerald-500/10' : 'bg-gray-500/10'}`}>
+                        <Server className={`w-5 h-5 ${agent.status === 'online' ? 'text-emerald-500' : 'text-gray-500'}`} />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold group-hover:text-primary transition-colors">
+                          {agent.name}
+                        </h3>
+                        <p className="text-xs text-muted-foreground">{agent.hostname}</p>
+                      </div>
+                    </div>
+                    <Badge 
+                      variant={agent.status === 'online' ? 'default' : 'secondary'}
+                      className={agent.status === 'online' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30' : ''}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${agent.status === 'online' ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400'}`} />
+                      {agent.status}
+                    </Badge>
+                  </div>
+                  
+                  <div className="space-y-2 text-xs text-muted-foreground">
+                    <div className="flex items-center justify-between">
+                      <span>IP Address:</span>
+                      <span className="font-mono">{agent.ip_address}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>Last Seen:</span>
+                      <span>{new Date(agent.last_seen).toLocaleTimeString()}</span>
+                    </div>
+                    {agent.tags && agent.tags.length > 0 && (
+                      <div className="flex items-center gap-1 flex-wrap mt-2">
+                        {agent.tags.map((tag, idx) => (
+                          <Badge key={idx} variant="outline" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">Click to view details</span>
+                    <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {agentsLoading && agents.length === 0 && (
+          <div className="p-8 rounded-lg border border-border bg-card text-center">
+            <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">Loading agents...</p>
           </div>
         )}
 

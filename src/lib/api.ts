@@ -1,6 +1,6 @@
-import type { SystemMetrics, ApiResponse } from "@/types/metrics";
+import type { SystemMetrics, ApiResponse, Agent, AgentMetrics } from "@/types/metrics";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 class ApiError extends Error {
   status: number;
@@ -32,6 +32,11 @@ async function fetchApi<T>(endpoint: string): Promise<T> {
 
 export const api = {
   getSystemMetrics: () => fetchApi<SystemMetrics>("/api/v1/system-metrics"),
+  
+  // Agent APIs
+  getAgents: () => fetchApi<Agent[]>("/api/v1/agents"),
+  getAgent: (id: string) => fetchApi<Agent>(`/api/v1/agents/${id}`),
+  getAgentMetrics: (id: string) => fetchApi<AgentMetrics>(`/api/v1/agents/${id}/metrics`),
   
   checkHealth: async () => {
     const response = await fetch(`${API_BASE_URL}/health`);

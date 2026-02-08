@@ -33,9 +33,17 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 <Link to="/about" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   About Us
                 </Link>
-                <Link to="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-                  Dashboard
-                </Link>
+                {/* Dashboard link: only for logged-in users */}
+                <SignedIn>
+                  <Link to="/dashboard" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                    Dashboard
+                  </Link>
+                </SignedIn>
+                <SignedOut>
+                  <Link to="/login" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+                    Dashboard
+                  </Link>
+                </SignedOut>
                 <Link to="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
                   Contact
                 </Link>

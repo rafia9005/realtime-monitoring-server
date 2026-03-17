@@ -12,6 +12,7 @@ import AboutPage from './pages/about'
 import ContactPage from './pages/contact'
 import { ClerkProvider, SignedIn, SignedOut } from '@clerk/clerk-react'
 import { ThemeProvider } from './components/theme-provider'
+import ChatWidget from './components/ChatWidget'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -70,6 +71,7 @@ createRoot(document.getElementById('root')!).render(
             <ProtectedRoute><AgentsPage /></ProtectedRoute>
           } />
         </Routes>
+        <ChatWidget />
       </BrowserRouter>
     </ClerkProvider>
   </ThemeProvider>

@@ -24,8 +24,24 @@ export default function TerminalPage() {
     initTerminal();
     connectWebSocket();
 
+    const handleRunCommand = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({
+          type: "input",
+          data: customEvent.detail
+        }));
+      } else {
+        alert("Koneksi terminal belum aktif!");
+      }
+    };
+
+    window.addEventListener("run-terminal-command", handleRunCommand);
+
     return () => {
       cleanup();
+      window.removeEventListener("run-terminal-command", handleRunCommand);
+      delete (window as any).__TERMINAL_OUTPUT__;
     };
   }, []);
 
@@ -160,6 +176,13 @@ export default function TerminalPage() {
           } else if (msg.type === "output") {
             if (xtermRef.current) {
               xtermRef.current.write(msg.data);
+              // Save output globally for AI context
+              const w = window as any;
+              w.__TERMINAL_OUTPUT__ = (w.__TERMINAL_OUTPUT__ || "") + msg.data;
+              // Limit global context size to last 2000 chars to avoid oversized tokens
+              if (w.__TERMINAL_OUTPUT__.length > 2000) {
+                w.__TERMINAL_OUTPUT__ = w.__TERMINAL_OUTPUT__.substring(w.__TERMINAL_OUTPUT__.length - 2000);
+              }
             }
           } else if (msg.type === "error") {
             if (xtermRef.current) {

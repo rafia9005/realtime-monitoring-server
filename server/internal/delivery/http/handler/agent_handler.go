@@ -9,15 +9,27 @@ import (
 	"github.com/labstack/echo/v5"
 	"github.com/rafia9005/realtime-monitoring-server/internal/domain"
 	"github.com/rafia9005/realtime-monitoring-server/internal/pkg/response"
+	"github.com/rafia9005/realtime-monitoring-server/internal/service"
 )
 
 type AgentHandler struct {
-	agentRepo domain.AgentRepository
+	agentRepo           domain.AgentRepository
+	notificationManager *service.NotificationManager
+	temperatureMonitor  *service.TemperatureMonitor
+	agentStatusTracker  *service.AgentStatusTracker
 }
 
-func NewAgentHandler(agentRepo domain.AgentRepository) *AgentHandler {
+func NewAgentHandler(
+	agentRepo domain.AgentRepository,
+	notificationManager *service.NotificationManager,
+	temperatureMonitor *service.TemperatureMonitor,
+	agentStatusTracker *service.AgentStatusTracker,
+) *AgentHandler {
 	return &AgentHandler{
-		agentRepo: agentRepo,
+		agentRepo:           agentRepo,
+		notificationManager: notificationManager,
+		temperatureMonitor:  temperatureMonitor,
+		agentStatusTracker:  agentStatusTracker,
 	}
 }
 
@@ -79,6 +91,14 @@ func (h *AgentHandler) RegisterAgent(c *echo.Context) error {
 		return response.Error(c, http.StatusInternalServerError, "Failed to register agent", err)
 	}
 
+	// Register agent for temperature monitoring
+	h.temperatureMonitor.RegisterAgent(agent.ID, agent.Name)
+
+	// Send notification about new agent
+	if h.notificationManager != nil {
+		go h.notificationManager.NotifyAgentAdded(agent)
+	}
+
 	return response.Success(c, http.StatusCreated, "Agent registered successfully", agent)
 }
 
@@ -132,8 +152,29 @@ func (h *AgentHandler) Heartbeat(c *echo.Context) error {
 		return response.Error(c, http.StatusBadRequest, "Invalid request body", err)
 	}
 
+	// Get agent info for notifications
+	agent, err := h.agentRepo.GetByID(ctx, req.AgentID)
+	if err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Failed to get agent", err)
+	}
+
+	if agent == nil {
+		return response.Error(c, http.StatusNotFound, "Agent not found", nil)
+	}
+
+	// Update heartbeat
 	if err := h.agentRepo.UpdateStatus(ctx, req.AgentID, req.Status, time.Now()); err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Failed to update heartbeat", err)
+	}
+
+	// Update agent status tracker heartbeat
+	if h.agentStatusTracker != nil {
+		h.agentStatusTracker.UpdateAgentHeartbeat(req.AgentID)
+	}
+
+	// Check if status is "error" and send notification
+	if req.Status == "error" && h.notificationManager != nil {
+		go h.notificationManager.NotifyAgentError(agent.Name, "Agent reported error status in heartbeat")
 	}
 
 	return response.Success(c, http.StatusOK, "Heartbeat received", nil)
@@ -170,6 +211,11 @@ func (h *AgentHandler) ReceiveMetrics(c *echo.Context) error {
 	// Update last seen
 	if err := h.agentRepo.UpdateStatus(ctx, req.AgentID, "online", time.Now()); err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Failed to update status", err)
+	}
+
+	// Update metrics with notifications (temperature & status tracking)
+	if h.agentStatusTracker != nil {
+		h.agentStatusTracker.UpdateMetricsWithNotifications(req.AgentID, req.AgentName, &req.Metrics)
 	}
 
 	return response.Success(c, http.StatusOK, "Metrics received successfully", nil)

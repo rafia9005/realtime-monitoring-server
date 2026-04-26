@@ -61,16 +61,40 @@ func main() {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
+	// Initialize Telegram notifier
+	var telegramNotifier *service.TelegramNotifier
+	if cfg.Telegram.BotToken != "" && len(cfg.Telegram.ChatIDs) > 0 {
+		telegramNotifier = service.NewTelegramNotifier(cfg.Telegram.BotToken, cfg.Telegram.ChatIDs)
+		log.Printf("Telegram notifier initialized with %d chat(s)", len(cfg.Telegram.ChatIDs))
+	} else {
+		log.Println("Warning: Telegram notifier not configured")
+	}
+
+	// Initialize notification manager
+	notificationManager := service.NewNotificationManager(telegramNotifier)
+
+	// Initialize temperature monitor
+	temperatureMonitor := service.NewTemperatureMonitor(notificationManager, 80.0) // 80°C threshold
+
+	// Initialize temperature listener and start it
+	temperatureListener := service.NewTemperatureListener(temperatureMonitor)
+	temperatureListener.Start()
+
+	// Initialize agent status tracker
+	agentStatusTracker := service.NewAgentStatusTracker(agentRepo, notificationManager, temperatureListener)
+	agentStatusTracker.Start()
+
 	// Initialize handlers
-	systemMetricsHandler := handler.NewSystemMetricsHandler(envMetricsRepo)
+	systemMetricsHandler := handler.NewSystemMetricsHandler(envMetricsRepo, telegramNotifier)
 	terminalHandler := handler.NewTerminalHandler()
-	agentHandler := handler.NewAgentHandler(agentRepo)
+	temperatureHandler := handler.NewTemperatureHandler(temperatureListener)
+	agentHandler := handler.NewAgentHandler(agentRepo, notificationManager, temperatureMonitor, agentStatusTracker)
 
 	// Initialize Echo
 	e := echo.New()
 
 	// Setup routes
-	http.SetupRouter(e, systemMetricsHandler, terminalHandler, agentHandler)
+	http.SetupRouter(e, systemMetricsHandler, terminalHandler, agentHandler, temperatureHandler)
 
 	// Start server in a goroutine
 	go func() {
@@ -84,6 +108,9 @@ func main() {
 	// Wait for interrupt signal
 	<-sigChan
 	log.Println("\n🛑 Shutting down gracefully...")
+
+	// Stop the agent status tracker
+	agentStatusTracker.Stop()
 
 	// Stop the poller
 	poller.Stop()

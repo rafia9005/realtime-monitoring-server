@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v5"
 	"github.com/rafia9005/realtime-monitoring-server/internal/domain"
 	"github.com/rafia9005/realtime-monitoring-server/internal/pkg/response"
+	"github.com/rafia9005/realtime-monitoring-server/internal/service"
 	"github.com/shirou/gopsutil/v3/cpu"
 	"github.com/shirou/gopsutil/v3/disk"
 	"github.com/shirou/gopsutil/v3/host"
@@ -18,12 +19,14 @@ import (
 )
 
 type SystemMetricsHandler struct {
-	envRepo domain.EnvMetricsRepository
+	envRepo          domain.EnvMetricsRepository
+	telegramNotifier *service.TelegramNotifier
 }
 
-func NewSystemMetricsHandler(envRepo domain.EnvMetricsRepository) *SystemMetricsHandler {
+func NewSystemMetricsHandler(envRepo domain.EnvMetricsRepository, telegramNotifier *service.TelegramNotifier) *SystemMetricsHandler {
 	return &SystemMetricsHandler{
-		envRepo: envRepo,
+		envRepo:          envRepo,
+		telegramNotifier: telegramNotifier,
 	}
 }
 
@@ -259,6 +262,15 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 			BootTime:        hostInfo.BootTime,
 			Processes:       hostInfo.Procs,
 		},
+	}
+
+	// Check and send alerts if Telegram notifier is configured
+	if h.telegramNotifier != nil {
+		// Use default thresholds, can be made configurable later
+		if err := h.telegramNotifier.CheckMetricsAndNotify(&metrics, service.DefaultThresholds); err != nil {
+			// Log error but don't fail the request
+			println("Error sending Telegram notification:", err.Error())
+		}
 	}
 
 	return response.Success(c, http.StatusOK, "System metrics retrieved successfully", metrics)

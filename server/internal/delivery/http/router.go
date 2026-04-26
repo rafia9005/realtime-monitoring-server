@@ -6,7 +6,7 @@ import (
 	"github.com/rafia9005/realtime-monitoring-server/internal/delivery/http/middleware"
 )
 
-func SetupRouter(e *echo.Echo, systemMetricsHandler *handler.SystemMetricsHandler, terminalHandler *handler.TerminalHandler, agentHandler *handler.AgentHandler) {
+func SetupRouter(e *echo.Echo, systemMetricsHandler *handler.SystemMetricsHandler, terminalHandler *handler.TerminalHandler, agentHandler *handler.AgentHandler, temperatureHandler *handler.TemperatureHandler) {
 	// Middleware
 	e.Use(middleware.CORS())
 
@@ -25,6 +25,10 @@ func SetupRouter(e *echo.Echo, systemMetricsHandler *handler.SystemMetricsHandle
 
 	// WebSocket Terminal endpoint
 	v1.GET("/terminal", terminalHandler.HandleTerminal)
+
+	// Temperature endpoints
+	v1.GET("/temperature/status", temperatureHandler.GetTemperatureStatus)
+	v1.GET("/temperature/stream", temperatureHandler.TemperatureStream)
 
 	// Agent endpoints
 	agents := v1.Group("/agents")

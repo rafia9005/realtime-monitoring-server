@@ -20,6 +20,7 @@ type AgentStatusTracker struct {
 	checkInterval       time.Duration
 	stopChan            chan struct{}
 	wg                  sync.WaitGroup
+	ctx                 context.Context
 }
 
 // AgentStatus tracks the status of an agent
@@ -47,6 +48,7 @@ func NewAgentStatusTracker(
 		heartbeatTimeout:    2 * time.Minute,
 		checkInterval:       30 * time.Second,
 		stopChan:            make(chan struct{}),
+		ctx:                 context.Background(),
 	}
 }
 
@@ -132,6 +134,11 @@ func (ast *AgentStatusTracker) markAgentOffline(agent *domain.Agent) {
 		status.CurrentStatus = "offline"
 		status.NotificationSent = true
 
+		// Update status in database
+		if err := ast.repo.UpdateStatus(ast.ctx, agent.ID, "offline", time.Now()); err != nil {
+			log.Printf("❌ Failed to update agent status in database: %v", err)
+		}
+
 		// Send notification
 		if ast.notificationManager != nil {
 			go ast.notificationManager.NotifyAgentOffline(agent)
@@ -148,6 +155,11 @@ func (ast *AgentStatusTracker) markAgentOnline(agent *domain.Agent) {
 		status.PreviousStatus = status.CurrentStatus
 		status.CurrentStatus = "online"
 		status.NotificationSent = false
+
+		// Update status in database
+		if err := ast.repo.UpdateStatus(ast.ctx, agent.ID, "online", time.Now()); err != nil {
+			log.Printf("❌ Failed to update agent status in database: %v", err)
+		}
 
 		// Send notification
 		if ast.notificationManager != nil {

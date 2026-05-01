@@ -17,54 +17,65 @@ func NewEnvMetricsRepository(db *sql.DB) *EnvMetricsRepository {
 	}
 }
 
-func (r *EnvMetricsRepository) GetLatest(ctx context.Context) (*domain.EnvMetrics, error) {
+func (r *EnvMetricsRepository) GetLatest(ctx context.Context) ([]domain.EnvMetrics, error) {
 	query := `
-		SELECT id, first_temperature, first_humidity, second_temperature, second_humidity, created_at
-		FROM env_metrics
+		SELECT id, created_at, mcu_id, mcu_name, temperature, humidity
+		FROM env_metrics 
+		WHERE id IN (
+			SELECT MAX(id) FROM env_metrics GROUP BY mcu_id
+		)
 		ORDER BY created_at DESC
-		LIMIT 1
 	`
 
-	var metrics domain.EnvMetrics
-	err := r.db.QueryRowContext(ctx, query).Scan(
-		&metrics.ID,
-		&metrics.FirstTemperature,
-		&metrics.FirstHumidity,
-		&metrics.SecondTemperature,
-		&metrics.SecondHumidity,
-		&metrics.CreatedAt,
-	)
-
-	if err == sql.ErrNoRows {
-		return nil, nil
-	}
+	rows, err := r.db.QueryContext(ctx, query)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
+	defer rows.Close()
 
-	return &metrics, nil
+	var metricsList []domain.EnvMetrics
+	for rows.Next() {
+		var metrics domain.EnvMetrics
+		err := rows.Scan(
+			&metrics.ID,
+			&metrics.CreatedAt,
+			&metrics.McuID,
+			&metrics.McuName,
+			&metrics.Temperature,
+			&metrics.Humidity,
+		)
+		if err != nil {
+			continue
+		}
+		metricsList = append(metricsList, metrics)
+	}
+
+	return metricsList, nil
 }
 
 func (r *EnvMetricsRepository) Create(ctx context.Context, metrics *domain.EnvMetrics) error {
 	query := `
-		INSERT INTO env_metrics (first_temperature, first_humidity, second_temperature, second_humidity, created_at)
+		INSERT INTO env_metrics (created_at, mcu_id, mcu_name, temperature, humidity)
 		VALUES (?, ?, ?, ?, ?)
-		RETURNING id, first_temperature, first_humidity, second_temperature, second_humidity, created_at
+		RETURNING id, created_at, mcu_id, mcu_name, temperature, humidity
 	`
 
 	err := r.db.QueryRowContext(ctx, query,
-		metrics.FirstTemperature,
-		metrics.FirstHumidity,
-		metrics.SecondTemperature,
-		metrics.SecondHumidity,
 		metrics.CreatedAt,
+		metrics.McuID,
+		metrics.McuName,
+		metrics.Temperature,
+		metrics.Humidity,
 	).Scan(
 		&metrics.ID,
-		&metrics.FirstTemperature,
-		&metrics.FirstHumidity,
-		&metrics.SecondTemperature,
-		&metrics.SecondHumidity,
 		&metrics.CreatedAt,
+		&metrics.McuID,
+		&metrics.McuName,
+		&metrics.Temperature,
+		&metrics.Humidity,
 	)
 
 	return err

@@ -3,10 +3,10 @@
 export interface EnvMetrics {
   id: number;
   created_at: string;
-  first_temperature: number | null;
-  first_humidity: number | null;
-  second_temperature: number | null;
-  second_humidity: number | null;
+  mcu_id: string;
+  mcu_name: string;
+  temperature: number | null;
+  humidity: number | null;
 }
 
 export interface CPUMetrics {
@@ -126,7 +126,7 @@ export interface SystemInfo {
 
 export interface SystemMetrics {
   timestamp: string;
-  environment: EnvMetrics | null;
+  environment: EnvMetrics[] | null;
   cpu: CPUMetrics;
   memory: MemoryMetrics;
   disk: DiskMetrics[];

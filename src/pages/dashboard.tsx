@@ -246,8 +246,8 @@ export default function Dashboard() {
             <div className="text-xl font-semibold">
               {metrics.temperature?.cpu_temp 
                 ? `${metrics.temperature.cpu_temp.toFixed(1)}°C`
-                : metrics.environment?.first_temperature 
-                  ? `${metrics.environment.first_temperature.toFixed(1)}°C`
+                : (metrics.environment && metrics.environment.length > 0 && metrics.environment[0].temperature)
+                  ? `${metrics.environment[0].temperature.toFixed(1)}°C`
                   : "N/A"
               }
             </div>
@@ -255,34 +255,73 @@ export default function Dashboard() {
         </div>
 
         {/* Environment Sensors (if available) */}
-        {metrics.environment && (
-          <div className="p-4 rounded-lg border border-border bg-card">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Thermometer className="w-4 h-4" />
-                <span className="text-sm font-medium">Environment Sensors</span>
+        {metrics.environment && metrics.environment.length > 0 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold flex items-center gap-2">
+                  <Thermometer className="w-5 h-5 text-primary" />
+                  Environment Sensors
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Real-time temperature and humidity data from {metrics.environment.length} microcontroller(s).
+                </p>
               </div>
-              <span className="text-xs text-muted-foreground">
-                {new Date(metrics.environment.created_at).toLocaleTimeString()}
+              <span className="text-xs px-3 py-1 rounded-full bg-secondary/50 text-muted-foreground">
+                Updated: {new Date(metrics.environment[0].created_at).toLocaleTimeString()}
               </span>
             </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Sensor 1 Temp</p>
-                <p className="text-lg font-semibold">{metrics.environment.first_temperature?.toFixed(1) || "N/A"}°C</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Sensor 1 Humidity</p>
-                <p className="text-lg font-semibold">{metrics.environment.first_humidity?.toFixed(1) || "N/A"}%</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Sensor 2 Temp</p>
-                <p className="text-lg font-semibold">{metrics.environment.second_temperature?.toFixed(1) || "N/A"}°C</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground mb-1">Sensor 2 Humidity</p>
-                <p className="text-lg font-semibold">{metrics.environment.second_humidity?.toFixed(1) || "N/A"}%</p>
-              </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {metrics.environment.map((sensor, idx) => (
+                <div key={sensor.mcu_id || idx} className="group p-5 rounded-xl border border-border bg-card hover:border-primary/50 hover:shadow-md transition-all relative overflow-hidden">
+                  {/* Decorative background element */}
+                  <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-all"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-lg bg-blue-500/10">
+                          <Boxes className="w-5 h-5 text-blue-500" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">{sensor.mcu_name || `MCU ${sensor.mcu_id || idx + 1}`}</h3>
+                          <p className="text-xs text-muted-foreground uppercase tracking-wider">{sensor.mcu_id || "UNKNOWN-ID"}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-500 text-xs font-medium">
+                        <span className="relative flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                        Active
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="p-3 rounded-lg bg-secondary/50 border border-border/50">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs text-muted-foreground font-medium">Temperature</p>
+                          <Thermometer className="w-3.5 h-3.5 text-orange-500" />
+                        </div>
+                        <p className="text-2xl font-bold tracking-tight">
+                          {sensor.temperature !== null && sensor.temperature !== undefined ? `${sensor.temperature.toFixed(1)}°C` : "N/A"}
+                        </p>
+                      </div>
+                      
+                      <div className="p-3 rounded-lg bg-secondary/50 border border-border/50">
+                        <div className="flex items-center justify-between mb-1">
+                          <p className="text-xs text-muted-foreground font-medium">Humidity</p>
+                          <Activity className="w-3.5 h-3.5 text-cyan-500" />
+                        </div>
+                        <p className="text-2xl font-bold tracking-tight">
+                          {sensor.humidity !== null && sensor.humidity !== undefined ? `${sensor.humidity.toFixed(1)}%` : "N/A"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}

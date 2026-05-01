@@ -21,12 +21,13 @@ func NewEnvMetricsRepository(client *supabase.Client) *EnvMetricsRepository {
 	}
 }
 
-func (r *EnvMetricsRepository) GetLatest(ctx context.Context) (*domain.EnvMetrics, error) {
+func (r *EnvMetricsRepository) GetLatest(ctx context.Context) ([]domain.EnvMetrics, error) {
 	var result []domain.EnvMetrics
 
+	// Ambil 50 data terakhir untuk mendapatkan data MCU secara menyeluruh
 	_, err := r.client.From(r.table).Select("*", "", false).
 		Order("created_at", &postgrest.OrderOpts{Ascending: false}).
-		Limit(1, "").
+		Limit(50, "").
 		ExecuteTo(&result)
 
 	if err != nil {
@@ -37,7 +38,24 @@ func (r *EnvMetricsRepository) GetLatest(ctx context.Context) (*domain.EnvMetric
 		return nil, nil // Return nil if no data
 	}
 
-	return &result[0], nil
+	// Filter agar hanya mendapatkan 1 data terbaru untuk setiap MCU
+	latestPerMcu := make(map[string]domain.EnvMetrics)
+	for _, metric := range result {
+		mcuID := metric.McuID
+		if mcuID == "" {
+			mcuID = "unknown"
+		}
+		if _, exists := latestPerMcu[mcuID]; !exists {
+			latestPerMcu[mcuID] = metric
+		}
+	}
+
+	var filteredResult []domain.EnvMetrics
+	for _, metric := range latestPerMcu {
+		filteredResult = append(filteredResult, metric)
+	}
+
+	return filteredResult, nil
 }
 
 func (r *EnvMetricsRepository) Create(ctx context.Context, metrics *domain.EnvMetrics) error {

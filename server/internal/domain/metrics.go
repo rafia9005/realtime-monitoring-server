@@ -4,18 +4,18 @@ import "time"
 
 // EnvMetrics represents environmental metrics from sensors
 type EnvMetrics struct {
-	ID                int64     `json:"id" db:"id"`
-	CreatedAt         time.Time `json:"created_at" db:"created_at"`
-	FirstTemperature  *float64  `json:"first_temperature" db:"first_temperature"`
-	FirstHumidity     *float64  `json:"first_humidity" db:"first_humidity"`
-	SecondTemperature *float64  `json:"second_temperature" db:"second_temperature"`
-	SecondHumidity    *float64  `json:"second_humidity" db:"second_humidity"`
+	ID          int64     `json:"id" db:"id"`
+	CreatedAt   time.Time `json:"created_at" db:"created_at"`
+	McuID       string    `json:"mcu_id" db:"mcu_id"`
+	McuName     string    `json:"mcu_name" db:"mcu_name"`
+	Temperature *float64  `json:"temperature" db:"temperature"`
+	Humidity    *float64  `json:"humidity" db:"humidity"`
 }
 
 // SystemMetrics represents comprehensive system and environmental metrics
 type SystemMetrics struct {
 	Timestamp   time.Time      `json:"timestamp"`
-	Environment *EnvMetrics    `json:"environment"`
+	Environment []EnvMetrics   `json:"environment"`
 	CPU         CPUMetrics     `json:"cpu"`
 	Memory      MemoryMetrics  `json:"memory"`
 	Disk        []DiskMetrics  `json:"disk"`

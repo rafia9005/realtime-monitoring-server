@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 2121",
+    "dev": "vite --host 0.0.0.0 --port 2020",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview --host 0.0.0.0 --port 2121"
+    "preview": "vite preview --host 0.0.0.0 --port 2020"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.60.0",

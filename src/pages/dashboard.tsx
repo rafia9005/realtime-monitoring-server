@@ -14,7 +14,8 @@ import {
   Activity,
   ArrowUpRight,
   TrendingUp,
-  Server
+  Server,
+  Boxes
 } from "lucide-react";
 import { useSystemMetrics } from "@/lib/hooks/useSystemMetrics";
 import { useAgentMetrics } from "@/lib/hooks/useAgentMetrics";
@@ -238,18 +239,35 @@ export default function Dashboard() {
           </div>
 
           {/* Temperature */}
-          <div className="p-4 rounded-lg border border-border bg-card">
-            <div className="flex items-center gap-2 text-muted-foreground mb-2">
-              <Thermometer className="w-4 h-4" />
-              <span className="text-xs font-medium uppercase tracking-wide">Temperature</span>
-            </div>
-            <div className="text-xl font-semibold">
-              {metrics.temperature?.cpu_temp 
-                ? `${metrics.temperature.cpu_temp.toFixed(1)}°C`
-                : (metrics.environment && metrics.environment.length > 0 && metrics.environment[0].temperature)
-                  ? `${metrics.environment[0].temperature.toFixed(1)}°C`
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* CPU Temperature */}
+            <div className="p-4 rounded-lg border border-border bg-card">
+              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                <Cpu className="w-4 h-4" />
+                <span className="text-xs font-medium uppercase tracking-wide">CPU Temperature</span>
+              </div>
+              <div className="text-xl font-semibold">
+                {metrics.temperature?.cpu_temp 
+                  ? `${metrics.temperature.cpu_temp.toFixed(1)}°C`
                   : "N/A"
-              }
+                }
+              </div>
+            </div>
+
+            {/* MCU Temperature */}
+            <div className="p-4 rounded-lg border border-border bg-card">
+              <div className="flex items-center gap-2 text-muted-foreground mb-2">
+                <Thermometer className="w-4 h-4" />
+                <span className="text-xs font-medium uppercase tracking-wide">MCU Temperature</span>
+              </div>
+              <div className="text-xl font-semibold">
+                {metrics.temperature?.mcu_temp 
+                  ? `${metrics.temperature.mcu_temp.toFixed(1)}°C`
+                  : (metrics.environment && metrics.environment.length > 0 && metrics.environment[0].temperature)
+                    ? `${metrics.environment[0].temperature.toFixed(1)}°C`
+                    : "N/A"
+                }
+              </div>
             </div>
           </div>
         </div>

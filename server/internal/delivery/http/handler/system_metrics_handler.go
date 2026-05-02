@@ -40,8 +40,8 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 		// Log error but don't fail the request
 		println("Error getting env metrics:", err.Error())
 	}
-	if envMetrics != nil {
-		println("Found env metrics with ID:", envMetrics.ID)
+	if envMetrics != nil && len(envMetrics) > 0 {
+		println("Found env metrics with count:", len(envMetrics))
 	} else {
 		println("No env metrics found in database")
 	}
@@ -190,7 +190,7 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 		Load15: loadAvg.Load15,
 	}
 
-	// Get temperature (CPU thermal)
+	// Get temperature (CPU thermal + MCU from environment metrics)
 	var thermalMetrics domain.ThermalMetrics
 	temps, err := host.SensorsTemperatures()
 	if err == nil && len(temps) > 0 {
@@ -208,6 +208,16 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 			}
 		}
 		thermalMetrics.Sensors = sensors
+	}
+
+	// Extract MCU temperature from environment metrics
+	if envMetrics != nil && len(envMetrics) > 0 {
+		for _, env := range envMetrics {
+			if env.Temperature != nil && *env.Temperature > 0 {
+				thermalMetrics.MCUTemp = *env.Temperature
+				break
+			}
+		}
 	}
 
 	// Get Host/System info

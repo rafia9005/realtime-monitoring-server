@@ -107,6 +107,7 @@ export interface ThermalSensor {
 
 export interface ThermalMetrics {
   cpu_temp?: number;
+  mcu_temp?: number;
   sensors?: ThermalSensor[];
 }
 

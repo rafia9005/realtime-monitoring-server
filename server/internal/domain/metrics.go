@@ -117,6 +117,7 @@ type LoadMetrics struct {
 
 type ThermalMetrics struct {
 	CPUTemp float64         `json:"cpu_temp,omitempty"`
+	MCUTemp float64         `json:"mcu_temp,omitempty"`
 	Sensors []ThermalSensor `json:"sensors,omitempty"`
 }
 

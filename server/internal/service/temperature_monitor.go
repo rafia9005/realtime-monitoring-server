@@ -23,21 +23,29 @@ type TemperatureMonitor struct {
 type AgentTempStatus struct {
 	AgentID          string
 	AgentName        string
-	CurrentTemp      float64
-	MaxTemp          float64
-	AlertSent        bool
-	LastAlertTime    time.Time
-	HighTempDetected bool
+	CPUTemp          float64
+	MCUTemp          float64
+	MaxCPUTemp       float64
+	MaxMCUTemp       float64
+	CPUAlertSent     bool
+	MCUAlertSent     bool
+	LastCPUAlertTime time.Time
+	LastMCUAlertTime time.Time
+	HighCPUTempFound bool
+	HighMCUTempFound bool
 }
 
 // TemperatureData represents real-time temperature data
 type TemperatureData struct {
-	AgentID     string    `json:"agent_id"`
-	AgentName   string    `json:"agent_name"`
-	Temperature float64   `json:"temperature"`
-	MaxTemp     float64   `json:"max_temp"`
-	Timestamp   time.Time `json:"timestamp"`
-	IsAlert     bool      `json:"is_alert"`
+	AgentID    string    `json:"agent_id"`
+	AgentName  string    `json:"agent_name"`
+	CPUTemp    float64   `json:"cpu_temp"`
+	MCUTemp    float64   `json:"mcu_temp"`
+	MaxCPUTemp float64   `json:"max_cpu_temp"`
+	MaxMCUTemp float64   `json:"max_mcu_temp"`
+	Timestamp  time.Time `json:"timestamp"`
+	IsCPUAlert bool      `json:"is_cpu_alert"`
+	IsMCUAlert bool      `json:"is_mcu_alert"`
 }
 
 // NewTemperatureMonitor creates a new temperature monitor
@@ -57,11 +65,14 @@ func (tm *TemperatureMonitor) RegisterAgent(agentID, agentName string) {
 	defer tm.agentsMu.Unlock()
 
 	tm.agents[agentID] = &AgentTempStatus{
-		AgentID:     agentID,
-		AgentName:   agentName,
-		AlertSent:   false,
-		CurrentTemp: 0,
-		MaxTemp:     0,
+		AgentID:      agentID,
+		AgentName:    agentName,
+		CPUAlertSent: false,
+		MCUAlertSent: false,
+		CPUTemp:      0,
+		MCUTemp:      0,
+		MaxCPUTemp:   0,
+		MaxMCUTemp:   0,
 	}
 }
 
@@ -73,30 +84,64 @@ func (tm *TemperatureMonitor) UnregisterAgent(agentID string) {
 	delete(tm.agents, agentID)
 }
 
-// UpdateTemperature updates temperature reading for an agent
+// UpdateTemperature updates temperature reading for an agent (CPU temperature)
 func (tm *TemperatureMonitor) UpdateTemperature(agentID string, temperature float64) {
+	tm.updateCPUTemperature(agentID, temperature)
+}
+
+// updateCPUTemperature updates CPU temperature
+func (tm *TemperatureMonitor) updateCPUTemperature(agentID string, temperature float64) {
 	tm.agentsMu.Lock()
 	defer tm.agentsMu.Unlock()
 
 	if status, exists := tm.agents[agentID]; exists {
-		status.CurrentTemp = temperature
+		status.CPUTemp = temperature
 
 		// Update max temp
-		if temperature > status.MaxTemp {
-			status.MaxTemp = temperature
+		if temperature > status.MaxCPUTemp {
+			status.MaxCPUTemp = temperature
 		}
 
 		// Check if alert should be sent
-		if temperature > tm.threshold && !status.AlertSent {
-			status.AlertSent = true
-			status.HighTempDetected = true
-			status.LastAlertTime = time.Now()
+		if temperature > tm.threshold && !status.CPUAlertSent {
+			status.CPUAlertSent = true
+			status.HighCPUTempFound = true
+			status.LastCPUAlertTime = time.Now()
 
 			// Send notification asynchronously
 			go tm.notificationManager.NotifyTemperature(status.AgentName, temperature, tm.threshold)
-		} else if temperature <= tm.threshold && status.AlertSent {
+		} else if temperature <= tm.threshold && status.CPUAlertSent {
 			// Temperature back to normal, reset alert
-			status.AlertSent = false
+			status.CPUAlertSent = false
+		}
+	}
+}
+
+// UpdateMCUTemperature updates MCU temperature
+func (tm *TemperatureMonitor) UpdateMCUTemperature(agentID string, temperature float64) {
+	tm.agentsMu.Lock()
+	defer tm.agentsMu.Unlock()
+
+	if status, exists := tm.agents[agentID]; exists {
+		status.MCUTemp = temperature
+
+		// Update max temp
+		if temperature > status.MaxMCUTemp {
+			status.MaxMCUTemp = temperature
+		}
+
+		// Check if alert should be sent
+		if temperature > tm.threshold && !status.MCUAlertSent {
+			status.MCUAlertSent = true
+			status.HighMCUTempFound = true
+			status.LastMCUAlertTime = time.Now()
+
+			// Send notification asynchronously
+			mcuName := status.AgentName + " (MCU)"
+			go tm.notificationManager.NotifyTemperature(mcuName, temperature, tm.threshold)
+		} else if temperature <= tm.threshold && status.MCUAlertSent {
+			// Temperature back to normal, reset alert
+			status.MCUAlertSent = false
 		}
 	}
 }
@@ -160,17 +205,42 @@ func (tl *TemperatureListener) Start() {
 				return
 			case update := <-tl.agentMetricsChan:
 				if update != nil && update.Metrics != nil {
-					// Update temperature in monitor
+					// Update CPU temperature in monitor
 					tl.monitor.UpdateTemperature(update.AgentID, update.Metrics.Temperature.CPUTemp)
 
+					// Find MCU temperature from environment metrics
+					mcuTemp := 0.0
+					if update.Metrics.Environment != nil && len(update.Metrics.Environment) > 0 {
+						for _, env := range update.Metrics.Environment {
+							if env.Temperature != nil && *env.Temperature > 0 {
+								mcuTemp = *env.Temperature
+								break
+							}
+						}
+					}
+
+					// Update MCU temperature if found
+					if mcuTemp > 0 {
+						tl.monitor.UpdateMCUTemperature(update.AgentID, mcuTemp)
+					}
+
 					// Create temperature data
+					tempStatus := tl.monitor.GetTemperatureStatus(update.AgentID)
 					tempData := &TemperatureData{
-						AgentID:     update.AgentID,
-						AgentName:   update.AgentName,
-						Temperature: update.Metrics.Temperature.CPUTemp,
-						MaxTemp:     update.Metrics.Temperature.CPUTemp,
-						Timestamp:   time.Now(),
-						IsAlert:     update.Metrics.Temperature.CPUTemp > tl.monitor.threshold,
+						AgentID:    update.AgentID,
+						AgentName:  update.AgentName,
+						CPUTemp:    update.Metrics.Temperature.CPUTemp,
+						MCUTemp:    mcuTemp,
+						MaxCPUTemp: update.Metrics.Temperature.CPUTemp,
+						MaxMCUTemp: mcuTemp,
+						Timestamp:  time.Now(),
+						IsCPUAlert: update.Metrics.Temperature.CPUTemp > tl.monitor.threshold,
+						IsMCUAlert: mcuTemp > tl.monitor.threshold,
+					}
+
+					if tempStatus != nil {
+						tempData.MaxCPUTemp = tempStatus.MaxCPUTemp
+						tempData.MaxMCUTemp = tempStatus.MaxMCUTemp
 					}
 
 					// Publish to subscribers
@@ -253,12 +323,15 @@ func (tl *TemperatureListener) GetTemperatureJSON() ([]byte, error) {
 
 	for _, status := range status {
 		tempDataList = append(tempDataList, &TemperatureData{
-			AgentID:     status.AgentID,
-			AgentName:   status.AgentName,
-			Temperature: status.CurrentTemp,
-			MaxTemp:     status.MaxTemp,
-			Timestamp:   time.Now(),
-			IsAlert:     status.HighTempDetected,
+			AgentID:    status.AgentID,
+			AgentName:  status.AgentName,
+			CPUTemp:    status.CPUTemp,
+			MCUTemp:    status.MCUTemp,
+			MaxCPUTemp: status.MaxCPUTemp,
+			MaxMCUTemp: status.MaxMCUTemp,
+			Timestamp:  time.Now(),
+			IsCPUAlert: status.HighCPUTempFound,
+			IsMCUAlert: status.HighMCUTempFound,
 		})
 	}
 

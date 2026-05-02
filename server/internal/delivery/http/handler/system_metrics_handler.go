@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo/v5"
@@ -17,6 +18,11 @@ import (
 	"github.com/shirou/gopsutil/v3/net"
 	"github.com/shirou/gopsutil/v3/process"
 )
+
+// Helper function to check if string contains substring
+func contains(s, substr string) bool {
+	return strings.Contains(strings.ToLower(s), strings.ToLower(substr))
+}
 
 type SystemMetricsHandler struct {
 	envRepo          domain.EnvMetricsRepository
@@ -195,6 +201,8 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 	temps, err := host.SensorsTemperatures()
 	if err == nil && len(temps) > 0 {
 		var sensors []domain.ThermalSensor
+		var cpuTempFound bool
+
 		for _, temp := range temps {
 			sensors = append(sensors, domain.ThermalSensor{
 				Name:        temp.SensorKey,
@@ -202,12 +210,31 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 				High:        temp.High,
 				Critical:    temp.Critical,
 			})
-			// Use first CPU temp as main temp
-			if thermalMetrics.CPUTemp == 0 && (temp.SensorKey == "coretemp" || temp.SensorKey == "cpu_thermal" || temp.SensorKey == "k10temp") {
-				thermalMetrics.CPUTemp = temp.Temperature
+
+			// Try to match known CPU sensor names
+			if !cpuTempFound && temp.Temperature > 0 {
+				sensorName := temp.SensorKey
+				// Check for common CPU sensor names
+				if sensorName == "coretemp" || sensorName == "cpu_thermal" || sensorName == "k10temp" ||
+					sensorName == "acpitz" || sensorName == "INT3400 Thermal" ||
+					sensorName == "Package id 0" ||
+					(sensorName != "" && (contains(sensorName, "CPU") || contains(sensorName, "Package") || contains(sensorName, "Core"))) {
+					thermalMetrics.CPUTemp = temp.Temperature
+					cpuTempFound = true
+				}
 			}
 		}
 		thermalMetrics.Sensors = sensors
+
+		// If no specific CPU sensor found, use first sensor with temperature > 0 as CPU temp
+		if !cpuTempFound && len(temps) > 0 && temps[0].Temperature > 0 {
+			thermalMetrics.CPUTemp = temps[0].Temperature
+			println("DEBUG: No specific CPU sensor found, using first sensor:", temps[0].SensorKey, "Temp:", temps[0].Temperature)
+		}
+	} else if err != nil {
+		println("DEBUG: Failed to get sensors:", err.Error())
+	} else {
+		println("DEBUG: No temperature sensors found")
 	}
 
 	// Extract MCU temperature from environment metrics

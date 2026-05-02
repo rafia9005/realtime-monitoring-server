@@ -173,14 +173,15 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 	for _, p := range processes {
 		status, _ := p.Status()
 		if len(status) > 0 {
-			switch status[0] {
-			case "R":
+			statusStr := status[0]
+			switch statusStr {
+			case "running", "R":
 				processMetrics.Running++
-			case "S", "D":
+			case "sleep", "S", "D", "idle", "W":
 				processMetrics.Sleeping++
-			case "T":
+			case "stop", "T", "stopped":
 				processMetrics.Stopped++
-			case "Z":
+			case "zombie", "Z", "X", "defunct":
 				processMetrics.Zombie++
 			}
 		}

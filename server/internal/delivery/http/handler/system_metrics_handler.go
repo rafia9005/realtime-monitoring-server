@@ -200,7 +200,9 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 	// Get temperature (CPU thermal + MCU from environment metrics)
 	var thermalMetrics domain.ThermalMetrics
 	temps, err := host.SensorsTemperatures()
-	if err == nil && len(temps) > 0 {
+	// Note: err might be non-nil due to warnings, but temps can still have data
+	// So check len(temps) > 0 regardless of err
+	if len(temps) > 0 {
 		var sensors []domain.ThermalSensor
 		var cpuTempFound bool
 
@@ -230,12 +232,9 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 		// If no specific CPU sensor found, use first sensor with temperature > 0 as CPU temp
 		if !cpuTempFound && len(temps) > 0 && temps[0].Temperature > 0 {
 			thermalMetrics.CPUTemp = temps[0].Temperature
-			println("DEBUG: No specific CPU sensor found, using first sensor:", temps[0].SensorKey, "Temp:", temps[0].Temperature)
 		}
 	} else if err != nil {
 		println("DEBUG: Failed to get sensors:", err.Error())
-	} else {
-		println("DEBUG: No temperature sensors found")
 	}
 
 	// Extract MCU temperature from environment metrics

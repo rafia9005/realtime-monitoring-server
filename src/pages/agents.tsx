@@ -1,7 +1,5 @@
 import DashboardLayout from "@/components/DashboardLayout";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -18,11 +16,7 @@ import {
   Server,
   RefreshCw,
   Loader2,
-  AlertCircle,
-  Monitor,
-  Clock,
   Trash2,
-  Circle,
   Activity,
   Plus,
   CheckCircle,
@@ -195,10 +189,14 @@ export default function AgentsPage() {
   if (loading && agents.length === 0) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-[60vh]">
-          <div className="text-center space-y-3">
-            <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto" />
-            <p className="text-sm text-muted-foreground">Loading agents...</p>
+        <div className="flex items-center justify-center h-[60vh] font-mono">
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-primary animate-pulse">[</span>
+              <Loader2 className="w-5 h-5 text-primary animate-spin" />
+              <span className="text-primary animate-pulse">]</span>
+            </div>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">SCANNING_REMOTE_NODES...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -207,244 +205,207 @@ export default function AgentsPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-8 font-mono">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-end justify-between border-b border-border pb-6">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Agents</h1>
-            <p className="text-sm text-muted-foreground mt-1">
-              Manage monitoring agents across multiple servers
+            <div className="flex items-center gap-2 text-muted-foreground text-[10px] uppercase tracking-widest mb-1">
+              <span className="text-primary">●</span> NODE_MANAGER
+            </div>
+            <h1 className="text-2xl font-bold tracking-tighter uppercase">Agents</h1>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">
+              {agents.length} REGISTERED_NODES // {agents.filter(a => a.status === 'online').length} ONLINE
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="sm">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Agent
+                <Button size="sm" className="rounded-none font-bold uppercase text-[10px] tracking-widest px-4">
+                  <Plus className="w-3 h-3 mr-2" />
+                  REGISTER_NODE
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px]">
+              <DialogContent className="sm:max-w-[600px] font-mono rounded-none border-border">
                 {!showInstructions ? (
                   <>
                     <DialogHeader>
-                      <DialogTitle>Add New Agent</DialogTitle>
-                      <DialogDescription>
-                        Enter the agent name and host (address:port) of the running monitoring agent.
+                      <DialogTitle className="uppercase tracking-widest">ADD_NEW_AGENT</DialogTitle>
+                      <DialogDescription className="text-[10px] uppercase">
+                        INITIALIZING_AGENT_REGISTRATION_SEQUENCE
                       </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="grid gap-2">
-                        <Label htmlFor="name">Agent Name *</Label>
+                    <div className="grid gap-4 py-4 border-y border-border/50 my-4">
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="name" className="text-[10px] uppercase tracking-widest">AGENT_IDENTIFIER *</Label>
                         <Input
                           id="name"
-                          placeholder="Production Server 1"
+                          placeholder="PROD_SRV_01"
+                          className="rounded-none border-border bg-muted/20 text-xs"
                           value={newAgent.name}
                           onChange={(e) => setNewAgent({ ...newAgent, name: e.target.value })}
                         />
                       </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="host">Host (address:port) *</Label>
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="host" className="text-[10px] uppercase tracking-widest">NETWORK_ADDR (ADDR:PORT) *</Label>
                         <Input
                           id="host"
-                          placeholder="localhost:9090 or 192.168.1.100:9090"
+                          placeholder="192.168.1.100:9090"
+                          className="rounded-none border-border bg-muted/20 text-xs"
                           value={newAgent.host}
                           onChange={(e) => setNewAgent({ ...newAgent, host: e.target.value })}
                         />
-                        <p className="text-xs text-muted-foreground">
-                          The agent must be running and accessible at this address
-                        </p>
                       </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="tags">Tags (comma-separated)</Label>
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="tags" className="text-[10px] uppercase tracking-widest">METADATA_TAGS (CSV)</Label>
                         <Input
                           id="tags"
-                          placeholder="production, api, backend"
+                          placeholder="PROD, API, BACKEND"
+                          className="rounded-none border-border bg-muted/20 text-xs"
                           value={newAgent.tags}
                           onChange={(e) => setNewAgent({ ...newAgent, tags: e.target.value })}
                         />
                       </div>
-                      <div className="grid gap-2">
-                        <Label htmlFor="description">Description</Label>
+                      <div className="grid gap-1.5">
+                        <Label htmlFor="description" className="text-[10px] uppercase tracking-widest">NODE_DESC</Label>
                         <Textarea
                           id="description"
-                          placeholder="Main API backend server"
+                          placeholder="SYSTEM_PRIMARY_API"
+                          className="rounded-none border-border bg-muted/20 text-xs min-h-[80px]"
                           value={newAgent.description}
                           onChange={(e) => setNewAgent({ ...newAgent, description: e.target.value })}
                         />
                       </div>
                     </div>
                     <DialogFooter>
-                      <Button variant="outline" onClick={closeDialog}>Cancel</Button>
-                      <Button onClick={addAgent} disabled={addingAgent}>
-                        {addingAgent ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Adding...
-                          </>
-                        ) : (
-                          "Add Agent"
-                        )}
+                      <Button variant="ghost" onClick={closeDialog} className="rounded-none uppercase text-[10px] tracking-widest">ABORT</Button>
+                      <Button onClick={addAgent} disabled={addingAgent} className="rounded-none uppercase text-[10px] tracking-widest px-8">
+                        {addingAgent ? "PROCESSING..." : "REGISTER"}
                       </Button>
                     </DialogFooter>
                   </>
                 ) : (
                   <>
                     <DialogHeader>
-                      <DialogTitle className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-green-500" />
-                        Agent Connected Successfully!
+                      <DialogTitle className="flex items-center gap-2 uppercase tracking-widest">
+                        <CheckCircle className="w-5 h-5 text-emerald-500" />
+                        NODE_HANDSHAKE_SUCCESS
                       </DialogTitle>
-                      <DialogDescription>
-                        Agent <strong>{createdAgent?.name}</strong> is now connected and being monitored.
-                      </DialogDescription>
                     </DialogHeader>
-                    <div className="space-y-4 py-4">
-                      <div className="bg-green-500/10 border border-green-500/30 rounded p-4">
-                        <h4 className="font-semibold text-green-600 dark:text-green-400 mb-2">Agent Details:</h4>
-                        <div className="space-y-1 text-sm">
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Name:</span>
-                            <span className="font-medium">{createdAgent?.name}</span>
+                    <div className="py-6 space-y-6">
+                      <div className="border border-emerald-500/30 bg-emerald-500/5 p-6">
+                        <div className="space-y-3">
+                          <div className="flex justify-between text-[10px] uppercase tracking-tighter border-b border-emerald-500/20 pb-2">
+                            <span className="text-muted-foreground">IDENTIFIER</span>
+                            <span className="font-bold">{createdAgent?.name}</span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Host:</span>
-                            <span className="font-mono text-xs">{createdAgent?.host}</span>
+                          <div className="flex justify-between text-[10px] uppercase tracking-tighter border-b border-emerald-500/20 pb-2">
+                            <span className="text-muted-foreground">ADDR_HOST</span>
+                            <span className="font-bold">{createdAgent?.host}</span>
                           </div>
-                          <div className="flex justify-between">
-                            <span className="text-muted-foreground">Status:</span>
-                            <Badge variant="outline" className="bg-green-500/10 border-green-500/30 text-green-500">
-                              <Circle className="w-2 h-2 mr-1 fill-current" />
-                              Online
-                            </Badge>
+                          <div className="flex justify-between text-[10px] uppercase tracking-tighter">
+                            <span className="text-muted-foreground">CONN_STATUS</span>
+                            <span className="text-emerald-500 font-bold">ONLINE</span>
                           </div>
                         </div>
                       </div>
-                      <div className="bg-blue-500/10 border border-blue-500/30 rounded p-3 text-sm">
-                        <p className="font-semibold text-blue-600 dark:text-blue-400 mb-1">What's Next?</p>
-                        <p className="text-muted-foreground">
-                          The agent is now being polled every 30 seconds. Metrics will appear on the dashboard shortly.
-                        </p>
-                      </div>
                     </div>
                     <DialogFooter>
-                      <Button onClick={closeDialog}>Done</Button>
+                      <Button onClick={closeDialog} className="rounded-none uppercase text-[10px] tracking-widest w-full">ACKNOWLEDGE</Button>
                     </DialogFooter>
                   </>
                 )}
               </DialogContent>
             </Dialog>
-            <Button onClick={() => fetchAgents()} size="sm" variant="ghost" disabled={loading}>
+            <Button onClick={() => fetchAgents()} size="icon" variant="ghost" className="h-10 w-10 border border-border rounded-none" disabled={loading}>
               <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             </Button>
           </div>
         </div>
 
-        {/* Error State */}
-        {error && (
-          <Card className="p-6">
-            <div className="flex items-center gap-3 text-destructive">
-              <AlertCircle className="w-5 h-5" />
-              <p>{error}</p>
-            </div>
-          </Card>
-        )}
-
         {/* Empty State */}
         {!error && agents.length === 0 && (
-          <Card className="p-12">
-            <div className="text-center space-y-4">
-              <Server className="w-12 h-12 text-muted-foreground mx-auto" />
+          <div className="border border-dashed border-border p-16 bg-muted/5">
+            <div className="text-center space-y-6">
+              <Server className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
               <div>
-                <h3 className="font-semibold">No agents registered</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Click "Add Agent" to register your first monitoring agent
+                <h3 className="text-sm font-bold uppercase tracking-[0.2em]">NO_AGENTS_FOUND</h3>
+                <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-widest">
+                  LIST_IS_EMPTY // AWAITING_REGISTRATION
                 </p>
               </div>
-              <Button onClick={() => setDialogOpen(true)}>
-                <Plus className="w-4 h-4 mr-2" />
-                Add Your First Agent
+              <Button onClick={() => setDialogOpen(true)} variant="outline" className="rounded-none uppercase text-[10px] tracking-widest">
+                <Plus className="w-3 h-3 mr-2" />
+                INIT_NEW_NODE
               </Button>
             </div>
-          </Card>
+          </div>
         )}
 
         {/* Agents Grid */}
         {agents.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {agents.map((agent) => {
               const statusInfo = getStatusColor(agent.status, agent.last_seen);
               return (
-                <Card key={agent.id} className="p-6 hover:shadow-md transition-shadow">
-                  <div className="space-y-4">
+                <div key={agent.id} className="border border-border bg-card/30 group hover:border-primary transition-colors">
+                  <div className="p-6 space-y-6">
                     {/* Header */}
                     <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3 min-w-0 flex-1">
-                        <div className="mt-1">
-                          <Activity className={`w-5 h-5 ${statusInfo.color}`} />
+                      <div className="flex items-start gap-3 min-w-0">
+                        <div className={`w-10 h-10 border border-border flex items-center justify-center ${statusInfo.bg}`}>
+                          <Activity className={`w-4 h-4 ${statusInfo.color}`} />
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="font-semibold truncate" title={agent.name}>
+                        <div className="min-w-0">
+                          <h3 className="text-xs font-bold uppercase tracking-widest truncate" title={agent.name}>
                             {agent.name}
                           </h3>
-                          <p className="text-xs text-muted-foreground truncate" title={agent.hostname}>
+                          <p className="text-[8px] text-muted-foreground font-mono truncate" title={agent.hostname}>
                             {agent.hostname}
                           </p>
                         </div>
                       </div>
-                      <Badge
-                        variant="outline"
-                        className={`${statusInfo.bg} ${statusInfo.border} ${statusInfo.color} shrink-0`}
-                      >
-                        <Circle className="w-2 h-2 mr-1 fill-current" />
+                      <div className={`text-[8px] font-bold uppercase tracking-[0.2em] px-2 py-0.5 border ${statusInfo.border} ${statusInfo.color} ${statusInfo.bg}`}>
                         {statusInfo.label}
-                      </Badge>
+                      </div>
                     </div>
 
                     {/* Info */}
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Monitor className="w-4 h-4 shrink-0" />
-                        <span className="truncate font-mono text-xs" title={agent.host}>
-                          {agent.host}
-                        </span>
+                    <div className="space-y-3 pt-4 border-t border-border/50">
+                      <div className="flex items-center justify-between text-[9px] uppercase tracking-tighter">
+                        <span className="text-muted-foreground">HOST_ADDR</span>
+                        <span className="font-bold truncate max-w-[150px]">{agent.host}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock className="w-4 h-4 shrink-0" />
-                        <span>Last seen {formatDate(agent.last_seen)}</span>
+                      <div className="flex items-center justify-between text-[9px] uppercase tracking-tighter">
+                        <span className="text-muted-foreground">LAST_SEEN</span>
+                        <span className="font-bold">{formatDate(agent.last_seen).toUpperCase()}</span>
                       </div>
                     </div>
 
                     {/* Tags */}
                     {agent.tags && agent.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
+                      <div className="flex flex-wrap gap-2 pt-2">
                         {agent.tags.map((tag, idx) => (
-                          <Badge key={idx} variant="secondary" className="text-xs">
+                          <span key={idx} className="text-[8px] font-bold uppercase border border-border px-1.5 py-0.5 bg-muted/10">
                             {tag}
-                          </Badge>
+                          </span>
                         ))}
                       </div>
                     )}
 
-                    {/* Description */}
-                    {agent.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-2">{agent.description}</p>
-                    )}
-
                     {/* Footer */}
-                    <div className="flex items-center justify-between pt-2 border-t">
-                      <span className="text-xs text-muted-foreground">v{agent.version}</span>
+                    <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                      <span className="text-[8px] font-mono opacity-50 text-muted-foreground tracking-widest">VER_{agent.version}</span>
                       <Button
-                        size="sm"
+                        size="icon"
                         variant="ghost"
-                        className="text-destructive hover:text-destructive"
+                        className="h-8 w-8 rounded-none text-muted-foreground hover:text-destructive transition-colors border border-transparent hover:border-destructive/30"
                         onClick={() => deleteAgent(agent.id)}
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </Button>
                     </div>
                   </div>
-                </Card>
+                </div>
               );
             })}
           </div>
@@ -452,28 +413,28 @@ export default function AgentsPage() {
 
         {/* Stats Footer */}
         {agents.length > 0 && (
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-6 text-[10px] uppercase font-bold tracking-[0.2em] border-t border-border pt-8 text-muted-foreground">
             <div className="flex items-center gap-2">
-              <Circle className="w-2 h-2 fill-green-500 text-green-500" />
+              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
               <span>
                 {agents.filter((a) => {
                   const diffMs = new Date().getTime() - new Date(a.last_seen).getTime();
                   return Math.floor(diffMs / 60000) <= 5 && a.status === "online";
                 }).length}{" "}
-                online
+                ACTIVE_NODES
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Circle className="w-2 h-2 fill-gray-500 text-gray-500" />
+              <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" />
               <span>
                 {agents.filter((a) => {
                   const diffMs = new Date().getTime() - new Date(a.last_seen).getTime();
                   return Math.floor(diffMs / 60000) > 5 || a.status === "offline";
                 }).length}{" "}
-                offline
+                STALE_NODES
               </span>
             </div>
-            <div className="ml-auto">Total: {agents.length} agents</div>
+            <div className="ml-auto">TOTAL_INDEX: {agents.length}</div>
           </div>
         )}
       </div>

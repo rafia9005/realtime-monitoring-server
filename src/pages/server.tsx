@@ -1,5 +1,4 @@
 import DashboardLayout from "@/components/DashboardLayout";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
   Server,
@@ -12,7 +11,6 @@ import {
   Loader2,
   AlertCircle,
   Activity,
-  Thermometer,
   Layers,
   Box,
   Hash,
@@ -45,10 +43,14 @@ export default function ServerPage() {
   if (loading && !metrics) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-[60vh]">
-          <div className="text-center space-y-3">
-            <Loader2 className="w-8 h-8 text-primary animate-spin mx-auto" />
-            <p className="text-sm text-muted-foreground">Loading server info...</p>
+        <div className="flex items-center justify-center h-[60vh] font-mono">
+          <div className="text-center space-y-4">
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-primary animate-pulse">[</span>
+              <Loader2 className="w-5 h-5 text-primary animate-spin" />
+              <span className="text-primary animate-pulse">]</span>
+            </div>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">SCANNING_SYSTEM_ARCH...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -58,13 +60,13 @@ export default function ServerPage() {
   if (error) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-[60vh]">
-          <div className="text-center space-y-3">
+        <div className="flex items-center justify-center h-[60vh] font-mono">
+          <div className="text-center space-y-4 border border-destructive/30 p-8 bg-destructive/5 max-w-md">
             <AlertCircle className="w-8 h-8 text-destructive mx-auto" />
-            <p className="text-sm text-muted-foreground">{error}</p>
-            <Button onClick={() => refetch()} size="sm" variant="outline">
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Retry
+            <p className="text-[10px] uppercase font-bold text-destructive tracking-[0.2em]">HW_SCAN_FAILURE</p>
+            <p className="text-xs text-muted-foreground">{error}</p>
+            <Button onClick={() => refetch()} size="sm" variant="outline" className="rounded-none border-destructive/30 text-destructive uppercase text-[10px] tracking-widest">
+              RETRY_SCAN
             </Button>
           </div>
         </div>
@@ -75,258 +77,191 @@ export default function ServerPage() {
   if (!metrics) return null;
 
   const systemInfo = [
-    { icon: Server, label: "Hostname", value: metrics.system.hostname },
-    { icon: Monitor, label: "Operating System", value: `${metrics.system.platform} ${metrics.system.platform_version}` },
-    { icon: Layers, label: "Platform Family", value: metrics.system.platform_family },
-    { icon: Box, label: "Kernel", value: metrics.system.kernel_version },
-    { icon: Hash, label: "Architecture", value: metrics.system.kernel_arch },
-    { icon: Clock, label: "Uptime", value: formatUptime(metrics.system.uptime) },
-    { icon: Activity, label: "Processes", value: metrics.system.processes.toString() },
-    ...(metrics.system.virtualization ? [{ icon: Globe, label: "Virtualization", value: metrics.system.virtualization }] : []),
-  ];
-
-  const cpuInfo = [
-    { label: "Model", value: metrics.cpu.model_name || "Unknown" },
-    { label: "Physical Cores", value: metrics.cpu.cores.toString() },
-    { label: "Logical Cores (Threads)", value: metrics.cpu.threads.toString() },
-    { label: "Base Frequency", value: metrics.cpu.frequency_mhz ? `${(metrics.cpu.frequency_mhz / 1000).toFixed(2)} GHz` : "N/A" },
-    { label: "Current Usage", value: `${metrics.cpu.usage_percent.toFixed(1)}%` },
-  ];
-
-  const memoryInfo = [
-    { label: "Total RAM", value: formatBytes(metrics.memory.total) },
-    { label: "Used RAM", value: formatBytes(metrics.memory.used) },
-    { label: "Available RAM", value: formatBytes(metrics.memory.available) },
-    { label: "Usage", value: `${metrics.memory.used_percent.toFixed(1)}%` },
-    ...(metrics.memory.cached ? [{ label: "Cached", value: formatBytes(metrics.memory.cached) }] : []),
-    ...(metrics.memory.buffers ? [{ label: "Buffers", value: formatBytes(metrics.memory.buffers) }] : []),
-    { label: "Swap Total", value: formatBytes(metrics.memory.swap.total) },
-    { label: "Swap Used", value: formatBytes(metrics.memory.swap.used) },
-  ];
-
-  const processInfo = [
-    { label: "Total Processes", value: metrics.process.total.toString() },
-    { label: "Running", value: metrics.process.running.toString(), color: "text-emerald-500" },
-    { label: "Sleeping", value: metrics.process.sleeping.toString(), color: "text-blue-500" },
-    { label: "Stopped", value: metrics.process.stopped.toString(), color: "text-amber-500" },
-    { label: "Zombie", value: metrics.process.zombie.toString(), color: "text-red-500" },
-    { label: "Total Threads", value: metrics.process.threads.toLocaleString() },
-  ];
-
-  const loadInfo = [
-    { label: "1 Minute Average", value: metrics.load.load1.toFixed(2) },
-    { label: "5 Minute Average", value: metrics.load.load5.toFixed(2) },
-    { label: "15 Minute Average", value: metrics.load.load15.toFixed(2) },
+    { icon: Server, label: "HOSTNAME", value: metrics.system.hostname },
+    { icon: Monitor, label: "OS_KERNEL", value: `${metrics.system.platform} ${metrics.system.platform_version}` },
+    { icon: Layers, label: "PLATFORM", value: metrics.system.platform_family },
+    { icon: Box, label: "KERNEL_VER", value: metrics.system.kernel_version },
+    { icon: Hash, label: "ARCHITECTURE", value: metrics.system.kernel_arch },
+    { icon: Clock, label: "UPTIME", value: formatUptime(metrics.system.uptime) },
+    { icon: Activity, label: "PROC_COUNT", value: metrics.system.processes.toString() },
+    ...(metrics.system.virtualization ? [{ icon: Globe, label: "VIRT_TYPE", value: metrics.system.virtualization }] : []),
   ];
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-8 font-mono">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-end justify-between border-b border-border pb-6">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Server</h1>
-            <p className="text-sm text-muted-foreground mt-1">System information and specifications</p>
+            <div className="flex items-center gap-2 text-muted-foreground text-[10px] uppercase tracking-widest mb-1">
+              <span className="text-primary">●</span> HW_MANIFEST
+            </div>
+            <h1 className="text-2xl font-bold tracking-tighter uppercase">Server_Specs</h1>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">
+              INVENTORY_ID: {metrics.system.hostname.toUpperCase()} // STATUS: ONLINE
+            </p>
           </div>
-          <Button onClick={() => refetch()} size="sm" variant="ghost">
+          <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 border border-border rounded-none">
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </Button>
         </div>
 
-        {/* System Information */}
-        <div className="rounded-lg border border-border bg-card">
-          <div className="p-4 border-b border-border">
-            <div className="flex items-center gap-2">
-              <Server className="w-5 h-5 text-primary" />
-              <h2 className="font-semibold">System Information</h2>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* System Information */}
+          <div className="border border-border bg-card/30">
+            <div className="p-4 border-b border-border bg-muted/20">
+              <div className="flex items-center gap-2">
+                <Server className="w-3 h-3 text-primary" />
+                <h2 className="text-[10px] font-bold uppercase tracking-widest">SYS_MANIFEST</h2>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              {systemInfo.map((item, index) => (
+                <div key={index} className="flex items-center justify-between group">
+                  <div className="flex items-center gap-2">
+                    <item.icon className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-[10px] text-muted-foreground font-bold">{item.label}</span>
+                  </div>
+                  <span className="text-[10px] font-bold tracking-tight uppercase group-hover:text-primary transition-colors">{item.value}</span>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {systemInfo.map((item, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50">
-                  <item.icon className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
-                  <div className="min-w-0">
-                    <p className="text-xs text-muted-foreground">{item.label}</p>
-                    <p className="font-medium truncate" title={item.value}>{item.value}</p>
+
+          <div className="space-y-8">
+            {/* CPU Information */}
+            <div className="border border-border bg-card/30">
+              <div className="p-4 border-b border-border bg-muted/20">
+                <div className="flex items-center gap-2">
+                  <Cpu className="w-3 h-3 text-primary" />
+                  <h2 className="text-[10px] font-bold uppercase tracking-widest">CPU_CONFIG</h2>
+                </div>
+              </div>
+              <div className="p-6 space-y-3">
+                <div className="flex flex-col gap-1 mb-4 pb-4 border-b border-border/50">
+                  <span className="text-[8px] text-muted-foreground uppercase">PROCESSOR_MODEL</span>
+                  <span className="text-xs font-bold uppercase">{metrics.cpu.model_name || "GENERIC_X86_64"}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <span className="text-[8px] text-muted-foreground uppercase">PHYS_CORES</span>
+                    <p className="text-sm font-bold">{metrics.cpu.cores}</p>
+                  </div>
+                  <div>
+                    <span className="text-[8px] text-muted-foreground uppercase">LOGIC_THREADS</span>
+                    <p className="text-sm font-bold">{metrics.cpu.threads}</p>
+                  </div>
+                  <div>
+                    <span className="text-[8px] text-muted-foreground uppercase">BASE_FREQ</span>
+                    <p className="text-sm font-bold">{metrics.cpu.frequency_mhz ? `${(metrics.cpu.frequency_mhz / 1000).toFixed(2)} GHz` : "N/A"}</p>
+                  </div>
+                  <div>
+                    <span className="text-[8px] text-muted-foreground uppercase">CURR_UTIL</span>
+                    <p className="text-sm font-bold text-primary">{metrics.cpu.usage_percent.toFixed(1)}%</p>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* CPU Information */}
-        <div className="rounded-lg border border-border bg-card">
-          <div className="p-4 border-b border-border">
-            <div className="flex items-center gap-2">
-              <Cpu className="w-5 h-5 text-blue-500" />
-              <h2 className="font-semibold">CPU Information</h2>
-            </div>
-          </div>
-          <div className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-              {cpuInfo.map((item, index) => (
-                <div key={index} className="p-3 rounded-lg bg-secondary/50">
-                  <p className="text-xs text-muted-foreground">{item.label}</p>
-                  <p className="font-medium truncate" title={item.value}>{item.value}</p>
+            {/* Load Average */}
+            <div className="border border-border bg-card/30">
+              <div className="p-4 border-b border-border bg-muted/20">
+                <div className="flex items-center gap-2">
+                  <Activity className="w-3 h-3 text-primary" />
+                  <h2 className="text-[10px] font-bold uppercase tracking-widest">LOAD_AVG</h2>
                 </div>
-              ))}
+              </div>
+              <div className="p-6 space-y-6">
+                {[
+                  { label: "1_MIN", value: metrics.load.load1 },
+                  { label: "5_MIN", value: metrics.load.load5 },
+                  { label: "15_MIN", value: metrics.load.load15 },
+                ].map((item, index) => {
+                  const loadPercent = Math.min((item.value / metrics.cpu.cores) * 100, 100);
+                  return (
+                    <div key={index} className="space-y-2">
+                      <div className="flex items-center justify-between text-[10px] font-bold uppercase">
+                        <span className="text-muted-foreground">{item.label}</span>
+                        <span>{item.value.toFixed(2)}</span>
+                      </div>
+                      <div className="h-1 bg-muted overflow-hidden">
+                        <div 
+                          className={`h-full transition-all ${loadPercent > 90 ? "bg-red-500" : loadPercent > 70 ? "bg-amber-500" : "bg-primary"}`}
+                          style={{ width: `${loadPercent}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Memory Information */}
-        <div className="rounded-lg border border-border bg-card">
-          <div className="p-4 border-b border-border">
+        <div className="border border-border bg-card/30">
+          <div className="p-4 border-b border-border bg-muted/20">
             <div className="flex items-center gap-2">
-              <MemoryStick className="w-5 h-5 text-green-500" />
-              <h2 className="font-semibold">Memory Information</h2>
+              <MemoryStick className="w-3 h-3 text-primary" />
+              <h2 className="text-[10px] font-bold uppercase tracking-widest">MEM_SNAPSHOT</h2>
             </div>
           </div>
-          <div className="p-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {memoryInfo.map((item, index) => (
-                <div key={index} className="p-3 rounded-lg bg-secondary/50">
-                  <p className="text-xs text-muted-foreground">{item.label}</p>
-                  <p className="font-medium">{item.value}</p>
-                </div>
-              ))}
+          <div className="p-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+              <div>
+                <span className="text-[8px] text-muted-foreground uppercase tracking-widest">TOTAL_CAP</span>
+                <p className="text-sm font-bold tabular-nums">{formatBytes(metrics.memory.total)}</p>
+              </div>
+              <div>
+                <span className="text-[8px] text-muted-foreground uppercase tracking-widest">USED_VAL</span>
+                <p className="text-sm font-bold tabular-nums text-primary">{formatBytes(metrics.memory.used)}</p>
+              </div>
+              <div>
+                <span className="text-[8px] text-muted-foreground uppercase tracking-widest">AVAIL_VAL</span>
+                <p className="text-sm font-bold tabular-nums">{formatBytes(metrics.memory.available)}</p>
+              </div>
+              <div>
+                <span className="text-[8px] text-muted-foreground uppercase tracking-widest">PERCENT</span>
+                <p className="text-sm font-bold tabular-nums">{metrics.memory.used_percent.toFixed(1)}%</p>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Storage Information */}
-        <div className="rounded-lg border border-border bg-card">
-          <div className="p-4 border-b border-border">
+        <div className="border border-border bg-card/30">
+          <div className="p-4 border-b border-border bg-muted/20 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <HardDrive className="w-5 h-5 text-purple-500" />
-              <h2 className="font-semibold">Storage Information</h2>
-              <Badge variant="outline" className="ml-auto">{metrics.disk.length} partitions</Badge>
+              <HardDrive className="w-3 h-3 text-primary" />
+              <h2 className="text-[10px] font-bold uppercase tracking-widest">FS_TABLE</h2>
             </div>
+            <span className="text-[8px] font-bold uppercase tracking-[0.2em]">{metrics.disk.length} ACTIVE_PARTITIONS</span>
           </div>
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-border/50 font-mono">
             {metrics.disk.map((disk, index) => (
-              <div key={index} className="p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <p className="font-medium">{disk.mount_point}</p>
-                    <p className="text-xs text-muted-foreground">{disk.device} • {disk.fs_type}</p>
+              <div key={index} className="p-6 hover:bg-muted/5 transition-colors">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-4">
+                    <div className="text-[10px] font-bold uppercase p-1 border border-border bg-background">{disk.mount_point}</div>
+                    <div className="text-[8px] text-muted-foreground uppercase tracking-widest">{disk.device} // {disk.fs_type}</div>
                   </div>
-                  <Badge 
-                    variant="outline" 
-                    className={
-                      disk.used_percent > 90 
-                        ? "text-red-500 border-red-500/30 bg-red-500/10" 
-                        : disk.used_percent > 75 
-                          ? "text-amber-500 border-amber-500/30 bg-amber-500/10"
-                          : "text-emerald-500 border-emerald-500/30 bg-emerald-500/10"
-                    }
-                  >
-                    {disk.used_percent.toFixed(1)}%
-                  </Badge>
+                  <div className="text-[10px] font-bold tracking-tighter">[{disk.used_percent.toFixed(1)}%]</div>
                 </div>
-                <div className="h-2 bg-secondary rounded-full overflow-hidden mb-2">
+                <div className="h-1 bg-muted overflow-hidden mb-3">
                   <div 
-                    className={`h-full rounded-full transition-all ${
-                      disk.used_percent > 90 ? "bg-red-500" : disk.used_percent > 75 ? "bg-amber-500" : "bg-emerald-500"
-                    }`}
+                    className={`h-full transition-all ${disk.used_percent > 90 ? "bg-red-500" : disk.used_percent > 75 ? "bg-amber-500" : "bg-primary"}`}
                     style={{ width: `${disk.used_percent}%` }}
                   />
                 </div>
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>{formatBytes(disk.used)} used</span>
-                  <span>{formatBytes(disk.free)} free</span>
-                  <span>{formatBytes(disk.total)} total</span>
+                <div className="flex items-center justify-between text-[8px] text-muted-foreground uppercase tracking-widest">
+                  <span>USED: {formatBytes(disk.used)}</span>
+                  <span>FREE: {formatBytes(disk.free)}</span>
+                  <span>TOTAL: {formatBytes(disk.total)}</span>
                 </div>
               </div>
             ))}
           </div>
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Process Information */}
-          <div className="rounded-lg border border-border bg-card">
-            <div className="p-4 border-b border-border">
-              <div className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-amber-500" />
-                <h2 className="font-semibold">Process Information</h2>
-              </div>
-            </div>
-            <div className="p-4">
-              <div className="grid grid-cols-2 gap-3">
-                {processInfo.map((item, index) => (
-                  <div key={index} className="p-3 rounded-lg bg-secondary/50">
-                    <p className="text-xs text-muted-foreground">{item.label}</p>
-                    <p className={`font-semibold text-lg ${item.color || ""}`}>{item.value}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Load Average */}
-          <div className="rounded-lg border border-border bg-card">
-            <div className="p-4 border-b border-border">
-              <div className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-cyan-500" />
-                <h2 className="font-semibold">Load Average</h2>
-              </div>
-            </div>
-            <div className="p-4 space-y-4">
-              {loadInfo.map((item, index) => {
-                const loadPercent = Math.min((parseFloat(item.value) / metrics.cpu.cores) * 100, 100);
-                return (
-                  <div key={index}>
-                    <div className="flex items-center justify-between mb-2">
-                      <p className="text-sm text-muted-foreground">{item.label}</p>
-                      <p className="font-semibold tabular-nums">{item.value}</p>
-                    </div>
-                    <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                      <div 
-                        className={`h-full rounded-full transition-all ${
-                          loadPercent > 100 ? "bg-red-500" : loadPercent > 70 ? "bg-amber-500" : "bg-cyan-500"
-                        }`}
-                        style={{ width: `${Math.min(loadPercent, 100)}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-              <p className="text-xs text-muted-foreground pt-2">
-                Load is relative to {metrics.cpu.cores} CPU cores
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Temperature (if available) */}
-        {(metrics.temperature?.sensors?.length || metrics.temperature?.cpu_temp) && (
-          <div className="rounded-lg border border-border bg-card">
-            <div className="p-4 border-b border-border">
-              <div className="flex items-center gap-2">
-                <Thermometer className="w-5 h-5 text-orange-500" />
-                <h2 className="font-semibold">Temperature Sensors</h2>
-              </div>
-            </div>
-            <div className="p-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {metrics.temperature?.cpu_temp && (
-                  <div className="p-3 rounded-lg bg-secondary/50">
-                    <p className="text-xs text-muted-foreground">CPU</p>
-                    <p className="font-semibold text-lg">{metrics.temperature.cpu_temp.toFixed(1)}°C</p>
-                  </div>
-                )}
-                {metrics.temperature?.sensors?.map((sensor, index) => (
-                  <div key={index} className="p-3 rounded-lg bg-secondary/50">
-                    <p className="text-xs text-muted-foreground truncate" title={sensor.name}>{sensor.name}</p>
-                    <p className="font-semibold text-lg">{sensor.temperature.toFixed(1)}°C</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </DashboardLayout>
   );

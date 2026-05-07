@@ -1,5 +1,4 @@
 import DashboardLayout from "@/components/DashboardLayout";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RefreshCw, AlertCircle } from "lucide-react";
@@ -248,46 +247,61 @@ export default function TerminalPage() {
 
   return (
     <DashboardLayout>
-      <div className="flex flex-col h-[calc(100vh-4rem)]">
+      <div className="flex flex-col h-[calc(100vh-8rem)] font-mono">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-semibold tracking-tight">Terminal</h1>
-          <div className="flex items-center gap-2">
+        <div className="flex items-end justify-between border-b border-border pb-6 mb-6">
+          <div>
+            <div className="flex items-center gap-2 text-muted-foreground text-[10px] uppercase tracking-widest mb-1">
+              <span className="text-primary">●</span> TTY_SESSION_01
+            </div>
+            <h1 className="text-2xl font-bold tracking-tighter uppercase">Terminal</h1>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">
+              {connected ? "SECURE_SSH_ESTABLISHED" : "AWAITING_HANDSHAKE"} // TTY: /DEV/PTS/0
+            </p>
+          </div>
+          <div className="flex items-center gap-4">
             <Badge 
               variant="outline" 
-              className={connected 
-                ? "text-emerald-500 border-emerald-500/30 bg-emerald-500/10" 
-                : "text-red-500 border-red-500/30 bg-red-500/10"}
+              className={`rounded-none text-[10px] uppercase tracking-widest px-2 py-0 ${connected 
+                ? "text-emerald-500 border-emerald-500/30 bg-emerald-500/5" 
+                : "text-red-500 border-red-500/30 bg-red-500/5"}`}
             >
-              <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${connected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
-              {connected ? "Connected" : "Disconnected"}
+              {connected ? "ONLINE" : "OFFLINE"}
             </Badge>
-            <Button onClick={handleClear} size="sm" variant="ghost" disabled={!connected}>
-              Clear
-            </Button>
-            <Button onClick={handleReconnect} size="sm" variant="ghost">
-              <RefreshCw className="w-4 h-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button onClick={handleClear} size="sm" variant="outline" className="rounded-none uppercase text-[10px] tracking-widest h-8" disabled={!connected}>
+                CLEAR_BUF
+              </Button>
+              <Button onClick={handleReconnect} size="icon" variant="ghost" className="h-8 w-8 border border-border rounded-none">
+                <RefreshCw className="w-3 h-3" />
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Error Alert */}
         {error && (
-          <div className="flex items-center gap-2 p-3 rounded-lg border border-red-500/30 bg-red-500/5 text-sm text-red-600 dark:text-red-400 mb-4">
-            <AlertCircle className="w-4 h-4" />
-            <span>{error}</span>
+          <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/5 text-[10px] uppercase font-bold text-red-500 mb-6">
+            <AlertCircle className="w-3 h-3" />
+            <span>ERROR: {error}</span>
           </div>
         )}
 
-        {/* Terminal Card - Full Height */}
-        <Card className="flex-1 overflow-hidden border-border/50 flex flex-col">
-          {/* XTerm Container */}
+        {/* Terminal Container */}
+        <div className="flex-1 border border-border bg-[#000000] p-4 relative">
+          {/* Decorative terminal elements */}
+          <div className="absolute top-0 right-0 p-2 opacity-20 pointer-events-none">
+            <div className="text-[8px] text-right font-mono">
+              SECURE_SHELL_v2.4<br/>
+              RSA_ENCRYPT_ACTIVE<br/>
+              BUFFER_SIZE: 1024KB
+            </div>
+          </div>
           <div 
             ref={terminalRef}
-            className="flex-1 w-full"
-            style={{ background: '#000000' }}
+            className="h-full w-full"
           />
-        </Card>
+        </div>
       </div>
     </DashboardLayout>
   );

@@ -14,12 +14,54 @@ import {
   Layers,
   Box,
   Hash,
-  Globe
+  Globe,
+  ChevronDown
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useSystemMetrics } from "@/lib/hooks/useSystemMetrics";
+import { useAgentMetrics } from "@/lib/hooks/useAgentMetrics";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 export default function ServerPage() {
-  const { data: metrics, loading, error, refetch } = useSystemMetrics(true, 10000);
+  const { id: agentIdFromUrl } = useParams<{ id: string }>();
+  const [selectedAgentId, setSelectedAgentId] = useState<string | null>(agentIdFromUrl || null);
+  
+  const { data: localMetrics, loading: localLoading, error: localError, refetch: refetchLocal } = useSystemMetrics(!selectedAgentId, 10000);
+  const { agents, selectedAgent, metrics: agentMetrics, loading: agentLoading, selectAgent } = useAgentMetrics(true, 10000);
+  
+  useEffect(() => {
+    if (agentIdFromUrl && agents.length > 0) {
+      const agent = agents.find(a => a.id === agentIdFromUrl);
+      if (agent) {
+        selectAgent(agentIdFromUrl);
+        setSelectedAgentId(agentIdFromUrl);
+      }
+    }
+  }, [agentIdFromUrl, agents, selectAgent]);
+  
+  const handleSelectAgent = (agentId: string) => {
+    setSelectedAgentId(agentId);
+    selectAgent(agentId);
+  };
+  
+  const handleSelectLocal = () => {
+    setSelectedAgentId(null);
+    selectAgent(null);
+  };
+  
+  const metrics = selectedAgentId ? agentMetrics?.metrics : localMetrics;
+  const loading = selectedAgentId ? agentLoading : localLoading;
+  const error = selectedAgentId ? (agentMetrics ? null : agentLoading ? null : "Failed to load agent metrics") : localError;
+  const refetch = selectedAgentId ? () => {} : refetchLocal;
+  const currentServerName = selectedAgent ? selectedAgent.name : localMetrics?.system.hostname || "LOCAL_SERVER";
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return "0 B";
@@ -92,13 +134,47 @@ export default function ServerPage() {
       <div className="space-y-8 font-mono">
         {/* Header */}
         <div className="flex items-end justify-between border-b border-border pb-6">
-          <div>
+          <div className="flex-1">
             <div className="flex items-center gap-2 text-muted-foreground text-[10px] uppercase tracking-widest mb-1">
               <span className="text-primary">●</span> HW_MANIFEST
             </div>
-            <h1 className="text-2xl font-bold tracking-tighter uppercase">Server_Specs</h1>
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-2xl font-bold tracking-tighter uppercase">{currentServerName}</h1>
+              {/* Server Selector Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button 
+                    variant="outline" 
+                    className="rounded-none border-border text-[10px] uppercase h-auto py-1 px-3"
+                  >
+                    <ChevronDown className="w-3 h-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="rounded-none border-border font-mono text-[10px]">
+                  <DropdownMenuLabel className="uppercase text-[9px]">SELECT_SERVER</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem 
+                    onClick={handleSelectLocal}
+                    className={`cursor-pointer ${!selectedAgentId ? 'bg-primary text-primary-foreground' : ''}`}
+                  >
+                    LOCAL_SERVER
+                  </DropdownMenuItem>
+                  {agents.length > 0 && <DropdownMenuSeparator />}
+                  {agents.map((agent) => (
+                    <DropdownMenuItem 
+                      key={agent.id}
+                      onClick={() => handleSelectAgent(agent.id)}
+                      className={`cursor-pointer ${selectedAgentId === agent.id ? 'bg-primary text-primary-foreground' : ''}`}
+                    >
+                      <span className={`w-2 h-2 rounded-full mr-2 ${agent.status === 'online' ? 'bg-emerald-500' : 'bg-destructive'}`} />
+                      {agent.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
             <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">
-              INVENTORY_ID: {metrics.system.hostname.toUpperCase()} // STATUS: ONLINE
+              INVENTORY_ID: {metrics.system.hostname.toUpperCase()} // STATUS: {selectedAgent ? (selectedAgent.status === 'online' ? 'ONLINE' : 'OFFLINE') : 'ONLINE'}
             </p>
           </div>
           <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 border border-border rounded-none">

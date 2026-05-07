@@ -134,52 +134,55 @@ export default function ServerPage() {
       <div className="space-y-8 font-mono">
         {/* Header */}
         <div className="flex items-end justify-between border-b border-border pb-6">
-          <div className="flex-1">
+          <div>
             <div className="flex items-center gap-2 text-muted-foreground text-[10px] uppercase tracking-widest mb-1">
               <span className="text-primary">●</span> HW_MANIFEST
             </div>
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-2xl font-bold tracking-tighter uppercase">{currentServerName}</h1>
-              {/* Server Selector Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="outline" 
-                    className="rounded-none border-border text-[10px] uppercase h-auto py-1 px-3"
-                  >
-                    <ChevronDown className="w-3 h-3" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="rounded-none border-border font-mono text-[10px]">
-                  <DropdownMenuLabel className="uppercase text-[9px]">SELECT_SERVER</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    onClick={handleSelectLocal}
-                    className={`cursor-pointer ${!selectedAgentId ? 'bg-primary text-primary-foreground' : ''}`}
-                  >
-                    LOCAL_SERVER
-                  </DropdownMenuItem>
-                  {agents.length > 0 && <DropdownMenuSeparator />}
-                  {agents.map((agent) => (
-                    <DropdownMenuItem 
-                      key={agent.id}
-                      onClick={() => handleSelectAgent(agent.id)}
-                      className={`cursor-pointer ${selectedAgentId === agent.id ? 'bg-primary text-primary-foreground' : ''}`}
-                    >
-                      <span className={`w-2 h-2 rounded-full mr-2 ${agent.status === 'online' ? 'bg-emerald-500' : 'bg-destructive'}`} />
-                      {agent.name}
-                    </DropdownMenuItem>
-                  ))}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            <h1 className="text-2xl font-bold tracking-tighter uppercase">{currentServerName}</h1>
             <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">
               INVENTORY_ID: {metrics.system.hostname.toUpperCase()} // STATUS: {selectedAgent ? (selectedAgent.status === 'online' ? 'ONLINE' : 'OFFLINE') : 'ONLINE'}
             </p>
           </div>
-          <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 border border-border rounded-none">
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          </Button>
+          <div className="flex items-center gap-2">
+            {/* Server Selector Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="rounded-none border-border font-bold uppercase text-[10px] tracking-widest px-4"
+                >
+                  <Server className="w-3 h-3 mr-2" />
+                  {selectedAgentId ? selectedAgent?.name || "SEL_NODE" : "LOCAL_SRC"}
+                  <ChevronDown className="w-3 h-3 ml-2" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="rounded-none border-border font-mono text-[10px]">
+                <DropdownMenuLabel className="uppercase tracking-[0.2em] opacity-50">SRV_INDEX</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-border" />
+                <DropdownMenuItem 
+                  onClick={handleSelectLocal}
+                  className={`cursor-pointer ${!selectedAgentId ? 'bg-primary text-primary-foreground' : ''}`}
+                >
+                  LOCAL_SRC
+                </DropdownMenuItem>
+                {agents.length > 0 && <DropdownMenuSeparator className="bg-border" />}
+                {agents.map((agent) => (
+                  <DropdownMenuItem 
+                    key={agent.id}
+                    onClick={() => handleSelectAgent(agent.id)}
+                    className={`cursor-pointer ${selectedAgentId === agent.id ? 'bg-primary text-primary-foreground' : ''}`}
+                  >
+                    <span className={`w-2 h-2 rounded-full mr-2 ${agent.status === 'online' ? 'bg-emerald-500' : 'bg-destructive'}`} />
+                    {agent.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 border border-border rounded-none">
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

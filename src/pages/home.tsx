@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
 import PublicLayout from "@/components/PublicLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useLandingPageMetrics } from "@/lib/hooks/useLandingPageMetrics";
 import { 
     Server, 
     Activity, 
@@ -24,21 +24,7 @@ import {
 } from "lucide-react";
 
 export default function Home() {
-    const [sensorCount, setSensorCount] = useState<number | null>(null);
-    const [serverCount, setServerCount] = useState<number | null>(null);
-
-    useEffect(() => {
-        fetch(`${import.meta.env.VITE_API_BASE_URL}/api/v1/system-metrics`)
-            .then(res => res.json())
-            .then(data => {
-                setSensorCount(data.temperature?.sensors?.length ?? 0);
-                setServerCount(data.servers?.length ?? 0);
-            })
-            .catch(() => {
-                setSensorCount(null);
-                setServerCount(null);
-            });
-    }, []);
+    const landingMetrics = useLandingPageMetrics();
 
     return (
         <PublicLayout>
@@ -140,10 +126,10 @@ export default function Home() {
                     <div className="max-w-7xl mx-auto">
                         <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
                             {[
-                                { icon: Activity, label: "Sensors Active", value: sensorCount === null ? "..." : sensorCount.toString().padStart(2, '0'), color: "text-emerald-500" },
-                                { icon: Server, label: "Nodes Connected", value: serverCount === null ? "..." : serverCount.toString().padStart(2, '0'), color: "text-primary" },
-                                { icon: BarChart3, label: "Daily Cycles", value: "2.4M", color: "text-amber-500" },
-                                { icon: Clock, label: "Avg Latency", value: "14ms", color: "text-cyan-500" }
+                                { icon: Activity, label: "Sensors Active", value: landingMetrics.sensorsActive.toString().padStart(2, '0'), color: "text-emerald-500" },
+                                { icon: Server, label: "Nodes Connected", value: landingMetrics.nodesConnected.toString().padStart(2, '0'), color: "text-primary" },
+                                { icon: BarChart3, label: "Daily Cycles", value: landingMetrics.dailyCycles, color: "text-amber-500" },
+                                { icon: Clock, label: "Avg Latency", value: landingMetrics.avgLatency, color: "text-cyan-500" }
                             ].map((stat, i) => (
                                 <div key={i} className="p-8 group hover:bg-background/50 transition-colors">
                                     <div className="flex items-center gap-3 mb-2">
@@ -151,7 +137,7 @@ export default function Home() {
                                         <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground font-bold">{stat.label}</span>
                                     </div>
                                     <div className="text-3xl font-mono font-bold tracking-tighter tabular-nums">
-                                        {stat.value}
+                                        {landingMetrics.isLoading ? "..." : stat.value}
                                     </div>
                                 </div>
                             ))}
@@ -248,10 +234,10 @@ export default function Home() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                             {[
-                                { label: "Global CPU", value: "12.4%", trend: "-2.1%", icon: Cpu },
-                                { label: "Total RAM", value: "128.5 GB", trend: "+0.4%", icon: Monitor },
-                                { label: "Active Nodes", value: "42", trend: "0", icon: Server },
-                                { label: "Alerts (24h)", value: "03", trend: "-12", icon: Zap }
+                                { label: "Global CPU", value: landingMetrics.globalCPU, trend: landingMetrics.globalCPUTrend, icon: Cpu },
+                                { label: "Total RAM", value: landingMetrics.totalRAM, trend: landingMetrics.totalRAMTrend, icon: Monitor },
+                                { label: "Active Nodes", value: landingMetrics.activeNodes.toString(), trend: landingMetrics.activeNodesTrend, icon: Server },
+                                { label: "Alerts (24h)", value: landingMetrics.alerts24h.toString().padStart(2, '0'), trend: landingMetrics.alertsTrend, icon: Zap }
                             ].map((card, i) => (
                                 <div key={i} className="p-6 rounded-xl border border-border bg-muted/10 hover:bg-muted/20 transition-colors">
                                     <div className="flex justify-between items-start mb-4">
@@ -263,7 +249,7 @@ export default function Home() {
                                         </span>
                                     </div>
                                     <h4 className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">{card.label}</h4>
-                                    <div className="text-2xl font-bold tracking-tighter font-mono">{card.value}</div>
+                                    <div className="text-2xl font-bold tracking-tighter font-mono">{landingMetrics.isLoading ? "..." : card.value}</div>
                                 </div>
                             ))}
                         </div>

@@ -61,7 +61,7 @@ export default function ServerPage() {
   const loading = selectedAgentId ? agentLoading : localLoading;
   const error = selectedAgentId ? (agentMetrics ? null : agentLoading ? null : "Failed to load agent metrics") : localError;
   const refetch = selectedAgentId ? () => {} : refetchLocal;
-  const currentServerName = selectedAgent ? selectedAgent.name : localMetrics?.system.hostname || "LOCAL_SERVER";
+  const currentServerName = selectedAgent ? selectedAgent.name : metrics?.system.hostname || "LOCAL_SERVER";
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return "0 B";

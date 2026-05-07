@@ -260,8 +260,94 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Connected Agents Section */}
-        {agents.length > 0 && (
+         {/* Thermal Sensors Section */}
+         {metrics.temperature?.sensors && metrics.temperature.sensors.length > 0 && (
+           <div className="space-y-4 pt-4">
+             <div className="flex items-center justify-between border-b border-border pb-2">
+               <h2 className="text-xs font-bold uppercase tracking-[0.2em]">THERMAL_SENSORS [{metrics.temperature.sensors.length}]</h2>
+             </div>
+             
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+               {metrics.temperature.sensors.map((sensor, idx) => {
+                 const temp = sensor.temperature;
+                 const critical = sensor.critical || 100;
+                 const high = sensor.high || 80;
+                 const statusColor = temp >= critical ? "text-red-500" : temp >= high ? "text-amber-500" : "text-foreground";
+                 const statusBg = temp >= critical ? "bg-red-500" : temp >= high ? "bg-amber-500" : "bg-primary";
+                 
+                 return (
+                   <div key={idx} className="border border-border p-4 bg-card/30">
+                     <div className="flex items-center justify-between mb-3">
+                       <div>
+                         <div className="text-[9px] text-muted-foreground uppercase tracking-widest mb-1">SENSOR</div>
+                         <div className="text-sm font-bold font-mono">{sensor.name}</div>
+                       </div>
+                       <span className={`text-[10px] font-bold ${statusColor}`}>
+                         [{temp >= critical ? "CRIT" : temp >= high ? "WARN" : "STBL"}]
+                       </span>
+                     </div>
+                     <div className={`text-3xl font-bold tabular-nums ${statusColor} mb-3`}>
+                       {temp.toFixed(1)}°C
+                     </div>
+                     <div className="space-y-2">
+                       <div className="h-1 bg-muted overflow-hidden">
+                         <div 
+                           className={`h-full transition-all duration-500 ${statusBg}`}
+                           style={{ width: `${Math.min((temp / critical) * 100, 100)}%` }}
+                         />
+                       </div>
+                       <div className="flex justify-between text-[8px] text-muted-foreground uppercase">
+                         <span>0°C</span>
+                         <span className="text-foreground">{sensor.high ? `HIGH:${sensor.high}°C` : "NO_LIMIT"}</span>
+                         <span>{critical}°C</span>
+                       </div>
+                     </div>
+                   </div>
+                 );
+               })}
+             </div>
+           </div>
+         )}
+
+         {/* MCU Temperature Section */}
+         {metrics.temperature?.mcu_temp !== undefined && metrics.temperature?.mcu_temp !== null && (
+           <div className="space-y-4 pt-4 pb-4 border-b border-border">
+             <div className="flex items-center justify-between">
+               <h2 className="text-xs font-bold uppercase tracking-[0.2em]">MCU_THERMAL</h2>
+               <Badge variant="outline" className="rounded-none text-[9px] px-2 py-0 text-blue-500 border-blue-500/30">
+                 SUPABASE_FEED
+               </Badge>
+             </div>
+             
+             <div className="border border-border p-4 bg-card/30">
+               <div className="flex items-center justify-between mb-4">
+                 <span className="text-[9px] text-muted-foreground uppercase tracking-widest">MCU_TEMPERATURE</span>
+                 <span className={`text-[10px] font-bold ${metrics.temperature.mcu_temp >= 80 ? "text-red-500" : metrics.temperature.mcu_temp >= 60 ? "text-amber-500" : "text-foreground"}`}>
+                   [{metrics.temperature.mcu_temp >= 80 ? "CRIT" : metrics.temperature.mcu_temp >= 60 ? "WARN" : "STBL"}]
+                 </span>
+               </div>
+               <div className={`text-3xl font-bold tabular-nums ${metrics.temperature.mcu_temp >= 80 ? "text-red-500" : metrics.temperature.mcu_temp >= 60 ? "text-amber-500" : "text-foreground"} mb-4`}>
+                 {metrics.temperature.mcu_temp.toFixed(1)}°C
+               </div>
+               <div className="space-y-2">
+                 <div className="h-1 bg-muted overflow-hidden">
+                   <div 
+                     className={`h-full transition-all duration-500 ${metrics.temperature.mcu_temp >= 80 ? "bg-red-500" : metrics.temperature.mcu_temp >= 60 ? "bg-amber-500" : "bg-primary"}`}
+                     style={{ width: `${Math.min((metrics.temperature.mcu_temp / 100) * 100, 100)}%` }}
+                   />
+                 </div>
+                 <div className="flex justify-between text-[8px] text-muted-foreground uppercase">
+                   <span>0°C</span>
+                   <span className="text-foreground">THRESHOLD_80°C</span>
+                   <span>100°C</span>
+                 </div>
+               </div>
+             </div>
+           </div>
+         )}
+
+         {/* Connected Agents Section */}
+         {agents.length > 0 && (
           <div className="space-y-4 pt-4">
             <div className="flex items-center justify-between border-b border-border pb-2">
               <h2 className="text-xs font-bold uppercase tracking-[0.2em]">REMOTE_NODES [{agents.length}]</h2>

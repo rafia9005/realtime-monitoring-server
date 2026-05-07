@@ -309,39 +309,72 @@ export default function Dashboard() {
            </div>
          )}
 
-         {/* MCU Temperature Section */}
-         {metrics.temperature?.mcu_temp !== undefined && metrics.temperature?.mcu_temp !== null && (
+         {/* Environment Metrics Section (from Supabase) */}
+         {metrics.environment && metrics.environment.length > 0 && (
            <div className="space-y-4 pt-4 pb-4 border-b border-border">
              <div className="flex items-center justify-between">
-               <h2 className="text-xs font-bold uppercase tracking-[0.2em]">MCU_THERMAL</h2>
+               <h2 className="text-xs font-bold uppercase tracking-[0.2em]">ENV_SENSORS [{metrics.environment.length}]</h2>
                <Badge variant="outline" className="rounded-none text-[9px] px-2 py-0 text-blue-500 border-blue-500/30">
-                 SUPABASE_FEED
+                 SUPABASE
                </Badge>
              </div>
              
-             <div className="border border-border p-4 bg-card/30">
-               <div className="flex items-center justify-between mb-4">
-                 <span className="text-[9px] text-muted-foreground uppercase tracking-widest">MCU_TEMPERATURE</span>
-                 <span className={`text-[10px] font-bold ${metrics.temperature.mcu_temp >= 80 ? "text-red-500" : metrics.temperature.mcu_temp >= 60 ? "text-amber-500" : "text-foreground"}`}>
-                   [{metrics.temperature.mcu_temp >= 80 ? "CRIT" : metrics.temperature.mcu_temp >= 60 ? "WARN" : "STBL"}]
-                 </span>
-               </div>
-               <div className={`text-3xl font-bold tabular-nums ${metrics.temperature.mcu_temp >= 80 ? "text-red-500" : metrics.temperature.mcu_temp >= 60 ? "text-amber-500" : "text-foreground"} mb-4`}>
-                 {metrics.temperature.mcu_temp.toFixed(1)}°C
-               </div>
-               <div className="space-y-2">
-                 <div className="h-1 bg-muted overflow-hidden">
-                   <div 
-                     className={`h-full transition-all duration-500 ${metrics.temperature.mcu_temp >= 80 ? "bg-red-500" : metrics.temperature.mcu_temp >= 60 ? "bg-amber-500" : "bg-primary"}`}
-                     style={{ width: `${Math.min((metrics.temperature.mcu_temp / 100) * 100, 100)}%` }}
-                   />
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+               {metrics.environment.map((env) => (
+                 <div key={env.id} className="border border-border p-4 bg-card/30">
+                   <div className="mb-4">
+                     <div className="text-[9px] text-muted-foreground uppercase tracking-widest mb-1">MCU_ID</div>
+                     <div className="text-sm font-bold font-mono">{env.mcu_id}</div>
+                     <div className="text-[8px] text-muted-foreground mt-1">{env.mcu_name}</div>
+                   </div>
+                   
+                   <div className="space-y-3 border-t border-border/50 pt-3">
+                     {/* Temperature */}
+                     <div>
+                       <div className="flex items-center justify-between mb-2">
+                         <span className="text-[8px] text-muted-foreground uppercase tracking-widest">TEMPERATURE</span>
+                         <span className={`text-[10px] font-bold ${
+                           env.temperature && env.temperature >= 30 ? "text-amber-500" : "text-foreground"
+                         }`}>
+                           {env.temperature ? `${env.temperature.toFixed(1)}°C` : "N/A"}
+                         </span>
+                       </div>
+                       {env.temperature && (
+                         <div className="h-1 bg-muted overflow-hidden">
+                           <div 
+                             className={`h-full transition-all duration-500 ${env.temperature >= 30 ? "bg-amber-500" : "bg-primary"}`}
+                             style={{ width: `${Math.min((env.temperature / 40) * 100, 100)}%` }}
+                           />
+                         </div>
+                       )}
+                     </div>
+                     
+                     {/* Humidity */}
+                     <div>
+                       <div className="flex items-center justify-between mb-2">
+                         <span className="text-[8px] text-muted-foreground uppercase tracking-widest">HUMIDITY</span>
+                         <span className={`text-[10px] font-bold ${
+                           env.humidity && env.humidity >= 80 ? "text-amber-500" : "text-foreground"
+                         }`}>
+                           {env.humidity ? `${env.humidity.toFixed(1)}%` : "N/A"}
+                         </span>
+                       </div>
+                       {env.humidity && (
+                         <div className="h-1 bg-muted overflow-hidden">
+                           <div 
+                             className={`h-full transition-all duration-500 ${env.humidity >= 80 ? "bg-amber-500" : "bg-primary"}`}
+                             style={{ width: `${Math.min((env.humidity / 100) * 100, 100)}%` }}
+                           />
+                         </div>
+                       )}
+                     </div>
+                   </div>
+                   
+                   <div className="text-[7px] text-muted-foreground mt-3 pt-2 border-t border-border/30">
+                     {new Date(env.created_at).toLocaleTimeString([], { hour12: false })}
+                   </div>
                  </div>
-                 <div className="flex justify-between text-[8px] text-muted-foreground uppercase">
-                   <span>0°C</span>
-                   <span className="text-foreground">THRESHOLD_80°C</span>
-                   <span>100°C</span>
-                 </div>
-               </div>
+               ))}
              </div>
            </div>
          )}

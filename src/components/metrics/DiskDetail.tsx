@@ -13,6 +13,13 @@ export function DiskDetail({ disks, fullscreen = false }: DiskDetailProps) {
   const { theme } = useTheme();
   const isDark = theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
 
+  // Filter out snap disks (those using /dev/loop* devices and /snap mount points)
+  const filteredDisks = disks.filter(disk => 
+    !disk.device.includes("loop") && 
+    !disk.mount_point.includes("/snap") &&
+    !disk.mount_point.includes("snap")
+  );
+
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return "0 B";
     const k = 1024;
@@ -33,12 +40,12 @@ export function DiskDetail({ disks, fullscreen = false }: DiskDetailProps) {
     return { label: "Healthy", class: "text-emerald-500 border-emerald-500/30 bg-emerald-500/10" };
   };
 
-  const totalDiskSpace = disks.reduce((acc, disk) => acc + disk.total, 0);
-  const totalDiskUsed = disks.reduce((acc, disk) => acc + disk.used, 0);
-  const totalDiskFree = disks.reduce((acc, disk) => acc + disk.free, 0);
+  const totalDiskSpace = filteredDisks.reduce((acc, disk) => acc + disk.total, 0);
+  const totalDiskUsed = filteredDisks.reduce((acc, disk) => acc + disk.used, 0);
+  const totalDiskFree = filteredDisks.reduce((acc, disk) => acc + disk.free, 0);
   const overallUsagePercent = (totalDiskUsed / totalDiskSpace) * 100;
 
-  const chartData = disks.map(disk => ({
+  const chartData = filteredDisks.map(disk => ({
     name: disk.mount_point.length > 10 ? disk.mount_point.substring(0, 10) + "..." : disk.mount_point,
     fullName: disk.mount_point,
     usage: parseFloat(disk.used_percent.toFixed(1)),
@@ -76,7 +83,7 @@ export function DiskDetail({ disks, fullscreen = false }: DiskDetailProps) {
         {chartData.length > 1 && (
           <div className="p-4 rounded-lg bg-card border border-border">
             <h3 className="font-semibold mb-4">Usage by Partition</h3>
-            <ResponsiveContainer width="100%" height={Math.max(200, disks.length * 45)}>
+            <ResponsiveContainer width="100%" height={Math.max(200, filteredDisks.length * 45)}>
               <BarChart data={chartData} layout="vertical">
                 <XAxis 
                   type="number" 
@@ -120,11 +127,11 @@ export function DiskDetail({ disks, fullscreen = false }: DiskDetailProps) {
           </div>
         )}
 
-        {/* All Partitions */}
-        <div className="space-y-4">
-          <h3 className="font-semibold">All Partitions</h3>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {disks.map((disk, index) => {
+         {/* All Partitions */}
+         <div className="space-y-4">
+           <h3 className="font-semibold">All Partitions</h3>
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+             {filteredDisks.map((disk, index) => {
               const status = getStatusBadge(disk.used_percent);
               return (
                 <div key={index} className="p-4 rounded-lg bg-card border border-border space-y-3">
@@ -211,7 +218,7 @@ export function DiskDetail({ disks, fullscreen = false }: DiskDetailProps) {
 
       {/* Partition List */}
       <div className="space-y-3">
-        {disks.map((disk, index) => {
+        {filteredDisks.map((disk, index) => {
           const status = getStatusBadge(disk.used_percent);
           return (
             <div key={index} className="p-3 rounded-lg bg-secondary/50 space-y-2">

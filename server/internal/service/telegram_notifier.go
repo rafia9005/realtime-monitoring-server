@@ -114,8 +114,12 @@ func (tn *TelegramNotifier) CheckMetricsAndNotify(metrics *domain.SystemMetrics,
 		))
 	}
 
-	// Check Disk usage
+	// Check Disk usage (skip snap disks)
 	for _, disk := range metrics.Disk {
+		// Skip snap disks (/dev/loop* devices and /snap mount points)
+		if strings.Contains(disk.Device, "loop") || strings.Contains(disk.MountPoint, "/snap") {
+			continue
+		}
 		if disk.UsedPercent > thresholds.DiskUsagePercent {
 			alerts = append(alerts, fmt.Sprintf(
 				"⚠️ <b>High Disk Usage on %s</b>\nCurrent: <code>%.2f%%</code> (%s / %s)\nThreshold: <code>%.2f%%</code>",

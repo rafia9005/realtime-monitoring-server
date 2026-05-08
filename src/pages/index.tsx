@@ -8,16 +8,16 @@ export default function Index() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-violet-50 dark:from-background dark:via-background dark:to-background relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-secondary/5 relative overflow-hidden">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-violet-500/20 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary/20 rounded-full blur-3xl" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       </div>
 
       {/* Grid pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--primary),0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--primary),0.05)_1px,transparent_1px)] bg-[size:50px_50px]" />
 
       {/* Theme Toggle */}
       <Button
@@ -33,20 +33,20 @@ export default function Index() {
       <div className="w-full flex flex-col items-center justify-center px-2 sm:px-0 z-10">
         {/* Floating icons decoration - hidden on mobile */}
         <div className="hidden sm:flex absolute -top-10 -left-10 w-20 h-20 bg-card rounded-2xl border border-border shadow-lg items-center justify-center animate-float opacity-60">
-          <Cpu className="w-8 h-8 text-blue-500" />
+          <Cpu className="w-8 h-8 text-primary" />
         </div>
         <div className="hidden sm:flex absolute -top-5 -right-8 w-16 h-16 bg-card rounded-2xl border border-border shadow-lg items-center justify-center animate-float opacity-60" style={{ animationDelay: "0.5s" }}>
-          <Activity className="w-6 h-6 text-green-500" />
+          <Activity className="w-6 h-6 text-primary/70" />
         </div>
         <div className="hidden sm:flex absolute -bottom-8 -left-5 w-14 h-14 bg-card rounded-xl border border-border shadow-lg items-center justify-center animate-float opacity-60" style={{ animationDelay: "1s" }}>
-          <Monitor className="w-5 h-5 text-violet-500" />
+          <Monitor className="w-5 h-5 text-secondary-foreground" />
         </div>
 
         <Card className="border-none shadow-2xl bg-white/90 dark:bg-card/80 backdrop-blur-xl overflow-hidden max-w-md w-full mx-auto animate-slideUp animate-delay-200">
           <CardHeader className="space-y-1 text-center pb-6 mt-6">
             <div className="flex justify-center mb-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-400 rounded-2xl flex items-center justify-center shadow-xl glow-blue">
-                <Server className="w-10 h-10 text-white" />
+              <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary/80 rounded-2xl flex items-center justify-center shadow-xl">
+                <Server className="w-10 h-10 text-primary-foreground" />
               </div>
             </div>
             <CardTitle className="text-3xl font-bold gradient-text-primary">
@@ -69,7 +69,7 @@ export default function Index() {
                       "bg-accent hover:bg-accent/80 border border-border shadow-sm transition-all duration-200 hover:shadow-md",
                     socialButtonsBlockButtonText: "font-medium text-foreground",
                     formButtonPrimary: 
-                      "bg-gradient-to-r from-blue-500 to-violet-600 hover:from-blue-600 hover:to-violet-700 shadow-lg transition-all duration-200 hover:shadow-xl",
+                      "bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg transition-all duration-200 hover:shadow-xl",
                     footerActionLink: "text-primary hover:text-primary/80 font-medium",
                     formFieldInput: 
                       "bg-background border-border focus:border-primary focus:ring-primary/20",

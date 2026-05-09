@@ -118,6 +118,13 @@ export default function ServerPage() {
 
   if (!metrics) return null;
 
+  // Filter snap disks (/dev/loop* devices and /snap mount points)
+  const filteredDisks = metrics.disk.filter(disk => 
+    !disk.device.includes("loop") && 
+    !disk.mount_point.includes("/snap") &&
+    !disk.mount_point.includes("snap")
+  );
+
   const systemInfo = [
     { icon: Server, label: "HOSTNAME", value: metrics.system.hostname },
     { icon: Monitor, label: "OS_KERNEL", value: `${metrics.system.platform} ${metrics.system.platform_version}` },
@@ -314,10 +321,10 @@ export default function ServerPage() {
               <HardDrive className="w-3 h-3 text-primary" />
               <h2 className="text-[10px] font-bold uppercase tracking-widest">FS_TABLE</h2>
             </div>
-            <span className="text-[8px] font-bold uppercase tracking-[0.2em]">{metrics.disk.length} ACTIVE_PARTITIONS</span>
+            <span className="text-[8px] font-bold uppercase tracking-[0.2em]">{filteredDisks.length} ACTIVE_PARTITIONS</span>
           </div>
           <div className="divide-y divide-border/50 font-mono">
-            {metrics.disk.map((disk, index) => (
+            {filteredDisks.map((disk, index) => (
               <div key={index} className="p-6 hover:bg-muted/5 transition-colors">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-4">

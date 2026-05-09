@@ -19,6 +19,6 @@ export default defineConfig({
     },
   },
   server:{
-    allowedHosts: ['monit.scholair.my.id']
+    allowedHosts: ['monitor.scholair.my.id']
   }
 })

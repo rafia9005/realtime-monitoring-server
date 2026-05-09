@@ -56,7 +56,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to="/home" className="flex items-center gap-2 group">
-              <div className="w-12">
+              <div className="w-10 md:w-12">
                 <img src="/img/amazetwoLight.png" alt="AmazeTwo" sizes="0.5" className="block dark:hidden" />
                 <img src="/img/amazetwoDark.png" alt="AmazeTwo" sizes="0.5" className="hidden dark:block" />
               </div>

@@ -56,7 +56,7 @@ export default function Home() {
                                     </a>
                                 </Button>
                                 <Button asChild variant="outline" size="lg" className="h-14 px-8 text-base font-semibold rounded-full w-full sm:w-auto">
-                                    <a href="/monitoring">
+                                    <a href="#control">
                                         Watch Live Demo
                                     </a>
                                 </Button>
@@ -208,7 +208,7 @@ export default function Home() {
                             <div className="flex-1 relative">
                                 <div className="relative z-10 rounded-2xl border border-border bg-background p-2 shadow-2xl">
                                     <div className="rounded-xl border border-border overflow-hidden">
-                                        <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=2000&auto=format&fit=crop" alt="Server Datacenter" className="w-full h-auto object-cover grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-700" />
+                                        <img src="public/img/server.png" alt="Server Datacenter" className="w-full h-auto object-cover grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-700" />
                                     </div>
                                 </div>
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/5 rounded-full blur-3xl -z-0" />
@@ -218,7 +218,7 @@ export default function Home() {
                 </section>
 
                 {/* Live Data Visualizer Preview */}
-                <section className="py-24 bg-background">
+                <section className="py-24 bg-background" id="control">
                     <div className="container mx-auto px-4">
                         <div className="flex flex-col lg:flex-row items-end justify-between mb-12 gap-6">
                             <div className="max-w-2xl">
@@ -260,14 +260,14 @@ export default function Home() {
                 <section className="py-16 border-t border-border bg-muted/10">
                     <div className="container mx-auto px-4">
                         <p className="text-center text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground mb-10">Trusted by Infrastructure Teams</p>
-                        <div className="flex flex-wrap justify-center gap-8 md:gap-16 opacity-50 grayscale hover:grayscale-0 transition-all">
-                            <a href="https://www.terarush.studio/" target="blank" className="flex items-center gap-3 hover:opacity-100 transition-opacity">
+                        <div className="flex flex-wrap justify-center gap-8 md:gap-16 grayscale hover:grayscale-0 transition-all">
+                            <a href="https://www.terarush.studio/" target="blank" className="flex items-center gap-3 opacity-50 hover:opacity-100 transition-opacity">
                                 <img className="w-8 h-8 rounded-sm" src="/img/terarush.webp" alt="Terarush" />
                                 <span className="font-mono font-bold text-sm tracking-tighter">TERARUSH.STUDIO</span>
                             </a>
-                            <a href="https://pkl.senvada.id" target="blank" className="flex items-center gap-3 hover:opacity-100 transition-opacity">
+                            <a href="https://pkl.senvada.id" target="blank" className="flex items-center gap-3 opacity-50 hover:opacity-100 transition-opacity">
                                 <img className="w-8 h-8 rounded-sm" src="/img/senvada.webp" alt="Senvada" />
-                                <span className="font-mono font-bold text-sm tracking-tighter">SENVADA.SYS</span>
+                                <span className="font-mono font-bold text-sm tracking-tighter">SENVADA.ID</span>
                             </a>
                         </div>
                     </div>

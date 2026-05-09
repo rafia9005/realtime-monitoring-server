@@ -60,8 +60,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           {/* Logo */}
           <div className="h-14 px-4 flex items-center justify-between border-b border-border">
             <Link to="/dashboard" className="flex items-center gap-2">
-              <div className="w-6 h-6 border border-primary flex items-center justify-center">
-                <Server className="w-3 h-3 text-primary" />
+              <div className="w-6 h-6 flex items-center justify-center">
+                <img src="/img/amazetwoLight.png" alt="AmazeTwo" sizes="0.5" className="block dark:hidden" />
+                <img src="/img/amazetwoDark.png" alt="AmazeTwo" sizes="0.5" className="hidden dark:block" />
               </div>
               <span className="font-bold tracking-tighter">WATCHTOWER_v1</span>
             </Link>

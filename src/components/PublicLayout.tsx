@@ -46,23 +46,20 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
       </div>
 
       {/* Header */}
-      <header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled 
-            ? "bg-background/80 backdrop-blur-md border-b border-border py-3" 
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
+            ? "bg-background/80 backdrop-blur-md border-b border-border py-3"
             : "bg-transparent py-5"
-        }`}
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to="/home" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 bg-primary flex items-center justify-center rounded-sm transition-transform group-hover:rotate-12">
-                <span className="text-primary-foreground font-mono font-bold text-lg">W</span>
+              <div className="w-12">
+                <img src="/img/amazetwoLight.png" alt="AmazeTwo" sizes="0.5" className="block dark:hidden" />
+                <img src="/img/amazetwoDark.png" alt="AmazeTwo" sizes="0.5" className="hidden dark:block" />
               </div>
-              <span className="text-xl font-mono font-bold tracking-tighter text-foreground">
-                WATCHTOWER
-              </span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -73,9 +70,8 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                   <Link
                     key={link.name}
                     to={link.href}
-                    className={`px-4 py-2 text-sm font-medium transition-colors relative group ${
-                      isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
-                    }`}
+                    className={`px-4 py-2 text-sm font-medium transition-colors relative group ${isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                      }`}
                   >
                     {link.name}
                     {isActive && (
@@ -130,19 +126,17 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
         </div>
 
         {/* Mobile Navigation */}
-        <div 
-          className={`lg:hidden absolute top-full left-0 right-0 bg-background border-b border-border transition-all duration-300 ease-in-out ${
-            isMenuOpen ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-4 invisible"
-          }`}
+        <div
+          className={`lg:hidden absolute top-full left-0 right-0 bg-background border-b border-border transition-all duration-300 ease-in-out ${isMenuOpen ? "opacity-100 translate-y-0 visible" : "opacity-0 -translate-y-4 invisible"
+            }`}
         >
           <div className="px-4 py-6 space-y-4">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
-                className={`block text-lg font-medium ${
-                  location.pathname === link.href ? "text-primary" : "text-foreground"
-                }`}
+                className={`block text-lg font-medium ${location.pathname === link.href ? "text-primary" : "text-foreground"
+                  }`}
               >
                 {link.name}
               </Link>
@@ -178,13 +172,14 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
             <div className="col-span-1 md:col-span-2">
               <Link to="/home" className="flex items-center gap-2 mb-4">
-                <div className="w-6 h-6 bg-primary flex items-center justify-center rounded-sm">
-                  <span className="text-primary-foreground font-mono font-bold text-sm">W</span>
+                <div className="w-6 h-6 flex items-center justify-center rounded-sm">
+                  <img src="/img/amazetwoLight.png" alt="AmazeTwo" sizes="0.5" className="block dark:hidden" />
+                  <img src="/img/amazetwoDark.png" alt="AmazeTwo" sizes="0.5" className="hidden dark:block" />
                 </div>
                 <span className="text-lg font-mono font-bold tracking-tighter">WATCHTOWER</span>
               </Link>
               <p className="text-sm text-muted-foreground max-w-sm mb-6">
-                Next-generation server monitoring and performance analysis platform. 
+                Next-generation server monitoring and performance analysis platform.
                 Built for modern infrastructure teams.
               </p>
             </div>

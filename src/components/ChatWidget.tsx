@@ -248,7 +248,7 @@ Bahasakan dengan natural, profesional dan santai.`;
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95"
+        className="w-14 h-14 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-105 active:scale-95"
       >
         {isOpen ? (
           <X className="w-6 h-6 animate-in spin-in-90 duration-200" />

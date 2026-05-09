@@ -54,76 +54,78 @@
   font-family: "Inter", var(--font-sans);
   --radius: 0px;
   
-  /* Blue color scheme - OKLCH */
-  --background: oklch(0.99 0.01 230);
-  --foreground: oklch(0.15 0.05 230);
-  --card: oklch(0.99 0.01 230);
-  --card-foreground: oklch(0.15 0.05 230);
-  --popover: oklch(0.99 0.01 230);
-  --popover-foreground: oklch(0.15 0.05 230);
-  --primary: oklch(0.55 0.18 250);
-  --primary-foreground: oklch(0.99 0.01 230);
-  --secondary: oklch(0.95 0.03 230);
-  --secondary-foreground: oklch(0.25 0.1 240);
-  --muted: oklch(0.95 0.03 230);
-  --muted-foreground: oklch(0.45 0.05 230);
-  --accent: oklch(0.92 0.05 230);
-  --accent-foreground: oklch(0.25 0.1 240);
-  --destructive: oklch(0.6 0.18 25);
-  --border: oklch(0.9 0.03 230);
-  --input: oklch(0.9 0.03 230);
-  --ring: oklch(0.55 0.18 250);
+  /* Minimalist MacBook-inspired Light Mode */
+  --background: oklch(0.99 0 0); /* Pure, clean white/very light gray */
+  --foreground: oklch(0.15 0 0); /* Deep charcoal, almost black */
+  --card: oklch(1 0 0); /* Pure white */
+  --card-foreground: oklch(0.15 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0 0);
+  --primary: oklch(0.2 0 0); /* Black/dark grey */
+  --primary-foreground: oklch(0.98 0 0); /* Off-white */
+  --secondary: oklch(0.96 0 0); /* Light silver/grey */
+  --secondary-foreground: oklch(0.2 0 0);
+  --muted: oklch(0.96 0 0);
+  --muted-foreground: oklch(0.55 0 0); /* Medium grey */
+  --accent: oklch(0.94 0.01 30); /* Subtle warm silver/copper hint */
+  --accent-foreground: oklch(0.2 0 0);
+  --destructive: oklch(0.6 0.15 25);
+  --border: oklch(0.92 0 0); /* Soft border */
+  --input: oklch(0.92 0 0);
+  --ring: oklch(0.8 0 0);
   
-  --chart-1: oklch(0.6 0.18 250);
-  --chart-2: oklch(0.7 0.15 200);
-  --chart-3: oklch(0.5 0.2 280);
-  --chart-4: oklch(0.8 0.12 180);
-  --chart-5: oklch(0.65 0.16 230);
+  /* Subtle, sophisticated chart colors (copper, space gray, silver, gold hints) */
+  --chart-1: oklch(0.4 0 0); /* Space gray */
+  --chart-2: oklch(0.7 0.02 40); /* Soft warm copper/gold */
+  --chart-3: oklch(0.8 0 0); /* Silver */
+  --chart-4: oklch(0.5 0.01 250); /* Cool gray */
+  --chart-5: oklch(0.6 0.02 20); /* Rose gold hint */
   
-  --sidebar: oklch(0.98 0.02 230);
-  --sidebar-foreground: oklch(0.25 0.05 230);
-  --sidebar-primary: oklch(0.55 0.18 250);
-  --sidebar-primary-foreground: oklch(0.99 0.01 230);
-  --sidebar-accent: oklch(0.92 0.05 230);
-  --sidebar-accent-foreground: oklch(0.25 0.1 240);
-  --sidebar-border: oklch(0.9 0.03 230);
-  --sidebar-ring: oklch(0.55 0.18 250);
+  --sidebar: oklch(0.98 0 0);
+  --sidebar-foreground: oklch(0.2 0 0);
+  --sidebar-primary: oklch(0.2 0 0);
+  --sidebar-primary-foreground: oklch(0.98 0 0);
+  --sidebar-accent: oklch(0.94 0.01 30);
+  --sidebar-accent-foreground: oklch(0.2 0 0);
+  --sidebar-border: oklch(0.92 0 0);
+  --sidebar-ring: oklch(0.8 0 0);
 }
 
 .dark {
-  --background: oklch(0.12 0.03 240);
-  --foreground: oklch(0.95 0.02 230);
-  --card: oklch(0.15 0.04 240);
-  --card-foreground: oklch(0.95 0.02 230);
-  --popover: oklch(0.15 0.04 240);
-  --popover-foreground: oklch(0.95 0.02 230);
-  --primary: oklch(0.65 0.15 220);
-  --primary-foreground: oklch(0.12 0.03 240);
-  --secondary: oklch(0.2 0.05 240);
-  --secondary-foreground: oklch(0.95 0.02 230);
-  --muted: oklch(0.2 0.05 240);
-  --muted-foreground: oklch(0.65 0.05 230);
-  --accent: oklch(0.25 0.08 240);
-  --accent-foreground: oklch(0.95 0.02 230);
+  /* Minimalist MacBook-inspired Dark Mode (Space Gray aesthetic) */
+  --background: oklch(0.15 0.01 250); /* Deep space gray */
+  --foreground: oklch(0.9 0 0); /* Soft white/light gray */
+  --card: oklch(0.18 0.01 250); /* Slightly lighter space gray */
+  --card-foreground: oklch(0.9 0 0);
+  --popover: oklch(0.18 0.01 250);
+  --popover-foreground: oklch(0.9 0 0);
+  --primary: oklch(0.9 0 0); /* Light silver/white */
+  --primary-foreground: oklch(0.15 0.01 250);
+  --secondary: oklch(0.22 0.01 250); /* Medium space gray */
+  --secondary-foreground: oklch(0.9 0 0);
+  --muted: oklch(0.22 0.01 250);
+  --muted-foreground: oklch(0.65 0 0); /* Medium gray */
+  --accent: oklch(0.25 0.01 30); /* Dark copper/warm gray */
+  --accent-foreground: oklch(0.95 0 0);
   --destructive: oklch(0.5 0.15 25);
-  --border: oklch(0.25 0.05 240);
-  --input: oklch(0.25 0.05 240);
-  --ring: oklch(0.65 0.15 220);
+  --border: oklch(0.25 0.01 250);
+  --input: oklch(0.25 0.01 250);
+  --ring: oklch(0.4 0.01 250);
   
-  --chart-1: oklch(0.65 0.15 220);
-  --chart-2: oklch(0.75 0.12 180);
-  --chart-3: oklch(0.55 0.18 260);
-  --chart-4: oklch(0.8 0.1 200);
-  --chart-5: oklch(0.7 0.14 240);
+  --chart-1: oklch(0.7 0 0); /* Silver */
+  --chart-2: oklch(0.5 0.02 40); /* Muted copper */
+  --chart-3: oklch(0.4 0.01 250); /* Space gray */
+  --chart-4: oklch(0.6 0.01 250); /* Steel */
+  --chart-5: oklch(0.45 0.02 20); /* Dark rose gold */
   
-  --sidebar: oklch(0.15 0.04 240);
-  --sidebar-foreground: oklch(0.9 0.03 230);
-  --sidebar-primary: oklch(0.65 0.15 220);
-  --sidebar-primary-foreground: oklch(0.12 0.03 240);
-  --sidebar-accent: oklch(0.25 0.08 240);
-  --sidebar-accent-foreground: oklch(0.95 0.02 230);
-  --sidebar-border: oklch(0.25 0.05 240);
-  --sidebar-ring: oklch(0.65 0.15 220);
+  --sidebar: oklch(0.15 0.01 250);
+  --sidebar-foreground: oklch(0.9 0 0);
+  --sidebar-primary: oklch(0.9 0 0);
+  --sidebar-primary-foreground: oklch(0.15 0.01 250);
+  --sidebar-accent: oklch(0.25 0.01 30);
+  --sidebar-accent-foreground: oklch(0.95 0 0);
+  --sidebar-border: oklch(0.25 0.01 250);
+  --sidebar-ring: oklch(0.4 0.01 250);
 }
 
 @layer base {
@@ -176,25 +178,25 @@
 
 /* Gradient text */
 .gradient-text {
-  @apply bg-gradient-to-br from-primary to-chart-3 bg-clip-text text-transparent;
+  @apply bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent;
 }
 
-/* Glow effects */
+/* Glow effects - Updated for neutral aesthetic */
 .glow-blue {
-  box-shadow: 0 0 20px oklch(0.55 0.18 250 / 0.2);
+  box-shadow: 0 0 20px oklch(0.5 0 0 / 0.1);
 }
 
 .dark .glow-blue {
-  box-shadow: 0 0 20px oklch(0.65 0.15 220 / 0.15);
+  box-shadow: 0 0 20px oklch(0.8 0 0 / 0.05);
 }
 
 /* Animation */
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 5px oklch(0.55 0.18 250 / 0.3);
+    box-shadow: 0 0 5px oklch(0.5 0 0 / 0.1);
   }
   50% {
-    box-shadow: 0 0 20px oklch(0.55 0.18 250 / 0.5);
+    box-shadow: 0 0 20px oklch(0.5 0 0 / 0.2);
   }
 }
 

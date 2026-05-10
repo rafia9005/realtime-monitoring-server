@@ -17,11 +17,18 @@ type TelegramConfig struct {
 	ChatIDs  []string
 }
 
+type CORSConfig struct {
+	AllowedOrigins []string
+	AllowedMethods []string
+	AllowedHeaders []string
+}
+
 type Config struct {
 	App            AppConfig
 	DB             *sql.DB          // SQLite for agents
 	SupabaseClient *supabase.Client // Supabase for env_metrics
 	Telegram       TelegramConfig
+	CORS           CORSConfig
 }
 
 type AppConfig struct {
@@ -41,6 +48,9 @@ func Load() (*Config, error) {
 	supabaseKey := getEnv("SUPABASE_KEY", "")
 	botToken := getEnv("BOT_TELEGRAM_TOKEN", "")
 	telegramIDsStr := getEnv("TELEGRAM_ID", "[]")
+	corsOriginsStr := getEnv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173")
+	corsMethods := getEnv("CORS_ALLOWED_METHODS", "GET,POST,PUT,DELETE,OPTIONS,PATCH")
+	corsHeaders := getEnv("CORS_ALLOWED_HEADERS", "Content-Type,Authorization,Accept,Origin")
 
 	// Parse Telegram chat IDs
 	var chatIDs []string
@@ -112,6 +122,22 @@ func Load() (*Config, error) {
 		}
 	}
 
+	// Parse CORS configuration
+	corsOrigins := parseCSVString(corsOriginsStr)
+	if len(corsOrigins) == 0 {
+		corsOrigins = []string{"http://localhost:3000", "http://localhost:5173"}
+	}
+
+	corsMethodsList := parseCSVString(corsMethods)
+	if len(corsMethodsList) == 0 {
+		corsMethodsList = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"}
+	}
+
+	corsHeadersList := parseCSVString(corsHeaders)
+	if len(corsHeadersList) == 0 {
+		corsHeadersList = []string{"Content-Type", "Authorization", "Accept", "Origin"}
+	}
+
 	return &Config{
 		App: AppConfig{
 			Port:        port,
@@ -126,6 +152,11 @@ func Load() (*Config, error) {
 			BotToken: botToken,
 			ChatIDs:  chatIDs,
 		},
+		CORS: CORSConfig{
+			AllowedOrigins: corsOrigins,
+			AllowedMethods: corsMethodsList,
+			AllowedHeaders: corsHeadersList,
+		},
 	}, nil
 }
 
@@ -134,4 +165,16 @@ func getEnv(key, defaultValue string) string {
 		return value
 	}
 	return defaultValue
+}
+
+func parseCSVString(str string) []string {
+	var result []string
+	parts := strings.Split(str, ",")
+	for _, part := range parts {
+		cleaned := strings.TrimSpace(part)
+		if cleaned != "" {
+			result = append(result, cleaned)
+		}
+	}
+	return result
 }

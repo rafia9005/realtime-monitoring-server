@@ -93,6 +93,37 @@ func main() {
 	// Initialize Echo
 	e := echo.New()
 
+	// Setup CORS middleware
+	e.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c *echo.Context) error {
+			origin := c.Request().Header.Get("Origin")
+
+			// Check if origin is allowed
+			isAllowed := false
+			for _, allowedOrigin := range cfg.CORS.AllowedOrigins {
+				if origin == allowedOrigin {
+					isAllowed = true
+					break
+				}
+			}
+
+			if isAllowed {
+				c.Response().Header().Set("Access-Control-Allow-Origin", origin)
+			}
+
+			c.Response().Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
+			c.Response().Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept, Origin")
+			c.Response().Header().Set("Access-Control-Allow-Credentials", "true")
+			c.Response().Header().Set("Access-Control-Max-Age", "86400")
+
+			if c.Request().Method == "OPTIONS" {
+				return c.NoContent(200)
+			}
+
+			return next(c)
+		}
+	})
+
 	// Setup routes
 	http.SetupRouter(e, systemMetricsHandler, terminalHandler, agentHandler, temperatureHandler)
 

@@ -10,7 +10,7 @@ import {
 export default function Contact() {
     return (
         <PublicLayout>
-            <div className="w-full min-h-[calc(100vh-8rem)] flex flex-col items-center relative overflow-hidden">
+            <div className="w-full min-h-[calc(100vh-8rem)] pt-18 flex flex-col items-center relative overflow-hidden">
                 {/* Grid background */}
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:50px_50px]" />
 

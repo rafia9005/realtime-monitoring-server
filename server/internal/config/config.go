@@ -23,12 +23,17 @@ type CORSConfig struct {
 	AllowedHeaders []string
 }
 
+type HTTPSConfig struct {
+	InsecureSkipVerify bool
+}
+
 type Config struct {
 	App            AppConfig
 	DB             *sql.DB          // SQLite for agents
 	SupabaseClient *supabase.Client // Supabase for env_metrics
 	Telegram       TelegramConfig
 	CORS           CORSConfig
+	HTTPS          HTTPSConfig
 }
 
 type AppConfig struct {
@@ -51,6 +56,7 @@ func Load() (*Config, error) {
 	corsOriginsStr := getEnv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173")
 	corsMethods := getEnv("CORS_ALLOWED_METHODS", "GET,POST,PUT,DELETE,OPTIONS,PATCH")
 	corsHeaders := getEnv("CORS_ALLOWED_HEADERS", "Content-Type,Authorization,Accept,Origin")
+	insecureSkipVerify := getEnv("HTTPS_INSECURE_SKIP_VERIFY", "false") == "true"
 
 	// Parse Telegram chat IDs
 	var chatIDs []string
@@ -156,6 +162,9 @@ func Load() (*Config, error) {
 			AllowedOrigins: corsOrigins,
 			AllowedMethods: corsMethodsList,
 			AllowedHeaders: corsHeadersList,
+		},
+		HTTPS: HTTPSConfig{
+			InsecureSkipVerify: insecureSkipVerify,
 		},
 	}, nil
 }

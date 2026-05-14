@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"context"
+	"crypto/tls"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -12,12 +13,22 @@ import (
 )
 
 type AgentRepository struct {
-	db *sql.DB
+	db                 *sql.DB
+	insecureSkipVerify bool
 }
 
 func NewAgentRepository(db *sql.DB) *AgentRepository {
 	return &AgentRepository{
-		db: db,
+		db:                 db,
+		insecureSkipVerify: false,
+	}
+}
+
+// NewAgentRepositoryWithHTTPS creates repository with HTTPS configuration
+func NewAgentRepositoryWithHTTPS(db *sql.DB, insecureSkipVerify bool) *AgentRepository {
+	return &AgentRepository{
+		db:                 db,
+		insecureSkipVerify: insecureSkipVerify,
 	}
 }
 
@@ -27,9 +38,15 @@ func (r *AgentRepository) Register(ctx context.Context, agent *domain.Agent) err
 		return err
 	}
 
+	// Default protocol to http if not specified
+	protocol := agent.Protocol
+	if protocol == "" {
+		protocol = "http"
+	}
+
 	query := `
-		INSERT INTO agents (id, name, host, hostname, ip_address, status, last_seen, version, tags, description, created_at, updated_at)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		INSERT INTO agents (id, name, host, hostname, ip_address, protocol, status, last_seen, version, tags, description, created_at, updated_at)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 
 	_, err = r.db.ExecContext(ctx, query,
@@ -38,6 +55,7 @@ func (r *AgentRepository) Register(ctx context.Context, agent *domain.Agent) err
 		agent.Host,
 		agent.Hostname,
 		agent.IPAddress,
+		protocol,
 		agent.Status,
 		agent.LastSeen,
 		agent.Version,
@@ -52,13 +70,14 @@ func (r *AgentRepository) Register(ctx context.Context, agent *domain.Agent) err
 
 func (r *AgentRepository) GetByID(ctx context.Context, id string) (*domain.Agent, error) {
 	query := `
-		SELECT id, name, host, hostname, ip_address, status, last_seen, version, tags, description, created_at, updated_at
+		SELECT id, name, host, hostname, ip_address, protocol, status, last_seen, version, tags, description, created_at, updated_at
 		FROM agents
 		WHERE id = ?
 	`
 
 	var agent domain.Agent
 	var tagsJSON string
+	var protocol sql.NullString
 
 	err := r.db.QueryRowContext(ctx, query, id).Scan(
 		&agent.ID,
@@ -66,6 +85,7 @@ func (r *AgentRepository) GetByID(ctx context.Context, id string) (*domain.Agent
 		&agent.Host,
 		&agent.Hostname,
 		&agent.IPAddress,
+		&protocol,
 		&agent.Status,
 		&agent.LastSeen,
 		&agent.Version,
@@ -82,6 +102,13 @@ func (r *AgentRepository) GetByID(ctx context.Context, id string) (*domain.Agent
 		return nil, err
 	}
 
+	// Set protocol, default to http
+	if protocol.Valid {
+		agent.Protocol = protocol.String
+	} else {
+		agent.Protocol = "http"
+	}
+
 	if tagsJSON != "" && tagsJSON != "null" {
 		if err := json.Unmarshal([]byte(tagsJSON), &agent.Tags); err != nil {
 			return nil, err
@@ -93,7 +120,7 @@ func (r *AgentRepository) GetByID(ctx context.Context, id string) (*domain.Agent
 
 func (r *AgentRepository) GetAll(ctx context.Context) ([]domain.Agent, error) {
 	query := `
-		SELECT id, name, host, hostname, ip_address, status, last_seen, version, tags, description, created_at, updated_at
+		SELECT id, name, host, hostname, ip_address, protocol, status, last_seen, version, tags, description, created_at, updated_at
 		FROM agents
 		ORDER BY created_at DESC
 	`
@@ -108,6 +135,7 @@ func (r *AgentRepository) GetAll(ctx context.Context) ([]domain.Agent, error) {
 	for rows.Next() {
 		var agent domain.Agent
 		var tagsJSON string
+		var protocol sql.NullString
 
 		err := rows.Scan(
 			&agent.ID,
@@ -115,6 +143,7 @@ func (r *AgentRepository) GetAll(ctx context.Context) ([]domain.Agent, error) {
 			&agent.Host,
 			&agent.Hostname,
 			&agent.IPAddress,
+			&protocol,
 			&agent.Status,
 			&agent.LastSeen,
 			&agent.Version,
@@ -125,6 +154,13 @@ func (r *AgentRepository) GetAll(ctx context.Context) ([]domain.Agent, error) {
 		)
 		if err != nil {
 			return nil, err
+		}
+
+		// Set protocol, default to http
+		if protocol.Valid {
+			agent.Protocol = protocol.String
+		} else {
+			agent.Protocol = "http"
 		}
 
 		if tagsJSON != "" && tagsJSON != "null" {
@@ -224,14 +260,21 @@ func (r *AgentRepository) PullMetrics(ctx context.Context, agentID string) (*dom
 	}
 
 	// 2. Make HTTP GET request to agent's /metrics endpoint
-	url := "http://" + agent.Host + "/metrics"
+	url := agent.Protocol + "://" + agent.Host + "/metrics"
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 
+	// Create HTTP client with HTTPS configuration
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: r.insecureSkipVerify,
+	}
 	client := &http.Client{
 		Timeout: 10 * time.Second,
+		Transport: &http.Transport{
+			TLSClientConfig: tlsConfig,
+		},
 	}
 	resp, err := client.Do(req)
 	if err != nil {

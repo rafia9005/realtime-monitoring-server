@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"net/http"
 	"time"
@@ -13,10 +14,11 @@ import (
 )
 
 type AgentHandler struct {
-	agentRepo           domain.AgentRepository
-	notificationManager *service.NotificationManager
-	temperatureMonitor  *service.TemperatureMonitor
-	agentStatusTracker  *service.AgentStatusTracker
+	agentRepo               domain.AgentRepository
+	notificationManager     *service.NotificationManager
+	temperatureMonitor      *service.TemperatureMonitor
+	agentStatusTracker      *service.AgentStatusTracker
+	httpsInsecureSkipVerify bool
 }
 
 func NewAgentHandler(
@@ -26,10 +28,28 @@ func NewAgentHandler(
 	agentStatusTracker *service.AgentStatusTracker,
 ) *AgentHandler {
 	return &AgentHandler{
-		agentRepo:           agentRepo,
-		notificationManager: notificationManager,
-		temperatureMonitor:  temperatureMonitor,
-		agentStatusTracker:  agentStatusTracker,
+		agentRepo:               agentRepo,
+		notificationManager:     notificationManager,
+		temperatureMonitor:      temperatureMonitor,
+		agentStatusTracker:      agentStatusTracker,
+		httpsInsecureSkipVerify: false,
+	}
+}
+
+// NewAgentHandlerWithHTTPS creates handler with HTTPS configuration
+func NewAgentHandlerWithHTTPS(
+	agentRepo domain.AgentRepository,
+	notificationManager *service.NotificationManager,
+	temperatureMonitor *service.TemperatureMonitor,
+	agentStatusTracker *service.AgentStatusTracker,
+	insecureSkipVerify bool,
+) *AgentHandler {
+	return &AgentHandler{
+		agentRepo:               agentRepo,
+		notificationManager:     notificationManager,
+		temperatureMonitor:      temperatureMonitor,
+		agentStatusTracker:      agentStatusTracker,
+		httpsInsecureSkipVerify: insecureSkipVerify,
 	}
 }
 
@@ -42,10 +62,40 @@ func (h *AgentHandler) RegisterAgent(c *echo.Context) error {
 		return response.Error(c, http.StatusBadRequest, "Invalid request body", err)
 	}
 
+	// Extract protocol and host
+	protocol := req.Protocol
+	host := req.Host
+
+	// Check if host already contains protocol (e.g., "https://example.com")
+	if protocol == "" && (len(host) > 7 && (host[:7] == "http://" || (len(host) > 8 && host[:8] == "https://"))) {
+		// Extract protocol from host
+		if host[:8] == "https://" {
+			protocol = "https"
+			host = host[8:]
+		} else if host[:7] == "http://" {
+			protocol = "http"
+			host = host[7:]
+		}
+	}
+
+	// Default protocol to http if not specified
+	if protocol == "" {
+		protocol = "http"
+	}
+	if protocol != "http" && protocol != "https" {
+		protocol = "http"
+	}
+
 	// Test connection to agent
-	url := "http://" + req.Host + "/info"
+	url := protocol + "://" + host + "/info"
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: h.httpsInsecureSkipVerify,
+	}
 	httpClient := &http.Client{
 		Timeout: 10 * time.Second,
+		Transport: &http.Transport{
+			TLSClientConfig: tlsConfig,
+		},
 	}
 	resp, err := httpClient.Get(url)
 	if err != nil {
@@ -75,9 +125,10 @@ func (h *AgentHandler) RegisterAgent(c *echo.Context) error {
 	agent := &domain.Agent{
 		ID:          uuid.New().String(),
 		Name:        req.Name,
-		Host:        req.Host,
+		Host:        host,
 		Hostname:    agentInfoResp.Data.Hostname,
 		IPAddress:   agentInfoResp.Data.IPAddress,
+		Protocol:    protocol,
 		Status:      "online",
 		LastSeen:    time.Now(),
 		Version:     agentInfoResp.Data.Version,

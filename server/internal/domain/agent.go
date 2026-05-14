@@ -9,7 +9,8 @@ type Agent struct {
 	Host        string    `json:"host"` // e.g., "192.168.1.100:9090" or "localhost:9090"
 	Hostname    string    `json:"hostname"`
 	IPAddress   string    `json:"ip_address"`
-	Status      string    `json:"status"` // online, offline, error
+	Protocol    string    `json:"protocol"` // "http" or "https", defaults to "http"
+	Status      string    `json:"status"`   // online, offline, error
 	LastSeen    time.Time `json:"last_seen"`
 	Version     string    `json:"version"`
 	Tags        []string  `json:"tags,omitempty"`
@@ -32,6 +33,7 @@ type AgentRegistration struct {
 	Host        string   `json:"host" validate:"required"` // e.g., "192.168.1.100:9090" or "localhost:9090"
 	Hostname    string   `json:"hostname,omitempty"`
 	IPAddress   string   `json:"ip_address,omitempty"`
+	Protocol    string   `json:"protocol,omitempty"` // "http" or "https", defaults to "http"
 	Version     string   `json:"version,omitempty"`
 	Tags        []string `json:"tags,omitempty"`
 	Description string   `json:"description,omitempty"`

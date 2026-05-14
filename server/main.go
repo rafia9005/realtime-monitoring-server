@@ -51,7 +51,7 @@ func main() {
 		envMetricsRepo = nil
 	}
 
-	agentRepo := sqlite.NewAgentRepository(cfg.DB)
+	agentRepo := sqlite.NewAgentRepositoryWithHTTPS(cfg.DB, cfg.HTTPS.InsecureSkipVerify)
 
 	// Initialize agent poller (polls agents every 30 seconds)
 	poller := service.NewAgentPoller(agentRepo, 30*time.Second)
@@ -88,7 +88,7 @@ func main() {
 	systemMetricsHandler := handler.NewSystemMetricsHandler(envMetricsRepo, telegramNotifier)
 	terminalHandler := handler.NewTerminalHandler()
 	temperatureHandler := handler.NewTemperatureHandler(temperatureListener)
-	agentHandler := handler.NewAgentHandler(agentRepo, notificationManager, temperatureMonitor, agentStatusTracker)
+	agentHandler := handler.NewAgentHandlerWithHTTPS(agentRepo, notificationManager, temperatureMonitor, agentStatusTracker, cfg.HTTPS.InsecureSkipVerify)
 
 	// Initialize Echo
 	e := echo.New()

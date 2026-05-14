@@ -22,6 +22,7 @@ func InitDB(db *sql.DB) error {
 					host TEXT NOT NULL,
 					hostname TEXT,
 					ip_address TEXT,
+					protocol TEXT DEFAULT 'http',
 					status TEXT NOT NULL DEFAULT 'offline',
 					last_seen DATETIME,
 					version TEXT,

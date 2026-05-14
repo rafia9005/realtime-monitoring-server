@@ -88,6 +88,7 @@ func main() {
 	systemMetricsHandler := handler.NewSystemMetricsHandler(envMetricsRepo, telegramNotifier)
 	terminalHandler := handler.NewTerminalHandler()
 	temperatureHandler := handler.NewTemperatureHandler(temperatureListener)
+	mcuMetricsHandler := handler.NewMcuMetricsHandler(envMetricsRepo)
 	agentHandler := handler.NewAgentHandlerWithHTTPS(agentRepo, notificationManager, temperatureMonitor, agentStatusTracker, cfg.HTTPS.InsecureSkipVerify)
 
 	// Initialize Echo
@@ -125,7 +126,7 @@ func main() {
 	})
 
 	// Setup routes
-	http.SetupRouter(e, systemMetricsHandler, terminalHandler, agentHandler, temperatureHandler)
+	http.SetupRouter(e, systemMetricsHandler, terminalHandler, agentHandler, temperatureHandler, mcuMetricsHandler)
 
 	// Start server in a goroutine
 	go func() {

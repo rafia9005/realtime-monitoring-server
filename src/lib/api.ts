@@ -1,4 +1,4 @@
-import type { SystemMetrics, ApiResponse, Agent, AgentMetrics } from "@/types/metrics";
+import type { SystemMetrics, ApiResponse, Agent, AgentMetrics, EnvMetrics } from "@/types/metrics";
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
@@ -12,11 +12,12 @@ class ApiError extends Error {
   }
 }
 
-async function fetchApi<T>(endpoint: string): Promise<T> {
+async function fetchApi<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers: {
       "Content-Type": "application/json",
     },
+    ...options,
   });
 
   if (!response.ok) {
@@ -32,6 +33,24 @@ async function fetchApi<T>(endpoint: string): Promise<T> {
 
 export const api = {
   getSystemMetrics: () => fetchApi<SystemMetrics>("/api/v1/system-metrics"),
+  
+  // MCU Sensors APIs
+  getMcuMetrics: async (params?: { startDate?: Date; endDate?: Date; mcuId?: string }) => {
+    const searchParams = new URLSearchParams();
+    if (params?.startDate) {
+      searchParams.append("start_date", params.startDate.toISOString());
+    }
+    if (params?.endDate) {
+      searchParams.append("end_date", params.endDate.toISOString());
+    }
+    if (params?.mcuId) {
+      searchParams.append("mcu_id", params.mcuId);
+    }
+    
+    const query = searchParams.toString();
+    const endpoint = query ? `/api/v1/mcu-metrics?${query}` : "/api/v1/mcu-metrics";
+    return fetchApi<EnvMetrics[]>(endpoint);
+  },
   
   // Agent APIs
   getAgents: () => fetchApi<Agent[]>("/api/v1/agents"),

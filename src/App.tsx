@@ -7,6 +7,7 @@ import Monitoring from './pages/monitoring'
 import ServerPage from './pages/server'
 import Terminal from './pages/terminal'
 import AgentsPage from './pages/agents'
+import McuSensorsPage from './pages/mcu-sensors'
 import HomePage from './pages/home'
 import AboutPage from './pages/about'
 import ContactPage from './pages/contact'
@@ -95,9 +96,12 @@ createRoot(document.getElementById('root')!).render(
           <Route path='/terminal' element={
             <ProtectedRoute><Terminal /></ProtectedRoute>
           } />
-          <Route path='/agents' element={
-            <ProtectedRoute><AgentsPage /></ProtectedRoute>
-          } />
+           <Route path='/agents' element={
+             <ProtectedRoute><AgentsPage /></ProtectedRoute>
+           } />
+           <Route path='/mcu-sensors' element={
+             <ProtectedRoute><McuSensorsPage /></ProtectedRoute>
+           } />
         </Routes>
         <ChatWidget />
       </BrowserRouter>

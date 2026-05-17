@@ -35,7 +35,7 @@ export default function ServerPage() {
   const [selectedAgentId, setSelectedAgentId] = useState<string | null>(agentIdFromUrl || null);
   
   const { data: localMetrics, loading: localLoading, error: localError, refetch: refetchLocal } = useSystemMetrics(!selectedAgentId, 10000);
-  const { agents, selectedAgent, metrics: agentMetrics, loading: agentLoading, selectAgent } = useAgentMetrics(true, 10000);
+  const { agents, selectedAgent: hookSelectedAgent, metrics: agentMetrics, loading: agentLoading, selectAgent } = useAgentMetrics(true, 10000);
   
   useEffect(() => {
     if (agentIdFromUrl && agents.length > 0) {
@@ -61,7 +61,10 @@ export default function ServerPage() {
   const loading = selectedAgentId ? agentLoading : localLoading;
   const error = selectedAgentId ? (agentMetrics ? null : agentLoading ? null : "Failed to load agent metrics") : localError;
   const refetch = selectedAgentId ? () => {} : refetchLocal;
-  const currentServerName = selectedAgent ? selectedAgent.name : metrics?.system.hostname || "LOCAL_SERVER";
+  
+  // Use local selectedAgentId instead of hook's selectedAgent for consistency
+  const selectedAgent = selectedAgentId && hookSelectedAgent?.id === selectedAgentId ? hookSelectedAgent : null;
+  const currentServerName = selectedAgent ? selectedAgent.name : "LOCAL_SRC";
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return "0 B";

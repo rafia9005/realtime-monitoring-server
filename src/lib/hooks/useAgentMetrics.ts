@@ -24,19 +24,11 @@ export function useAgentMetrics(autoRefresh = false, interval = 5000): UseAgentM
     try {
       const agentsList = await api.getAgents();
       setAgents(agentsList || []);
-      
-      // Auto-select first online agent if none selected
-      if (!selectedAgentId && agentsList && agentsList.length > 0) {
-        const onlineAgent = agentsList.find(a => a.status === "online");
-        if (onlineAgent) {
-          setSelectedAgentId(onlineAgent.id);
-        }
-      }
     } catch (err) {
       console.error("Error fetching agents:", err);
       setAgents([]);
     }
-  }, [selectedAgentId]);
+  }, []);
 
   // Fetch metrics for selected agent
   const fetchMetrics = useCallback(async () => {

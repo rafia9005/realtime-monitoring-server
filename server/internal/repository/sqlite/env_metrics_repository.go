@@ -56,6 +56,43 @@ func (r *EnvMetricsRepository) GetLatest(ctx context.Context) ([]domain.EnvMetri
 	return metricsList, nil
 }
 
+// GetAll retrieves all env metrics records
+func (r *EnvMetricsRepository) GetAll(ctx context.Context) ([]domain.EnvMetrics, error) {
+	query := `
+		SELECT id, created_at, mcu_id, mcu_name, temperature, humidity
+		FROM env_metrics 
+		ORDER BY created_at DESC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return []domain.EnvMetrics{}, nil
+		}
+		return nil, err
+	}
+	defer rows.Close()
+
+	var metricsList []domain.EnvMetrics
+	for rows.Next() {
+		var metrics domain.EnvMetrics
+		err := rows.Scan(
+			&metrics.ID,
+			&metrics.CreatedAt,
+			&metrics.McuID,
+			&metrics.McuName,
+			&metrics.Temperature,
+			&metrics.Humidity,
+		)
+		if err != nil {
+			continue
+		}
+		metricsList = append(metricsList, metrics)
+	}
+
+	return metricsList, nil
+}
+
 func (r *EnvMetricsRepository) Create(ctx context.Context, metrics *domain.EnvMetrics) error {
 	query := `
 		INSERT INTO env_metrics (created_at, mcu_id, mcu_name, temperature, humidity)

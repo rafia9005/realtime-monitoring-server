@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -15,6 +16,11 @@ import (
 type TelegramConfig struct {
 	BotToken string
 	ChatIDs  []string
+}
+
+type TemperatureConfig struct {
+	CPUThreshold float64
+	MCUThreshold float64
 }
 
 type CORSConfig struct {
@@ -32,6 +38,7 @@ type Config struct {
 	DB             *sql.DB          // SQLite for agents
 	SupabaseClient *supabase.Client // Supabase for env_metrics
 	Telegram       TelegramConfig
+	Temperature    TemperatureConfig
 	CORS           CORSConfig
 	HTTPS          HTTPSConfig
 }
@@ -57,6 +64,10 @@ func Load() (*Config, error) {
 	corsMethods := getEnv("CORS_ALLOWED_METHODS", "GET,POST,PUT,DELETE,OPTIONS,PATCH")
 	corsHeaders := getEnv("CORS_ALLOWED_HEADERS", "Content-Type,Authorization,Accept,Origin")
 	insecureSkipVerify := getEnv("HTTPS_INSECURE_SKIP_VERIFY", "false") == "true"
+
+	// Parse temperature thresholds
+	cpuTempThreshold := parseFloat64(getEnv("TEMP_ALERT_CPU_THRESHOLD", "80.0"), 80.0)
+	mcuTempThreshold := parseFloat64(getEnv("TEMP_ALERT_MCU_THRESHOLD", "45.0"), 45.0)
 
 	// Parse Telegram chat IDs
 	var chatIDs []string
@@ -158,6 +169,10 @@ func Load() (*Config, error) {
 			BotToken: botToken,
 			ChatIDs:  chatIDs,
 		},
+		Temperature: TemperatureConfig{
+			CPUThreshold: cpuTempThreshold,
+			MCUThreshold: mcuTempThreshold,
+		},
 		CORS: CORSConfig{
 			AllowedOrigins: corsOrigins,
 			AllowedMethods: corsMethodsList,
@@ -172,6 +187,13 @@ func Load() (*Config, error) {
 func getEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
+	}
+	return defaultValue
+}
+
+func parseFloat64(value string, defaultValue float64) float64 {
+	if parsed, err := strconv.ParseFloat(value, 64); err == nil {
+		return parsed
 	}
 	return defaultValue
 }

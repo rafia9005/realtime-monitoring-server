@@ -73,8 +73,9 @@ func main() {
 	// Initialize notification manager
 	notificationManager := service.NewNotificationManager(telegramNotifier)
 
-	// Initialize temperature monitor
-	temperatureMonitor := service.NewTemperatureMonitor(notificationManager, 80.0) // 80°C threshold
+	// Initialize temperature monitor with thresholds from config
+	temperatureMonitor := service.NewTemperatureMonitor(notificationManager, cfg.Temperature.CPUThreshold, cfg.Temperature.MCUThreshold)
+	log.Printf("Temperature monitor initialized - CPU: %.1f°C, MCU: %.1f°C", cfg.Temperature.CPUThreshold, cfg.Temperature.MCUThreshold)
 
 	// Initialize temperature listener and start it
 	temperatureListener := service.NewTemperatureListener(temperatureMonitor)

@@ -58,6 +58,26 @@ func (r *EnvMetricsRepository) GetLatest(ctx context.Context) ([]domain.EnvMetri
 	return filteredResult, nil
 }
 
+// GetAll retrieves all env metrics records
+func (r *EnvMetricsRepository) GetAll(ctx context.Context) ([]domain.EnvMetrics, error) {
+	var result []domain.EnvMetrics
+
+	// Fetch all records ordered by created_at descending
+	_, err := r.client.From(r.table).Select("*", "", false).
+		Order("created_at", &postgrest.OrderOpts{Ascending: false}).
+		ExecuteTo(&result)
+
+	if err != nil {
+		return nil, fmt.Errorf("failed to get all env metrics: %w", err)
+	}
+
+	if len(result) == 0 {
+		return []domain.EnvMetrics{}, nil // Return empty slice if no data
+	}
+
+	return result, nil
+}
+
 func (r *EnvMetricsRepository) Create(ctx context.Context, metrics *domain.EnvMetrics) error {
 	var result []domain.EnvMetrics
 	_, err := r.client.From(r.table).Insert(metrics, false, "", "*", "").ExecuteTo(&result)

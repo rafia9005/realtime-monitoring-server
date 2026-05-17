@@ -8,6 +8,7 @@ import (
 // EnvMetricsRepository interface for environmental metrics operations
 type EnvMetricsRepository interface {
 	GetLatest(ctx context.Context) ([]EnvMetrics, error)
+	GetAll(ctx context.Context) ([]EnvMetrics, error)
 	Create(ctx context.Context, metrics *EnvMetrics) error
 }
 

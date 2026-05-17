@@ -14,7 +14,8 @@ type TemperatureMonitor struct {
 	notificationManager *NotificationManager
 	agents              map[string]*AgentTempStatus
 	agentsMu            sync.RWMutex
-	threshold           float64
+	cpuThreshold        float64
+	mcuThreshold        float64
 	checkInterval       time.Duration
 	stopChan            chan struct{}
 }
@@ -49,11 +50,12 @@ type TemperatureData struct {
 }
 
 // NewTemperatureMonitor creates a new temperature monitor
-func NewTemperatureMonitor(notificationManager *NotificationManager, threshold float64) *TemperatureMonitor {
+func NewTemperatureMonitor(notificationManager *NotificationManager, cpuThreshold, mcuThreshold float64) *TemperatureMonitor {
 	return &TemperatureMonitor{
 		notificationManager: notificationManager,
 		agents:              make(map[string]*AgentTempStatus),
-		threshold:           threshold,
+		cpuThreshold:        cpuThreshold,
+		mcuThreshold:        mcuThreshold,
 		checkInterval:       10 * time.Second,
 		stopChan:            make(chan struct{}),
 	}
@@ -103,14 +105,14 @@ func (tm *TemperatureMonitor) updateCPUTemperature(agentID string, temperature f
 		}
 
 		// Check if alert should be sent
-		if temperature > tm.threshold && !status.CPUAlertSent {
+		if temperature > tm.cpuThreshold && !status.CPUAlertSent {
 			status.CPUAlertSent = true
 			status.HighCPUTempFound = true
 			status.LastCPUAlertTime = time.Now()
 
 			// Send notification asynchronously
-			go tm.notificationManager.NotifyTemperature(status.AgentName, temperature, tm.threshold)
-		} else if temperature <= tm.threshold && status.CPUAlertSent {
+			go tm.notificationManager.NotifyTemperature(status.AgentName, temperature, tm.cpuThreshold)
+		} else if temperature <= tm.cpuThreshold && status.CPUAlertSent {
 			// Temperature back to normal, reset alert
 			status.CPUAlertSent = false
 		}
@@ -131,15 +133,15 @@ func (tm *TemperatureMonitor) UpdateMCUTemperature(agentID string, temperature f
 		}
 
 		// Check if alert should be sent
-		if temperature > tm.threshold && !status.MCUAlertSent {
+		if temperature > tm.mcuThreshold && !status.MCUAlertSent {
 			status.MCUAlertSent = true
 			status.HighMCUTempFound = true
 			status.LastMCUAlertTime = time.Now()
 
 			// Send notification asynchronously
 			mcuName := status.AgentName + " (MCU)"
-			go tm.notificationManager.NotifyTemperature(mcuName, temperature, tm.threshold)
-		} else if temperature <= tm.threshold && status.MCUAlertSent {
+			go tm.notificationManager.NotifyTemperature(mcuName, temperature, tm.mcuThreshold)
+		} else if temperature <= tm.mcuThreshold && status.MCUAlertSent {
 			// Temperature back to normal, reset alert
 			status.MCUAlertSent = false
 		}
@@ -234,8 +236,8 @@ func (tl *TemperatureListener) Start() {
 						MaxCPUTemp: update.Metrics.Temperature.CPUTemp,
 						MaxMCUTemp: mcuTemp,
 						Timestamp:  time.Now(),
-						IsCPUAlert: update.Metrics.Temperature.CPUTemp > tl.monitor.threshold,
-						IsMCUAlert: mcuTemp > tl.monitor.threshold,
+						IsCPUAlert: update.Metrics.Temperature.CPUTemp > tl.monitor.cpuThreshold,
+						IsMCUAlert: mcuTemp > tl.monitor.mcuThreshold,
 					}
 
 					if tempStatus != nil {

@@ -10,8 +10,10 @@ import {
   RefreshCw,
   TrendingUp,
   Droplets,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -29,6 +31,8 @@ export default function McuSensorsPage() {
   const [endDate, setEndDate] = useState<string>("");
   const [selectedMcu, setSelectedMcu] = useState<string>("");
   const [timePeriod, setTimePeriod] = useState<string>("all");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 20;
 
   // Get unique MCU IDs for filter
   const mcuIds = useMemo(() => {
@@ -87,6 +91,18 @@ export default function McuSensorsPage() {
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
   }, [metrics, startDate, endDate, selectedMcu, timePeriod]);
+
+  // Pagination
+  const totalPages = Math.ceil(filteredData.length / pageSize);
+  const paginatedData = useMemo(() => {
+    const startIdx = (currentPage - 1) * pageSize;
+    return filteredData.slice(startIdx, startIdx + pageSize);
+  }, [filteredData, currentPage]);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedMcu, startDate, endDate, timePeriod]);
 
   // Prepare chart data
   const chartData = useMemo(() => {
@@ -436,8 +452,8 @@ export default function McuSensorsPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.length > 0 ? (
-                  filteredData.slice(0, 100).map((metric, idx) => (
+                {paginatedData.length > 0 ? (
+                  paginatedData.map((metric, idx) => (
                     <tr
                       key={idx}
                       className="border-b border-border hover:bg-muted/30 transition-colors"
@@ -488,9 +504,34 @@ export default function McuSensorsPage() {
               </tbody>
             </table>
           </div>
-          {filteredData.length > 100 && (
-            <div className="px-4 py-3 border-t border-border text-xs text-muted-foreground">
-              Showing 100 of {filteredData.length} records
+          {filteredData.length > pageSize && (
+            <div className="px-4 py-4 border-t border-border flex items-center justify-between">
+              <div className="text-xs text-muted-foreground">
+                Showing {((currentPage - 1) * pageSize) + 1} to {Math.min(currentPage * pageSize, filteredData.length)} of {filteredData.length} records
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-none"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <div className="text-xs text-muted-foreground px-3">
+                  Page {currentPage} of {totalPages}
+                </div>
+                <Button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-none"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           )}
         </div>

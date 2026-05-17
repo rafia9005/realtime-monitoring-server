@@ -53,7 +53,7 @@ func (h *McuMetricsHandler) GetMcuMetrics(c *echo.Context) error {
 
 	// For now, get all metrics and filter in application
 	// This is a workaround since Supabase repository doesn't have filtering yet
-	metrics, err := h.envMetricsRepo.GetLatest(ctx)
+	metrics, err := h.envMetricsRepo.GetAll(ctx)
 	if err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Failed to get MCU metrics", err)
 	}

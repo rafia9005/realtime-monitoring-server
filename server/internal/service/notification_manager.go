@@ -106,13 +106,24 @@ func (nm *NotificationManager) NotifyTemperature(agentName string, currentTemp f
 
 	nm.publish(notification)
 
-	// Send to Telegram
+	// Send to Telegram with different emoji for MCU vs CPU
 	if nm.telegramNotifier != nil {
+		icon := "🌡️"
+		deviceType := "Temperature"
+		
+		// Check if it's MCU alert from agent name
+		if len(agentName) > 5 && agentName[len(agentName)-5:] == "(MCU)" {
+			icon = "📡"
+			deviceType = "MCU Temperature"
+		}
+		
 		message := fmt.Sprintf(
-			"<b>🌡️ High Temperature Alert - %s</b>\n"+
+			"<b>%s High %s Alert - %s</b>\n"+
 				"<code>%s</code>\n\n"+
 				"<b>Current:</b> <code>%.2f°C</code>\n"+
 				"<b>Threshold:</b> <code>%.2f°C</code>",
+			icon,
+			deviceType,
 			agentName,
 			time.Now().Format("2006-01-02 15:04:05"),
 			currentTemp,

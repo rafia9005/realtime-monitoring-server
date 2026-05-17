@@ -25,18 +25,20 @@ type TelegramNotifier struct {
 
 // AlertThresholds defines the thresholds for triggering alerts
 type AlertThresholds struct {
-	CPUUsagePercent    float64
-	MemoryUsagePercent float64
-	DiskUsagePercent   float64
-	TempCelsius        float64
+	CPUUsagePercent     float64
+	MemoryUsagePercent  float64
+	DiskUsagePercent    float64
+	CPUTempCelsius      float64
+	MCUTempCelsius      float64
 }
 
 // DefaultThresholds provides default alert thresholds
 var DefaultThresholds = AlertThresholds{
-	CPUUsagePercent:    80.0,
-	MemoryUsagePercent: 85.0,
-	DiskUsagePercent:   90.0,
-	TempCelsius:        80.0,
+	CPUUsagePercent:     80.0,
+	MemoryUsagePercent:  85.0,
+	DiskUsagePercent:    90.0,
+	CPUTempCelsius:      80.0,
+	MCUTempCelsius:      45.0,
 }
 
 // NewTelegramNotifier creates a new Telegram notifier
@@ -133,11 +135,11 @@ func (tn *TelegramNotifier) CheckMetricsAndNotify(metrics *domain.SystemMetrics,
 	}
 
 	// Check Temperature
-	if metrics.Temperature.CPUTemp > 0 && metrics.Temperature.CPUTemp > thresholds.TempCelsius {
+	if metrics.Temperature.CPUTemp > 0 && metrics.Temperature.CPUTemp > thresholds.CPUTempCelsius {
 		alerts = append(alerts, fmt.Sprintf(
 			"🌡️ <b>High CPU Temperature</b>\nCurrent: <code>%.2f°C</code>\nThreshold: <code>%.2f°C</code>",
 			metrics.Temperature.CPUTemp,
-			thresholds.TempCelsius,
+			thresholds.CPUTempCelsius,
 		))
 	}
 

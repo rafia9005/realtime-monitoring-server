@@ -141,77 +141,78 @@ export default function ServerPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8 font-mono">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 font-mono">
         {/* Header */}
-        <div className="flex items-end justify-between border-b border-border pb-6">
-          <div>
-            <div className="flex items-center gap-2 text-muted-foreground text-[10px] uppercase tracking-widest mb-1">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-12 border-b border-foreground/5">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-muted-foreground text-[10px] uppercase tracking-widest mb-1 font-black italic">
               <span className="text-primary">●</span> HW_MANIFEST
             </div>
-            <h1 className="text-2xl font-bold tracking-tighter uppercase">{currentServerName}</h1>
-            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">
+            <h1 className="text-6xl font-black tracking-tight uppercase leading-none">
+              {currentServerName}
+            </h1>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider font-bold italic">
               INVENTORY_ID: {metrics.system.hostname.toUpperCase()} // STATUS: {selectedAgent ? (selectedAgent.status === 'online' ? 'ONLINE' : 'OFFLINE') : 'ONLINE'}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             {/* Server Selector Dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="outline" 
-                  size="sm"
-                  className="rounded-none border-border font-bold uppercase text-[10px] tracking-widest px-4"
+                  className="h-14 px-6 rounded-2xl border-foreground/10 bg-background/50 backdrop-blur-3xl hover:bg-foreground/5 text-xs font-black uppercase tracking-widest transition-all"
                 >
-                  <Server className="w-3 h-3 mr-2" />
+                  <Server className="w-4 h-4 mr-2" />
                   {selectedAgentId ? selectedAgent?.name || "SEL_NODE" : "LOCAL_SRC"}
-                  <ChevronDown className="w-3 h-3 ml-2" />
+                  <ChevronDown className="w-4 h-4 ml-2" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="rounded-none border-border font-mono text-[10px]">
-                <DropdownMenuLabel className="uppercase tracking-[0.2em] opacity-50">SRV_INDEX</DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-border" />
+              <DropdownMenuContent align="end" className="font-mono text-xs rounded-2xl border-foreground/10 bg-background/80 backdrop-blur-3xl p-2 min-w-[200px]">
+                <DropdownMenuLabel className="uppercase font-black text-[9px] tracking-widest opacity-40 py-2 px-3">SRV_INDEX</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-foreground/5" />
                 <DropdownMenuItem 
                   onClick={handleSelectLocal}
-                  className={`cursor-pointer ${!selectedAgentId ? 'bg-primary text-primary-foreground' : ''}`}
+                  className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-2 px-3"
                 >
                   LOCAL_SRC
                 </DropdownMenuItem>
-                {agents.length > 0 && <DropdownMenuSeparator className="bg-border" />}
+                {agents.length > 0 && <DropdownMenuSeparator className="bg-foreground/5" />}
                 {agents.map((agent) => (
                   <DropdownMenuItem 
                     key={agent.id}
                     onClick={() => handleSelectAgent(agent.id)}
-                    className={`cursor-pointer ${selectedAgentId === agent.id ? 'bg-primary text-primary-foreground' : ''}`}
+                    className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-2 px-3 flex items-center"
                   >
-                    <span className={`w-2 h-2 rounded-full mr-2 ${agent.status === 'online' ? 'bg-emerald-500' : 'bg-destructive'}`} />
+                    <span className={`w-2 h-2 rounded-full mr-2 ${agent.status === 'online' ? 'bg-emerald-500 animate-pulse' : 'bg-destructive'}`} />
                     {agent.name}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 border border-border rounded-none">
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <Button onClick={() => refetch()} variant="outline" className="h-14 w-14 rounded-2xl border-foreground/10 bg-background/50 backdrop-blur-3xl hover:bg-foreground/5 transition-all active:scale-95 flex items-center justify-center">
+              <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
             </Button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* System Information */}
-          <div className="border border-border bg-card/30">
-            <div className="p-4 border-b border-border bg-muted/20">
+          <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
+            <div className="p-6 border-b border-foreground/5 bg-foreground/5">
               <div className="flex items-center gap-2">
-                <Server className="w-3 h-3 text-primary" />
-                <h2 className="text-[10px] font-bold uppercase tracking-widest">SYS_MANIFEST</h2>
+                <Server className="w-4 h-4 text-primary" />
+                <h2 className="text-[10px] font-black uppercase tracking-[0.25em] opacity-80">SYS_MANIFEST</h2>
               </div>
             </div>
-            <div className="p-6 space-y-4">
+            <div className="p-8 space-y-4">
               {systemInfo.map((item, index) => (
-                <div key={index} className="flex items-center justify-between group">
+                <div key={index} className="flex items-center justify-between group py-2 border-b border-foreground/5 last:border-0">
                   <div className="flex items-center gap-2">
-                    <item.icon className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-[10px] text-muted-foreground font-bold">{item.label}</span>
+                    <item.icon className="w-4 h-4 text-muted-foreground opacity-60" />
+                    <span className="text-[10px] text-muted-foreground font-black tracking-widest uppercase italic">{item.label}</span>
                   </div>
-                  <span className="text-[10px] font-bold tracking-tight uppercase group-hover:text-primary transition-colors">{item.value}</span>
+                  <span className="text-xs font-black tracking-tight uppercase group-hover:text-primary transition-colors">{item.value}</span>
                 </div>
               ))}
             </div>
@@ -219,48 +220,48 @@ export default function ServerPage() {
 
           <div className="space-y-8">
             {/* CPU Information */}
-            <div className="border border-border bg-card/30">
-              <div className="p-4 border-b border-border bg-muted/20">
+            <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
+              <div className="p-6 border-b border-foreground/5 bg-foreground/5">
                 <div className="flex items-center gap-2">
-                  <Cpu className="w-3 h-3 text-primary" />
-                  <h2 className="text-[10px] font-bold uppercase tracking-widest">CPU_CONFIG</h2>
+                  <Cpu className="w-4 h-4 text-primary" />
+                  <h2 className="text-[10px] font-black uppercase tracking-[0.25em] opacity-80">CPU_CONFIG</h2>
                 </div>
               </div>
-              <div className="p-6 space-y-3">
-                <div className="flex flex-col gap-1 mb-4 pb-4 border-b border-border/50">
-                  <span className="text-[8px] text-muted-foreground uppercase">PROCESSOR_MODEL</span>
-                  <span className="text-xs font-bold uppercase">{metrics.cpu.model_name || "GENERIC_X86_64"}</span>
+              <div className="p-8 space-y-4">
+                <div className="flex flex-col gap-1 mb-4 pb-4 border-b border-foreground/5">
+                  <span className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">PROCESSOR_MODEL</span>
+                  <span className="text-sm font-black uppercase tracking-tight">{metrics.cpu.model_name || "GENERIC_X86_64"}</span>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <span className="text-[8px] text-muted-foreground uppercase">PHYS_CORES</span>
-                    <p className="text-sm font-bold">{metrics.cpu.cores}</p>
+                    <span className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">PHYS_CORES</span>
+                    <p className="text-base font-black">{metrics.cpu.cores}</p>
                   </div>
                   <div>
-                    <span className="text-[8px] text-muted-foreground uppercase">LOGIC_THREADS</span>
-                    <p className="text-sm font-bold">{metrics.cpu.threads}</p>
+                    <span className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">LOGIC_THREADS</span>
+                    <p className="text-base font-black">{metrics.cpu.threads}</p>
                   </div>
                   <div>
-                    <span className="text-[8px] text-muted-foreground uppercase">BASE_FREQ</span>
-                    <p className="text-sm font-bold">{metrics.cpu.frequency_mhz ? `${(metrics.cpu.frequency_mhz / 1000).toFixed(2)} GHz` : "N/A"}</p>
+                    <span className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">BASE_FREQ</span>
+                    <p className="text-base font-black">{metrics.cpu.frequency_mhz ? `${(metrics.cpu.frequency_mhz / 1000).toFixed(2)} GHz` : "N/A"}</p>
                   </div>
                   <div>
-                    <span className="text-[8px] text-muted-foreground uppercase">CURR_UTIL</span>
-                    <p className="text-sm font-bold text-primary">{metrics.cpu.usage_percent.toFixed(1)}%</p>
+                    <span className="text-[8px] text-muted-foreground uppercase font-black tracking-widest">CURR_UTIL</span>
+                    <p className="text-base font-black text-primary">{metrics.cpu.usage_percent.toFixed(1)}%</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Load Average */}
-            <div className="border border-border bg-card/30">
-              <div className="p-4 border-b border-border bg-muted/20">
+            <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
+              <div className="p-6 border-b border-foreground/5 bg-foreground/5">
                 <div className="flex items-center gap-2">
-                  <Activity className="w-3 h-3 text-primary" />
-                  <h2 className="text-[10px] font-bold uppercase tracking-widest">LOAD_AVG</h2>
+                  <Activity className="w-4 h-4 text-primary" />
+                  <h2 className="text-[10px] font-black uppercase tracking-[0.25em] opacity-80">LOAD_AVG</h2>
                 </div>
               </div>
-              <div className="p-6 space-y-6">
+              <div className="p-8 space-y-6">
                 {[
                   { label: "1_MIN", value: metrics.load.load1 },
                   { label: "5_MIN", value: metrics.load.load5 },
@@ -269,13 +270,13 @@ export default function ServerPage() {
                   const loadPercent = Math.min((item.value / metrics.cpu.cores) * 100, 100);
                   return (
                     <div key={index} className="space-y-2">
-                      <div className="flex items-center justify-between text-[10px] font-bold uppercase">
+                      <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-wider">
                         <span className="text-muted-foreground">{item.label}</span>
                         <span>{item.value.toFixed(2)}</span>
                       </div>
-                      <div className="h-1 bg-muted overflow-hidden">
+                      <div className="h-1.5 bg-foreground/5 rounded-full overflow-hidden">
                         <div 
-                          className={`h-full transition-all ${loadPercent > 90 ? "bg-red-500" : loadPercent > 70 ? "bg-amber-500" : "bg-primary"}`}
+                          className={`h-full rounded-full transition-all ${loadPercent > 90 ? "bg-red-500" : loadPercent > 70 ? "bg-amber-500" : "bg-primary"}`}
                           style={{ width: `${loadPercent}%` }}
                         />
                       </div>
@@ -288,61 +289,61 @@ export default function ServerPage() {
         </div>
 
         {/* Memory Information */}
-        <div className="border border-border bg-card/30">
-          <div className="p-4 border-b border-border bg-muted/20">
+        <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
+          <div className="p-6 border-b border-foreground/5 bg-foreground/5">
             <div className="flex items-center gap-2">
-              <MemoryStick className="w-3 h-3 text-primary" />
-              <h2 className="text-[10px] font-bold uppercase tracking-widest">MEM_SNAPSHOT</h2>
+              <MemoryStick className="w-4 h-4 text-primary" />
+              <h2 className="text-[10px] font-black uppercase tracking-[0.25em] opacity-80">MEM_SNAPSHOT</h2>
             </div>
           </div>
-          <div className="p-6">
+          <div className="p-8">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div>
-                <span className="text-[8px] text-muted-foreground uppercase tracking-widest">TOTAL_CAP</span>
-                <p className="text-sm font-bold tabular-nums">{formatBytes(metrics.memory.total)}</p>
+                <span className="text-[8px] text-muted-foreground uppercase tracking-widest font-black">TOTAL_CAP</span>
+                <p className="text-base font-black tabular-nums">{formatBytes(metrics.memory.total)}</p>
               </div>
               <div>
-                <span className="text-[8px] text-muted-foreground uppercase tracking-widest">USED_VAL</span>
-                <p className="text-sm font-bold tabular-nums text-primary">{formatBytes(metrics.memory.used)}</p>
+                <span className="text-[8px] text-muted-foreground uppercase tracking-widest font-black">USED_VAL</span>
+                <p className="text-base font-black tabular-nums text-primary">{formatBytes(metrics.memory.used)}</p>
               </div>
               <div>
-                <span className="text-[8px] text-muted-foreground uppercase tracking-widest">AVAIL_VAL</span>
-                <p className="text-sm font-bold tabular-nums">{formatBytes(metrics.memory.available)}</p>
+                <span className="text-[8px] text-muted-foreground uppercase tracking-widest font-black">AVAIL_VAL</span>
+                <p className="text-base font-black tabular-nums">{formatBytes(metrics.memory.available)}</p>
               </div>
               <div>
-                <span className="text-[8px] text-muted-foreground uppercase tracking-widest">PERCENT</span>
-                <p className="text-sm font-bold tabular-nums">{metrics.memory.used_percent.toFixed(1)}%</p>
+                <span className="text-[8px] text-muted-foreground uppercase tracking-widest font-black">PERCENT</span>
+                <p className="text-base font-black tabular-nums">{metrics.memory.used_percent.toFixed(1)}%</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Storage Information */}
-        <div className="border border-border bg-card/30">
-          <div className="p-4 border-b border-border bg-muted/20 flex items-center justify-between">
+        <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
+          <div className="p-6 border-b border-foreground/5 bg-foreground/5 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <HardDrive className="w-3 h-3 text-primary" />
-              <h2 className="text-[10px] font-bold uppercase tracking-widest">FS_TABLE</h2>
+              <HardDrive className="w-4 h-4 text-primary" />
+              <h2 className="text-[10px] font-black uppercase tracking-[0.25em] opacity-80">FS_TABLE</h2>
             </div>
-            <span className="text-[8px] font-bold uppercase tracking-[0.2em]">{filteredDisks.length} ACTIVE_PARTITIONS</span>
+            <span className="text-[8px] font-black uppercase tracking-widest opacity-60">{filteredDisks.length} ACTIVE_PARTITIONS</span>
           </div>
-          <div className="divide-y divide-border/50 font-mono">
+          <div className="divide-y divide-foreground/5 font-mono">
             {filteredDisks.map((disk, index) => (
-              <div key={index} className="p-6 hover:bg-muted/5 transition-colors">
+              <div key={index} className="p-8 hover:bg-foreground/[0.02] transition-colors">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-4">
-                    <div className="text-[10px] font-bold uppercase p-1 border border-border bg-background">{disk.mount_point}</div>
-                    <div className="text-[8px] text-muted-foreground uppercase tracking-widest">{disk.device} // {disk.fs_type}</div>
+                    <div className="text-[10px] font-black uppercase px-3 py-1.5 border border-foreground/10 bg-foreground/5 rounded-lg">{disk.mount_point}</div>
+                    <div className="text-[8px] text-muted-foreground uppercase tracking-widest font-black italic">{disk.device} // {disk.fs_type}</div>
                   </div>
-                  <div className="text-[10px] font-bold tracking-tighter">[{disk.used_percent.toFixed(1)}%]</div>
+                  <div className="text-[10px] font-black tracking-tighter">[{disk.used_percent.toFixed(1)}%]</div>
                 </div>
-                <div className="h-1 bg-muted overflow-hidden mb-3">
+                <div className="h-1.5 bg-foreground/5 rounded-full overflow-hidden mb-4">
                   <div 
-                    className={`h-full transition-all ${disk.used_percent > 90 ? "bg-red-500" : disk.used_percent > 75 ? "bg-amber-500" : "bg-primary"}`}
+                    className={`h-full rounded-full transition-all ${disk.used_percent > 90 ? "bg-red-500" : disk.used_percent > 75 ? "bg-amber-500" : "bg-primary"}`}
                     style={{ width: `${disk.used_percent}%` }}
                   />
                 </div>
-                <div className="flex items-center justify-between text-[8px] text-muted-foreground uppercase tracking-widest">
+                <div className="flex items-center justify-between text-[8px] text-muted-foreground uppercase tracking-widest font-black italic">
                   <span>USED: {formatBytes(disk.used)}</span>
                   <span>FREE: {formatBytes(disk.free)}</span>
                   <span>TOTAL: {formatBytes(disk.total)}</span>

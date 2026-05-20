@@ -1,6 +1,5 @@
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { RefreshCw, AlertCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Terminal } from "@xterm/xterm";
@@ -247,33 +246,42 @@ export default function TerminalPage() {
 
   return (
     <DashboardLayout>
-      <div className="flex flex-col h-[calc(100vh-8rem)] font-mono">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col h-[calc(100vh-6rem)] font-mono space-y-12">
         {/* Header */}
-        <div className="flex items-end justify-between border-b border-border pb-6 mb-6">
-          <div>
-            <div className="flex items-center gap-2 text-muted-foreground text-[10px] uppercase tracking-widest mb-1">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-12 border-b border-foreground/5">
+          <div className="space-y-4">
+            <div className="flex items-center gap-2 text-muted-foreground text-[10px] uppercase tracking-widest mb-1 font-black italic">
               <span className="text-primary">●</span> TTY_SESSION_01
             </div>
-            <h1 className="text-2xl font-bold tracking-tighter uppercase">Terminal</h1>
-            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">
+            <h1 className="text-6xl font-black tracking-tight uppercase leading-none">
+              Terminal
+            </h1>
+            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider font-bold italic">
               {connected ? "SECURE_SSH_ESTABLISHED" : "AWAITING_HANDSHAKE"} // TTY: /DEV/PTS/0
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <Badge 
-              variant="outline" 
-              className={`rounded-none text-[10px] uppercase tracking-widest px-2 py-0 ${connected 
-                ? "text-emerald-500 border-emerald-500/30 bg-emerald-500/5" 
-                : "text-red-500 border-red-500/30 bg-red-500/5"}`}
-            >
+            <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-full backdrop-blur-3xl flex items-center gap-2 h-14 border ${connected 
+              ? "text-emerald-500 border-emerald-500/20 bg-emerald-500/10" 
+              : "text-red-500 border-red-500/20 bg-red-500/10"}`}>
+              <span className={`w-2 h-2 rounded-full ${connected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
               {connected ? "ONLINE" : "OFFLINE"}
-            </Badge>
-            <div className="flex items-center gap-2">
-              <Button onClick={handleClear} size="sm" variant="outline" className="rounded-none uppercase text-[10px] tracking-widest h-8" disabled={!connected}>
+            </span>
+            <div className="flex items-center gap-3">
+              <Button 
+                onClick={handleClear} 
+                variant="outline" 
+                className="h-14 px-6 rounded-2xl border-foreground/10 bg-background/50 hover:bg-foreground/5 text-xs font-black uppercase tracking-widest transition-all"
+                disabled={!connected}
+              >
                 CLEAR_BUF
               </Button>
-              <Button onClick={handleReconnect} size="icon" variant="ghost" className="h-8 w-8 border border-border rounded-none">
-                <RefreshCw className="w-3 h-3" />
+              <Button 
+                onClick={handleReconnect} 
+                variant="outline" 
+                className="h-14 w-14 rounded-2xl border-foreground/10 bg-background/50 backdrop-blur-3xl hover:bg-foreground/5 transition-all active:scale-95 flex items-center justify-center"
+              >
+                <RefreshCw className="w-5 h-5" />
               </Button>
             </div>
           </div>
@@ -281,17 +289,17 @@ export default function TerminalPage() {
 
         {/* Error Alert */}
         {error && (
-          <div className="flex items-center gap-2 p-3 border border-red-500/30 bg-red-500/5 text-[10px] uppercase font-bold text-red-500 mb-6">
-            <AlertCircle className="w-3 h-3" />
+          <div className="flex items-center gap-3 p-6 border border-red-500/20 bg-red-500/10 rounded-2xl text-[10px] uppercase font-black text-red-500">
+            <AlertCircle className="w-5 h-5" />
             <span>ERROR: {error}</span>
           </div>
         )}
 
         {/* Terminal Container */}
-        <div className="flex-1 border border-border bg-[#000000] p-4 relative">
+        <div className="flex-1 bg-black border border-foreground/10 rounded-[2.5rem] p-8 relative overflow-hidden shadow-2xl">
           {/* Decorative terminal elements */}
-          <div className="absolute top-0 right-0 p-2 opacity-20 pointer-events-none">
-            <div className="text-[8px] text-right font-mono">
+          <div className="absolute top-6 right-8 opacity-20 pointer-events-none z-10">
+            <div className="text-[8px] text-right font-mono tracking-wider leading-relaxed">
               SECURE_SHELL_v2.4<br/>
               RSA_ENCRYPT_ACTIVE<br/>
               BUFFER_SIZE: 1024KB

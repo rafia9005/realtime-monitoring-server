@@ -55,23 +55,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 z-50 h-full w-64 bg-card border-r border-border font-mono
+        fixed top-0 left-0 z-50 h-full w-64 bg-background/80 backdrop-blur-3xl border-r border-foreground/5 font-mono
         transform transition-transform duration-300 ease-in-out
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
         lg:translate-x-0
       `}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="h-14 px-4 flex items-center justify-between border-b border-border">
+          <div className="h-16 px-6 flex items-center justify-between border-b border-foreground/5">
             <Link to="/dashboard" className="flex items-center gap-2">
               <div className="w-6 h-6 flex items-center justify-center">
                 <img src="/img/amazetwoLight.png" alt="AmazeTwo" sizes="0.5" className="block dark:hidden" />
                 <img src="/img/amazetwoDark.png" alt="AmazeTwo" sizes="0.5" className="hidden dark:block" />
               </div>
-              <span className="font-bold tracking-tighter">WATCHTOWER_v1</span>
+              <span className="font-black tracking-[-0.05em] uppercase text-sm">WATCHTOWER_v1</span>
             </Link>
             <button 
-              className="lg:hidden p-1.5 hover:bg-accent rounded-none transition-colors"
+              className="lg:hidden p-1.5 hover:bg-foreground/5 rounded-xl transition-colors"
               onClick={() => setSidebarOpen(false)}
             >
               <X className="w-5 h-5" />
@@ -79,7 +79,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
 
           {/* Menu Items */}
-          <nav className="flex-1 p-4 space-y-1">
+          <nav className="flex-1 p-4 space-y-2">
             {menuItems.map((item) => {
               const isActive = location.pathname === item.href;
               return (
@@ -88,35 +88,32 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   to={item.href}
                   onClick={() => setSidebarOpen(false)}
                   className={`
-                    flex items-center gap-3 px-3 py-2 text-xs transition-colors group
+                    flex items-center gap-3 px-4 py-3 text-xs transition-all rounded-xl group uppercase tracking-widest font-black italic
                     ${isActive 
-                      ? 'bg-primary text-primary-foreground font-bold' 
-                      : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                      ? 'bg-foreground text-background shadow-xl shadow-foreground/5' 
+                      : 'text-muted-foreground hover:bg-foreground/5 hover:text-foreground'
                     }
                   `}
                 >
-                  <span className={isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}>[</span>
                   <item.icon className="w-4 h-4" />
-                  <span className="uppercase tracking-widest">{item.label}</span>
-                  <span className="ml-auto"></span>
-                  <span className={isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}>]</span>
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="p-4 border-t border-border">
+          <div className="p-4 border-t border-foreground/5">
             <div className="flex items-center gap-3 py-2">
-              <div className="w-8 h-8 border border-border flex items-center justify-center text-[10px]">
+              <div className="w-10 h-10 bg-card/60 rounded-xl flex items-center justify-center border border-foreground/5 text-xs font-black shadow-inner">
                 {user?.firstName?.[0]}{user?.lastName?.[0]}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-bold uppercase truncate">
+                <p className="text-[10px] font-black uppercase truncate italic">
                   {user?.fullName || "SYSTEM_ROOT"}
                 </p>
                 <div className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-[8px] text-muted-foreground uppercase">{language === 'id' ? 'Aktif' : 'Online'}</span>
+                  <span className="text-[8px] text-muted-foreground uppercase font-black">{language === 'id' ? 'Aktif' : 'Online'}</span>
                 </div>
               </div>
             </div>
@@ -127,45 +124,45 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       {/* Main Content */}
       <div className="lg:pl-64 font-mono">
         {/* Header */}
-        <header className="sticky top-0 z-30 h-14 bg-background border-b border-border">
+        <header className="sticky top-0 z-30 h-16 bg-background/80 backdrop-blur-3xl border-b border-foreground/5">
           <div className="flex items-center justify-between h-full px-6">
             <div className="flex items-center gap-3">
               <button
-                className="lg:hidden p-1.5 hover:bg-accent transition-colors"
+                className="lg:hidden p-1.5 hover:bg-foreground/5 rounded-xl transition-colors"
                 onClick={() => setSidebarOpen(true)}
               >
                 <Menu className="w-5 h-5" />
               </button>
               <div className="hidden sm:flex items-center gap-2">
-                <span className="text-muted-foreground text-xs">/</span>
-                <h1 className="text-xs font-bold uppercase tracking-widest">
+                <span className="w-1.5 h-1.5 bg-foreground/20 rounded-full" />
+                <h1 className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 italic">
                   {menuItems.find(item => item.href === location.pathname)?.label || (language === 'id' ? "Dasbor" : "Dashboard")}
                 </h1>
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1 text-[10px] text-muted-foreground mr-4 hidden md:flex">
-                <span className="opacity-50">{language === 'id' ? 'WAKTU_SISTEM:' : 'SYS_TIME:'}</span>
+              <div className="flex items-center gap-1 text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground mr-4 hidden md:flex italic">
+                <span className="opacity-40">{language === 'id' ? 'WAKTU_SISTEM:' : 'SYS_TIME:'}</span>
                 <span>{new Date().toLocaleTimeString([], { hour12: false })}</span>
               </div>
               
               {/* Theme Toggle */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8 rounded-none border border-transparent hover:border-border">
-                    <Sun className="h-3 w-3 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Moon className="absolute h-3 w-3 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl border border-foreground/10 bg-background/50 hover:bg-foreground/5 backdrop-blur-3xl transition-all active:scale-95 flex items-center justify-center">
+                    <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                     <span className="sr-only">Toggle theme</span>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="font-mono text-xs rounded-none border-border">
-                  <DropdownMenuItem onClick={() => setTheme("light")} className="rounded-none">
+                <DropdownMenuContent align="end" className="font-mono text-xs rounded-2xl border-foreground/10 bg-background/80 backdrop-blur-3xl p-2 min-w-[150px]">
+                  <DropdownMenuItem onClick={() => setTheme("light")} className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-2">
                     {language === 'id' ? 'MODE_TERANG' : 'LIGHT_MODE'}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("dark")} className="rounded-none">
+                  <DropdownMenuItem onClick={() => setTheme("dark")} className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-2">
                     {language === 'id' ? 'MODE_GELAP' : 'DARK_MODE'}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setTheme("system")} className="rounded-none">
+                  <DropdownMenuItem onClick={() => setTheme("system")} className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-2">
                     {language === 'id' ? 'STANDAR_SISTEM' : 'SYSTEM_DEFAULT'}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -175,7 +172,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 afterSignOutUrl="/" 
                 appearance={{
                   elements: {
-                    avatarBox: "w-8 h-8 rounded-none border border-border"
+                    avatarBox: "w-10 h-10 rounded-xl border border-foreground/10 bg-background/50 backdrop-blur-3xl shadow-inner"
                   }
                 }}
               />

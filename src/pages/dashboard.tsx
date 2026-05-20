@@ -41,11 +41,6 @@ export default function Dashboard() {
     return `${minutes}m`;
   };
 
-  const getStatusBg = (value: number, warning: number, critical: number) => {
-    if (value >= critical) return "bg-red-600";
-    if (value >= warning) return "bg-yellow-500";
-    return "bg-blue-500";
-  };
 
   if (loading && !metrics) {
     return (
@@ -88,274 +83,309 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="flex items-end justify-between pb-6 border-b border-slate-200 dark:border-slate-800">
-            <div>
-              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">{metrics.system.hostname}</h1>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
-                {metrics.system.platform} • Architecture: x86_64
-              </p>
-          </div>
-             <div className="flex items-center gap-4">
-            <div className="flex flex-col items-end">
-              <span className="text-xs text-slate-600 dark:text-slate-400 font-medium mb-1">{language === 'id' ? 'Status' : 'Status'}</span>
-              <Badge className="rounded-full text-emerald-700 dark:text-emerald-300 border border-emerald-300/50 bg-emerald-50 dark:bg-emerald-950/30 text-sm px-3 py-1 font-medium">
-                ● {language === 'id' ? 'Langsung' : 'Live'}
-              </Badge>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-12 border-b border-foreground/5">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-foreground/5 rounded-xl backdrop-blur-3xl border border-foreground/10">
+                <Cpu className="w-5 h-5 opacity-60 text-primary" />
+              </div>
+              <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-40 italic">System Overview v4.2</span>
             </div>
-            <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800">
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <h1 className="text-6xl font-black tracking-tight uppercase leading-none">
+              {metrics.system.hostname} <span className="text-foreground/20">{metrics.system.platform.split(" ")[0]}</span>
+            </h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex flex-col items-end">
+              <span className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 italic font-bold">{language === 'id' ? 'Status' : 'Status'}</span>
+              <span className="text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-full backdrop-blur-3xl flex items-center gap-2">
+                <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                {language === 'id' ? 'Langsung' : 'Live'}
+              </span>
+            </div>
+            <Button onClick={() => refetch()} variant="outline" className="h-14 w-14 rounded-2xl border-foreground/10 bg-background/50 backdrop-blur-3xl hover:bg-foreground/5 transition-all active:scale-95 flex items-center justify-center">
+              <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
             </Button>
           </div>
         </div>
 
-        {/* Main Stats - Apple Style */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Main Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
            {/* CPU */}
-           <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-             <div className="flex items-start justify-between mb-4">
-               <div className="flex items-center gap-3">
-                 <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">
-                   <Cpu className="w-5 h-5 text-slate-900 dark:text-white" />
+           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 hover:border-foreground/10 transition-all duration-500">
+             <div className="flex items-start justify-between">
+               <div className="flex items-center gap-4">
+                 <div className="w-12 h-12 bg-foreground/5 rounded-2xl flex items-center justify-center border border-foreground/10">
+                   <Cpu className="w-5 h-5 text-foreground/60" />
                  </div>
                  <div>
-                   <div className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Daya Pemrosesan' : 'Processing Power'}</div>
-                   <div className="text-xs text-slate-600 dark:text-slate-400">{metrics.cpu.cores}C / {metrics.cpu.threads}T</div>
+                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Daya Pemrosesan' : 'Processing Power'}</div>
+                   <div className="text-xs font-bold tracking-tight opacity-60 font-mono italic">{metrics.cpu.cores}C / {metrics.cpu.threads}T</div>
                  </div>
                </div>
-               <span className={`text-xs font-semibold px-2 py-1 rounded-full ${cpuUsage > 80 ? 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300' : cpuUsage > 60 ? 'bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-300' : 'bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300'}`}>
+               <span className={`text-[8px] font-black tracking-widest px-3 py-1 rounded-full uppercase border ${
+                 cpuUsage > 80 
+                   ? 'bg-red-500/10 text-red-500 border-red-500/20' 
+                   : cpuUsage > 60 
+                     ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' 
+                     : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+               }`}>
                  {cpuUsage > 80 ? (language === 'id' ? "Tinggi" : "High") : cpuUsage > 60 ? (language === 'id' ? "Sedang" : "Medium") : (language === 'id' ? "Normal" : "Normal")}
                </span>
              </div>
-            <div className={`text-3xl font-semibold text-slate-900 dark:text-white mb-3`}>
-              {cpuUsage.toFixed(1)}%
-            </div>
-            <div className="space-y-2">
-               <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                 <div 
-                   className={`h-full rounded-full transition-all duration-500 ${getStatusBg(cpuUsage, 60, 80)}`}
-                   style={{ width: `${cpuUsage}%` }}
-                 />
-               </div>
-            </div>
-          </div>
+             <div className="flex items-baseline gap-1">
+               <p className="text-4xl font-black group-hover:scale-105 transition-all duration-500">{cpuUsage.toFixed(1)}</p>
+               <span className="text-sm font-black opacity-30 italic">%</span>
+             </div>
+             <div className="space-y-2">
+                <div className="h-2 bg-foreground/5 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      cpuUsage > 80 ? "bg-red-500" : cpuUsage > 60 ? "bg-amber-500" : "bg-blue-500"
+                    }`}
+                    style={{ width: `${cpuUsage}%` }}
+                  />
+                </div>
+             </div>
+           </div>
 
            {/* Memory */}
-           <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-             <div className="flex items-start justify-between mb-4">
-               <div className="flex items-center gap-3">
-                 <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">
-                   <MemoryStick className="w-5 h-5 text-slate-900 dark:text-white" />
+           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 hover:border-foreground/10 transition-all duration-500">
+             <div className="flex items-start justify-between">
+               <div className="flex items-center gap-4">
+                 <div className="w-12 h-12 bg-foreground/5 rounded-2xl flex items-center justify-center border border-foreground/10">
+                   <MemoryStick className="w-5 h-5 text-foreground/60" />
                  </div>
                  <div>
-                   <div className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Memori Aktif' : 'Active Memory'}</div>
-                   <div className="text-xs text-slate-600 dark:text-slate-400">{formatBytes(metrics.memory.used)}</div>
+                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Memori Aktif' : 'Active Memory'}</div>
+                   <div className="text-xs font-bold tracking-tight opacity-60 font-mono italic">{formatBytes(metrics.memory.used)}</div>
                  </div>
                </div>
-               <span className={`text-xs font-semibold px-2 py-1 rounded-full ${memUsage > 85 ? 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300' : memUsage > 70 ? 'bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-300' : 'bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300'}`}>
+               <span className={`text-[8px] font-black tracking-widest px-3 py-1 rounded-full uppercase border ${
+                 memUsage > 85 
+                   ? 'bg-red-500/10 text-red-500 border-red-500/20' 
+                   : memUsage > 70 
+                     ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' 
+                     : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+               }`}>
                  {memUsage > 85 ? (language === 'id' ? "Tinggi" : "High") : memUsage > 70 ? (language === 'id' ? "Sedang" : "Medium") : (language === 'id' ? "Normal" : "Normal")}
                </span>
              </div>
-            <div className={`text-3xl font-semibold text-slate-900 dark:text-white mb-3`}>
-              {memUsage.toFixed(1)}%
-            </div>
-            <div className="space-y-2">
-               <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                 <div 
-                   className={`h-full rounded-full transition-all duration-500 ${getStatusBg(memUsage, 70, 85)}`}
-                   style={{ width: `${memUsage}%` }}
-                 />
-               </div>
-            </div>
-          </div>
+             <div className="flex items-baseline gap-1">
+               <p className="text-4xl font-black group-hover:scale-105 transition-all duration-500">{memUsage.toFixed(1)}</p>
+               <span className="text-sm font-black opacity-30 italic">%</span>
+             </div>
+             <div className="space-y-2">
+                <div className="h-2 bg-foreground/5 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      memUsage > 85 ? "bg-red-500" : memUsage > 70 ? "bg-amber-500" : "bg-blue-500"
+                    }`}
+                    style={{ width: `${memUsage}%` }}
+                  />
+                </div>
+             </div>
+           </div>
 
            {/* Disk */}
-           <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-             <div className="flex items-start justify-between mb-4">
-               <div className="flex items-center gap-3">
-                 <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">
-                   <HardDrive className="w-5 h-5 text-slate-900 dark:text-white" />
+           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 hover:border-foreground/10 transition-all duration-500">
+             <div className="flex items-start justify-between">
+               <div className="flex items-center gap-4">
+                 <div className="w-12 h-12 bg-foreground/5 rounded-2xl flex items-center justify-center border border-foreground/10">
+                   <HardDrive className="w-5 h-5 text-foreground/60" />
                  </div>
                  <div>
-                   <div className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Penyimpanan' : 'Storage'}</div>
-                   <div className="text-xs text-slate-600 dark:text-slate-400">{formatBytes(totalDiskSize)}</div>
+                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Penyimpanan' : 'Storage'}</div>
+                   <div className="text-xs font-bold tracking-tight opacity-60 font-mono italic">{formatBytes(totalDiskSize)}</div>
                  </div>
                </div>
-               <span className={`text-xs font-semibold px-2 py-1 rounded-full ${diskUsage > 90 ? 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300' : diskUsage > 75 ? 'bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-300' : 'bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300'}`}>
+               <span className={`text-[8px] font-black tracking-widest px-3 py-1 rounded-full uppercase border ${
+                 diskUsage > 90 
+                   ? 'bg-red-500/10 text-red-500 border-red-500/20' 
+                   : diskUsage > 75 
+                     ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' 
+                     : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+               }`}>
                  {diskUsage > 90 ? (language === 'id' ? "Kritis" : "Critical") : diskUsage > 75 ? (language === 'id' ? "Peringatan" : "Warning") : (language === 'id' ? "Bagus" : "Good")}
                </span>
              </div>
-            <div className={`text-3xl font-semibold text-slate-900 dark:text-white mb-3`}>
-              {diskUsage.toFixed(1)}%
-            </div>
-            <div className="space-y-2">
-               <div className="h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                 <div 
-                   className={`h-full rounded-full transition-all duration-500 ${getStatusBg(diskUsage, 75, 90)}`}
-                   style={{ width: `${diskUsage}%` }}
-                 />
-               </div>
-            </div>
-          </div>
+             <div className="flex items-baseline gap-1">
+               <p className="text-4xl font-black group-hover:scale-105 transition-all duration-500">{diskUsage.toFixed(1)}</p>
+               <span className="text-sm font-black opacity-30 italic">%</span>
+             </div>
+             <div className="space-y-2">
+                <div className="h-2 bg-foreground/5 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full rounded-full transition-all duration-500 ${
+                      diskUsage > 90 ? "bg-red-500" : diskUsage > 75 ? "bg-amber-500" : "bg-blue-500"
+                    }`}
+                    style={{ width: `${diskUsage}%` }}
+                  />
+                </div>
+             </div>
+           </div>
 
            {/* Network */}
-           <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
-             <div className="flex items-start justify-between mb-4">
-               <div className="flex items-center gap-3">
-                 <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">
-                   <Network className="w-5 h-5 text-slate-900 dark:text-white" />
+           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 hover:border-foreground/10 transition-all duration-500">
+             <div className="flex items-start justify-between">
+               <div className="flex items-center gap-4">
+                 <div className="w-12 h-12 bg-foreground/5 rounded-2xl flex items-center justify-center border border-foreground/10">
+                   <Network className="w-5 h-5 text-foreground/60" />
                  </div>
                  <div>
-                   <div className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Jaringan' : 'Network'}</div>
-                   <div className="text-xs text-slate-600 dark:text-slate-400">{language === 'id' ? 'Koneksi' : 'Connections'}</div>
+                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Jaringan' : 'Network'}</div>
+                   <div className="text-xs font-bold tracking-tight opacity-60 font-mono italic">{language === 'id' ? 'Koneksi' : 'Connections'}</div>
                  </div>
                </div>
-               <span className={`text-xs font-semibold px-2 py-1 rounded-full bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300`}>
+               <span className="text-[8px] font-black tracking-widest px-3 py-1 rounded-full uppercase border bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
                  {language === 'id' ? 'Aktif' : 'Active'}
                </span>
              </div>
-             <div className="text-3xl font-semibold text-slate-900 dark:text-white mb-3">
-               {metrics.network.connections.established}
+             <div className="flex items-baseline gap-1">
+               <p className="text-4xl font-black group-hover:scale-105 transition-all duration-500">{metrics.network.connections.established}</p>
+               <span className="text-xs font-black opacity-30 italic font-mono uppercase tracking-widest">{language === 'id' ? 'Koneksi' : 'CONN'}</span>
              </div>
-             <div className="text-xs text-slate-600 dark:text-slate-400 space-y-1">
+             <div className="text-[10px] font-black uppercase tracking-wider opacity-60 space-y-1 font-mono italic">
                <div>↑ {language === 'id' ? 'Terkirim:' : 'Sent:'} {formatBytes(metrics.network.bytes_sent)}</div>
                <div>↓ {language === 'id' ? 'Diterima:' : 'Received:'} {formatBytes(metrics.network.bytes_recv)}</div>
              </div>
+           </div>
+        </div>
+
+        {/* Secondary Info Bar */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1">
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Waktu Aktif' : 'Uptime'}</div>
+            <div className="text-2xl font-black tracking-tight">{formatUptime(metrics.system.uptime)}</div>
+          </div>
+          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1">
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Rata-rata Beban' : 'Load Average'}</div>
+            <div className="text-lg font-black tracking-tight font-mono">{metrics.load.load1.toFixed(2)} / {metrics.load.load5.toFixed(2)}</div>
+          </div>
+          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1">
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Proses' : 'Processes'}</div>
+            <div className="text-lg font-black tracking-tight font-mono">{metrics.process.running}/{metrics.process.total}</div>
+          </div>
+          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1">
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Suhu' : 'Temperature'}</div>
+            <div className="text-lg font-black tracking-tight font-mono">{metrics.temperature?.cpu_temp ? `${metrics.temperature.cpu_temp.toFixed(1)}°C` : "N/A"}</div>
           </div>
         </div>
 
-         {/* Secondary Info Bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">{language === 'id' ? 'Waktu Aktif' : 'Uptime'}</div>
-              <div className="text-2xl font-semibold text-slate-900 dark:text-white">{formatUptime(metrics.system.uptime)}</div>
-            </div>
-            <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">{language === 'id' ? 'Rata-rata Beban' : 'Load Average'}</div>
-              <div className="text-sm font-semibold text-slate-900 dark:text-white">{metrics.load.load1.toFixed(2)} / {metrics.load.load5.toFixed(2)}</div>
-            </div>
-            <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">{language === 'id' ? 'Proses' : 'Processes'}</div>
-              <div className="text-sm font-semibold text-slate-900 dark:text-white">{metrics.process.running}/{metrics.process.total}</div>
-            </div>
-            <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">{language === 'id' ? 'Suhu' : 'Temperature'}</div>
-              <div className="text-sm font-semibold text-slate-900 dark:text-white">{metrics.temperature?.cpu_temp ? `${metrics.temperature.cpu_temp.toFixed(1)}°C` : "N/A"}</div>
-            </div>
-          </div>
-
-         {/* Environment Metrics Section */}
-          {metrics.environment && metrics.environment.length > 0 && (
-            <div className="space-y-4">
-               <div className="flex items-center justify-between">
-                 <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Sensors</h2>
-                 <Badge variant="outline" className="rounded-full text-sm px-3 py-1">
-                   {metrics.environment.length} connected
-                 </Badge>
-               </div>
-               
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                 {metrics.environment.map((env) => (
-                   <div key={env.id} className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-                      <div className="mb-4">
-                        <div className="text-sm font-semibold text-slate-900 dark:text-white">{env.mcu_name}</div>
-                        <div className="text-xs text-slate-600 dark:text-slate-400">{env.mcu_id}</div>
+        {/* Environment Metrics Section */}
+        {metrics.environment && metrics.environment.length > 0 && (
+          <div className="space-y-6">
+             <div className="flex items-center justify-between border-b border-foreground/5 pb-4">
+               <h2 className="text-2xl font-black uppercase tracking-tight italic">Sensors Array</h2>
+               <Badge variant="outline" className="rounded-full text-[10px] font-black uppercase tracking-widest bg-foreground/5 border-foreground/10 px-3 py-1">
+                 {metrics.environment.length} CONNECTED
+               </Badge>
+             </div>
+             
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+               {metrics.environment.map((env) => (
+                 <div key={env.id} className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2rem] space-y-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="text-sm font-black tracking-tight uppercase">{env.mcu_name}</div>
+                        <div className="text-[10px] font-bold opacity-30 uppercase tracking-widest font-mono italic">{env.mcu_id}</div>
                       </div>
-                     
-                      <div className="space-y-3 border-t border-slate-200 dark:border-slate-800 pt-3">
-                        {/* Temperature */}
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                             <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Temperature</span>
-                             <span className={`text-xs font-semibold ${
-                              env.temperature && env.temperature >= 30 ? "text-yellow-600 dark:text-yellow-400" : "text-slate-600 dark:text-slate-400"
-                            }`}>
-                              {env.temperature ? `${env.temperature.toFixed(1)}°C` : "N/A"}
-                            </span>
-                          </div>
-                          {env.temperature && (
-                            <div className="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                              <div 
-                                className={`h-full rounded-full transition-all ${env.temperature >= 30 ? "bg-yellow-500" : "bg-blue-500"}`}
-                                style={{ width: `${Math.min((env.temperature / 40) * 100, 100)}%` }}
-                              />
-                            </div>
-                          )}
+                      <span className="text-[9px] font-black opacity-30 font-mono">{new Date(env.created_at).toLocaleTimeString([], { hour12: false })}</span>
+                    </div>
+                   
+                    <div className="space-y-3 border-t border-foreground/5 pt-3">
+                      {/* Temperature */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                           <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Temperature</span>
+                           <span className="text-xs font-black">
+                            {env.temperature ? `${env.temperature.toFixed(1)}°C` : "N/A"}
+                          </span>
                         </div>
-                        
-                        {/* Humidity */}
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                             <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Humidity</span>
-                             <span className={`text-xs font-semibold ${
-                              env.humidity && env.humidity >= 80 ? "text-yellow-600 dark:text-yellow-400" : "text-slate-600 dark:text-slate-400"
-                            }`}>
-                              {env.humidity ? `${env.humidity.toFixed(1)}%` : "N/A"}
-                            </span>
+                        {env.temperature && (
+                          <div className="h-1.5 bg-foreground/5 rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full rounded-full transition-all ${env.temperature >= 30 ? "bg-orange-500" : "bg-blue-500"}`}
+                              style={{ width: `${Math.min((env.temperature / 40) * 100, 100)}%` }}
+                            />
                           </div>
-                          {env.humidity && (
-                            <div className="h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                              <div 
-                                className={`h-full rounded-full transition-all ${env.humidity >= 80 ? "bg-yellow-500" : "bg-blue-500"}`}
-                                style={{ width: `${Math.min((env.humidity / 100) * 100, 100)}%` }}
-                              />
-                            </div>
-                          )}
-                        </div>
+                        )}
                       </div>
                       
-                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-3 pt-3 border-t border-slate-200 dark:border-slate-800">
-                        {new Date(env.created_at).toLocaleTimeString([], { hour12: false })}
+                      {/* Humidity */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                           <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Humidity</span>
+                           <span className="text-xs font-black">
+                            {env.humidity ? `${env.humidity.toFixed(1)}%` : "N/A"}
+                          </span>
+                        </div>
+                        {env.humidity && (
+                          <div className="h-1.5 bg-foreground/5 rounded-full overflow-hidden">
+                            <div 
+                              className={`h-full rounded-full transition-all ${env.humidity >= 80 ? "bg-orange-500" : "bg-blue-500"}`}
+                              style={{ width: `${Math.min((env.humidity / 100) * 100, 100)}%` }}
+                            />
+                          </div>
+                        )}
                       </div>
-                   </div>
-                 ))}
-               </div>
-            </div>
-          )}
+                    </div>
+                 </div>
+               ))}
+             </div>
+          </div>
+        )}
 
-         {/* Connected Agents Section */}
-         {agents.length > 0 && (
-            <div className="space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Connected Servers</h2>
-                <Link to="/agents" className="text-sm text-blue-500 hover:text-blue-600 font-medium flex items-center gap-1">
+        {/* Connected Agents Section */}
+        {agents.length > 0 && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between border-b border-foreground/5 pb-4">
+              <h2 className="text-2xl font-black uppercase tracking-tight italic">Connected Servers</h2>
+              <Link to="/agents" className="text-sm font-black uppercase tracking-widest text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
                 Manage All <ArrowUpRight className="w-3 h-3" />
               </Link>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {agents.map((agent) => (
                 <Link
                   key={agent.id}
                   to={`/server/${agent.id}`}
-                  className="group block p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
+                  className="group block p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2rem] hover:border-foreground/10 transition-all duration-300"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${agent.status === 'online' ? 'bg-green-100 dark:bg-green-950' : 'bg-slate-100 dark:bg-slate-800'}`}>
-                        <Server className={`w-5 h-5 ${agent.status === 'online' ? 'text-green-700 dark:text-green-300' : 'text-slate-500 dark:text-slate-400'}`} />
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${
+                        agent.status === 'online' 
+                          ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.2)]' 
+                          : 'bg-foreground/5 border-foreground/10 text-muted-foreground'
+                      }`}>
+                        <Server className="w-5 h-5" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{agent.name}</h3>
-                        <p className="text-xs text-slate-600 dark:text-slate-400">{agent.hostname}</p>
+                        <h3 className="text-sm font-black tracking-tight uppercase">{agent.name}</h3>
+                        <p className="text-[10px] font-bold opacity-30 uppercase tracking-widest font-mono italic">{agent.hostname}</p>
                       </div>
                     </div>
-                    <Badge 
-                      className={`rounded-full text-xs px-2 py-0.5 ${agent.status === 'online' ? 'bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'} border-0`}
-                    >
+                    <span className={`text-[8px] font-black tracking-widest px-3 py-1 rounded-full uppercase border ${
+                      agent.status === 'online' 
+                        ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
+                        : 'bg-foreground/5 text-muted-foreground border-foreground/10'
+                    }`}>
                       {agent.status === 'online' ? '● Online' : '○ Offline'}
-                    </Badge>
+                    </span>
                   </div>
                   
-                  <div className="space-y-1 text-xs text-slate-600 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800 pt-3">
+                  <div className="space-y-2 text-[10px] font-black uppercase tracking-wider opacity-60 border-t border-foreground/5 pt-4 font-mono italic">
                     <div className="flex items-center justify-between">
                       <span>IP Address</span>
-                      <span className="text-slate-900 dark:text-white font-medium">{agent.ip_address}</span>
+                      <span className="font-bold opacity-100">{agent.ip_address}</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span>Last Seen</span>
-                      <span className="text-slate-900 dark:text-white font-medium">{new Date(agent.last_seen).toLocaleTimeString([], { hour12: false })}</span>
+                      <span className="font-bold opacity-100">{new Date(agent.last_seen).toLocaleTimeString([], { hour12: false })}</span>
                     </div>
                   </div>
                 </Link>
@@ -365,30 +395,30 @@ export default function Dashboard() {
         )}
 
         {/* Quick Navigation Footer */}
-        <div className="flex flex-col sm:flex-row gap-4 pt-4">
-          <Link to="/monitoring" className="flex-1 p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors flex items-center justify-between group">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">
-                <Activity className="w-5 h-5 text-slate-900 dark:text-white" />
+        <div className="flex flex-col sm:flex-row gap-6 pt-4">
+          <Link to="/monitoring" className="flex-1 p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2rem] hover:border-foreground/10 transition-all duration-300 flex items-center justify-between group">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-foreground/5 rounded-xl flex items-center justify-center border border-foreground/10">
+                <Activity className="w-5 h-5 text-foreground/60" />
               </div>
               <div>
-                <div className="text-sm font-semibold text-slate-900 dark:text-white">Detailed Metrics</div>
-                <div className="text-xs text-slate-600 dark:text-slate-400">View real-time charts</div>
+                <div className="text-sm font-black tracking-tight uppercase">{language === 'id' ? 'Metrik Detail' : 'Detailed Metrics'}</div>
+                <div className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic">{language === 'id' ? 'Lihat grafik waktu nyata' : 'View real-time charts'}</div>
               </div>
             </div>
-            <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300" />
+            <ArrowUpRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all" />
           </Link>
-          <Link to="/terminal" className="flex-1 p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 transition-colors flex items-center justify-between group">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-lg flex items-center justify-center">
-                <Terminal className="w-5 h-5 text-slate-900 dark:text-white" />
+          <Link to="/terminal" className="flex-1 p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2rem] hover:border-foreground/10 transition-all duration-300 flex items-center justify-between group">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-foreground/5 rounded-xl flex items-center justify-center border border-foreground/10">
+                <Terminal className="w-5 h-5 text-foreground/60" />
               </div>
               <div>
-                <div className="text-sm font-semibold text-slate-900 dark:text-white">Terminal</div>
-                <div className="text-xs text-slate-600 dark:text-slate-400">Direct access</div>
+                <div className="text-sm font-black tracking-tight uppercase">{language === 'id' ? 'Terminal' : 'Terminal'}</div>
+                <div className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic">{language === 'id' ? 'Akses langsung' : 'Direct access'}</div>
               </div>
             </div>
-            <ArrowUpRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300" />
+            <ArrowUpRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all" />
           </Link>
         </div>
       </div>

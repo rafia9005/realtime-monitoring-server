@@ -2,20 +2,19 @@
 import { useMcuMetrics } from "@/lib/hooks/useMcuMetrics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import {
-  Loader2,
   AlertCircle,
   Download,
   RefreshCw,
   TrendingUp,
-  Droplets,
   ChevronLeft,
   ChevronRight,
   Thermometer,
   Waves,
   Calendar,
   Filter,
+  Activity,
+  Server
 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 import {
@@ -29,7 +28,7 @@ import {
 } from "recharts";
 
 export default function McuSensorsPage() {
-  const { data: metrics, loading, error, refetch } = useMcuMetrics(true, 10000);
+  const { data: metrics, loading, refetch } = useMcuMetrics(true, 10000);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [selectedMcu, setSelectedMcu] = useState<string>("");

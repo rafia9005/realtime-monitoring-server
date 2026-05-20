@@ -1,5 +1,5 @@
 import PublicLayout from "@/components/PublicLayout";
-import { Sparkles, Mail, Phone, MessageCircle, Send, Globe, Shield, Clock } from "lucide-react";
+import { Sparkles, Mail, Phone, MessageCircle, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Contact() {

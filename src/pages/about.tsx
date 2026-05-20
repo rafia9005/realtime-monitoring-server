@@ -37,7 +37,7 @@ export default function About() {
                         </div>
                     </div>
 
-                    <div className="max-w-7xl mx-auto">
+                    <div className="max-w-7xl mx-auto mb-24">
                         <div className="text-center mb-24">
                             <h2 className="text-4xl font-bold tracking-tight">The Architecture of Watchtower</h2>
                         </div>

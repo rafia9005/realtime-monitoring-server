@@ -9,7 +9,6 @@ import {
     Zap, 
     ArrowRight,
     Lock,
-    Sparkles,
     HardDrive,
     Monitor,
     Network

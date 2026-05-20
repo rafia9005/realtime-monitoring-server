@@ -32,12 +32,14 @@ import { DiskDetail } from "@/components/metrics/DiskDetail";
 import { NetworkDetail } from "@/components/metrics/NetworkDetail";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useLanguage } from "@/lib/LanguageContext";
 
 type MetricSection = "cpu" | "memory" | "disk" | "network";
 
 export default function Monitoring() {
   const { id: agentIdFromUrl } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { language } = useLanguage();
   const [viewMode, setViewMode] = useState<"local" | "agents">(agentIdFromUrl ? "agents" : "local");
   const { data: localMetrics, loading: localLoading, error: localError, refetch: refetchLocal } = useSystemMetrics(viewMode === "local", 5000);
   const { agents, selectedAgent, metrics: agentMetrics, loading: agentLoading, error: agentError, selectAgent, refetch: refetchAgent } = useAgentMetrics(viewMode === "agents", 5000);
@@ -112,7 +114,7 @@ export default function Monitoring() {
             <div className="flex items-center justify-center">
               <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Loading metrics...</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{language === 'id' ? 'Memuat metrik...' : 'Loading metrics...'}</p>
           </div>
         </div>
       </DashboardLayout>
@@ -125,10 +127,10 @@ export default function Monitoring() {
         <div className="flex items-center justify-center h-[60vh]">
           <div className="text-center space-y-4 border border-slate-200 dark:border-slate-800 p-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl max-w-md">
             <AlertCircle className="w-8 h-8 text-red-600 mx-auto" />
-            <p className="text-sm font-semibold text-slate-900 dark:text-white">Connection Error</p>
+            <p className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Kesalahan Koneksi' : 'Connection Error'}</p>
             <p className="text-sm text-slate-600 dark:text-slate-400">{error}</p>
             <Button onClick={() => refetch()} size="sm" className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg mt-4">
-              Try Again
+              {language === 'id' ? 'Coba Lagi' : 'Try Again'}
             </Button>
           </div>
         </div>
@@ -141,10 +143,10 @@ export default function Monitoring() {
   const sections = [
     {
       id: "cpu" as MetricSection,
-      title: "Processing Power",
+      title: language === 'id' ? "Daya Pemrosesan" : "Processing Power",
       icon: Cpu,
       value: `${metrics.cpu.usage_percent.toFixed(1)}%`,
-      subtitle: `${metrics.cpu.cores} cores / ${metrics.cpu.threads} threads`,
+      subtitle: `${metrics.cpu.cores} ${language === 'id' ? 'inti' : 'cores'} / ${metrics.cpu.threads} ${language === 'id' ? 'utas' : 'threads'}`,
       color: "text-blue-600",
       bgColor: "bg-blue-50 dark:bg-blue-950/30",
       component: <CPUDetail cpu={metrics.cpu} />,
@@ -152,7 +154,7 @@ export default function Monitoring() {
     },
     {
       id: "memory" as MetricSection,
-      title: "Active Memory",
+      title: language === 'id' ? "Memori Aktif" : "Active Memory",
       icon: MemoryStick,
       value: `${metrics.memory.used_percent.toFixed(1)}%`,
       subtitle: `${formatBytes(metrics.memory.used)} / ${formatBytes(metrics.memory.total)}`,
@@ -163,10 +165,10 @@ export default function Monitoring() {
     },
     {
       id: "disk" as MetricSection,
-      title: "Storage",
+      title: language === 'id' ? "Penyimpanan" : "Storage",
       icon: HardDrive,
-      value: `${metrics.disk.length} Disk${metrics.disk.length > 1 ? 's' : ''}`,
-      subtitle: `${formatBytes(metrics.disk.reduce((acc, d) => acc + d.used, 0))} used`,
+      value: `${metrics.disk.length} Disk${metrics.disk.length > 1 ? '' : ''}`,
+      subtitle: `${formatBytes(metrics.disk.reduce((acc, d) => acc + d.used, 0))} ${language === 'id' ? 'digunakan' : 'used'}`,
       color: "text-orange-600",
       bgColor: "bg-orange-50 dark:bg-orange-950/30",
       component: <DiskDetail disks={metrics.disk} />,
@@ -174,9 +176,9 @@ export default function Monitoring() {
     },
     {
       id: "network" as MetricSection,
-      title: "Network",
+      title: language === 'id' ? "Jaringan" : "Network",
       icon: Network,
-      value: `${metrics.network.connections.established} Conn.`,
+      value: `${metrics.network.connections.established} ${language === 'id' ? 'Koneksi' : 'Conn.'}`,
       subtitle: `↑ ${formatBytes(metrics.network.bytes_sent)} ↓ ${formatBytes(metrics.network.bytes_recv)}`,
       color: "text-green-600",
       bgColor: "bg-green-50 dark:bg-green-950/30",
@@ -193,9 +195,9 @@ export default function Monitoring() {
           {/* Header */}
           <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800">
             <div>
-              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">Detailed Metrics</h1>
+              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Metrik Detail' : 'Detailed Metrics'}</h1>
               <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
-              {viewMode === "local" ? "This Computer" : selectedAgent ? `Server: ${selectedAgent.name}` : "Select a Server"} • Real-time updates
+              {viewMode === "local" ? (language === 'id' ? "Komputer Ini" : "This Computer") : selectedAgent ? `Server: ${selectedAgent.name}` : (language === 'id' ? "Pilih Server" : "Select a Server")} • {language === 'id' ? 'Pembaruan real-time' : 'Real-time updates'}
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -203,18 +205,18 @@ export default function Monitoring() {
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="rounded-lg border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-medium">
                   <Server className="w-4 h-4 mr-2" />
-                  {viewMode === "local" ? "This Computer" : selectedAgent?.name || "Select Server"}
+                  {viewMode === "local" ? (language === 'id' ? "Komputer Ini" : "This Computer") : selectedAgent?.name || (language === 'id' ? "Pilih Server" : "Select Server")}
                   <ChevronDown className="w-4 h-4 ml-2" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="rounded-lg border-slate-200 dark:border-slate-800">
-                <DropdownMenuLabel>Available</DropdownMenuLabel>
+                <DropdownMenuLabel>{language === 'id' ? 'Tersedia' : 'Available'}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   onClick={() => setViewMode("local")}
                   className="cursor-pointer rounded-md"
                 >
-                  This Computer
+                  {language === 'id' ? 'Komputer Ini' : 'This Computer'}
                   {viewMode === "local" && <Check className="w-4 h-4 ml-auto" />}
                 </DropdownMenuItem>
                 {agents.length > 0 && (
@@ -245,7 +247,7 @@ export default function Monitoring() {
             </DropdownMenu>
 
             <Badge variant="outline" className="rounded-full text-green-700 dark:text-green-300 border-green-300/50 bg-green-50 dark:bg-green-950/30">
-              ● Live
+              ● {language === 'id' ? 'Langsung' : 'Live'}
             </Badge>
             <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800">
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />

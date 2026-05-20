@@ -14,6 +14,8 @@ import ContactPage from './pages/contact'
 import { ClerkProvider, SignedIn, SignedOut, useUser } from '@clerk/clerk-react'
 import { ThemeProvider } from './components/theme-provider'
 import ChatWidget from './components/ChatWidget'
+import { LanguageProvider } from './lib/LanguageContext'
+import { LanguageSwitcher } from './components/LanguageSwitcher'
 import { Lock } from 'lucide-react'
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -75,48 +77,51 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 createRoot(document.getElementById('root')!).render(
   <ThemeProvider defaultTheme="system" storageKey="watchtower-theme">
-    <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={
-            <>
-              <SignedOut>
-                <Navigate to="/home" replace />
-              </SignedOut>
-              <SignedIn>
-                <Navigate to="/dashboard" replace />
-              </SignedIn>
-            </>
-          } />
-          <Route path='/home' element={<HomePage />} />
-          <Route path='/about' element={<AboutPage />} />
-          <Route path='/contact' element={<ContactPage />} />
-          <Route path='/login' element={<Index />} />
-          <Route path='/dashboard' element={
-            <ProtectedRoute><Dashboard /></ProtectedRoute>
-          } />
-          <Route path='/monitoring' element={
-            <ProtectedRoute><Monitoring /></ProtectedRoute>
-          } />
-          <Route path='/server/:id' element={
-            <ProtectedRoute><Monitoring /></ProtectedRoute>
-          } />
-          <Route path='/server' element={
-            <ProtectedRoute><ServerPage /></ProtectedRoute>
-          } />
-          <Route path='/terminal' element={
-            <ProtectedRoute><Terminal /></ProtectedRoute>
-          } />
-           <Route path='/agents' element={
-             <ProtectedRoute><AgentsPage /></ProtectedRoute>
-           } />
-           <Route path='/mcu-sensors' element={
-             <ProtectedRoute><McuSensorsPage /></ProtectedRoute>
-           } />
-          <Route path='*' element={<Navigate to="/home" replace />} />
-        </Routes>
-        <ChatWidget />
-      </BrowserRouter>
-    </ClerkProvider>
+    <LanguageProvider>
+      <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={
+              <>
+                <SignedOut>
+                  <Navigate to="/home" replace />
+                </SignedOut>
+                <SignedIn>
+                  <Navigate to="/dashboard" replace />
+                </SignedIn>
+              </>
+            } />
+            <Route path='/home' element={<HomePage />} />
+            <Route path='/about' element={<AboutPage />} />
+            <Route path='/contact' element={<ContactPage />} />
+            <Route path='/login' element={<Index />} />
+            <Route path='/dashboard' element={
+              <ProtectedRoute><Dashboard /></ProtectedRoute>
+            } />
+            <Route path='/monitoring' element={
+              <ProtectedRoute><Monitoring /></ProtectedRoute>
+            } />
+            <Route path='/server/:id' element={
+              <ProtectedRoute><Monitoring /></ProtectedRoute>
+            } />
+            <Route path='/server' element={
+              <ProtectedRoute><ServerPage /></ProtectedRoute>
+            } />
+            <Route path='/terminal' element={
+              <ProtectedRoute><Terminal /></ProtectedRoute>
+            } />
+            <Route path='/agents' element={
+              <ProtectedRoute><AgentsPage /></ProtectedRoute>
+            } />
+            <Route path='/mcu-sensors' element={
+              <ProtectedRoute><McuSensorsPage /></ProtectedRoute>
+            } />
+            <Route path='*' element={<Navigate to="/home" replace />} />
+          </Routes>
+          <ChatWidget />
+          <LanguageSwitcher />
+        </BrowserRouter>
+      </ClerkProvider>
+    </LanguageProvider>
   </ThemeProvider>
 )

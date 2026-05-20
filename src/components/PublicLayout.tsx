@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Moon, Sun, Menu, X, Rocket, LayoutDashboard, Boxes, Contact, Info } from "lucide-react";
 import { UserButton, SignedIn, SignedOut } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface PublicLayoutProps {
   children: ReactNode;
@@ -15,6 +16,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { language } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,11 +32,11 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
   }, [location]);
 
   const navLinks = [
-    { name: "Home", href: "/home", icon: Rocket },
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, protected: true },
-    { name: "Agents", href: "/agents", icon: Boxes, protected: true },
-    { name: "About", href: "/about", icon: Info },
-    { name: "Contact", href: "/contact", icon: Contact },
+    { name: language === 'id' ? "Beranda" : "Home", href: "/home", icon: Rocket },
+    { name: language === 'id' ? "Dasbor" : "Dashboard", href: "/dashboard", icon: LayoutDashboard, protected: true },
+    { name: language === 'id' ? "Agen" : "Agents", href: "/agents", icon: Boxes, protected: true },
+    { name: language === 'id' ? "Tentang" : "About", href: "/about", icon: Info },
+    { name: language === 'id' ? "Kontak" : "Contact", href: "/contact", icon: Contact },
   ];
 
   return (
@@ -119,10 +121,10 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 </SignedIn>
                 <SignedOut>
                   <Button asChild variant="ghost" className="rounded-xl font-medium hidden md:flex">
-                    <a href="/login">Log In</a>
+                    <a href="/login">{language === 'id' ? 'Masuk' : 'Log In'}</a>
                   </Button>
                   <Button asChild className="rounded-xl font-bold px-6 bg-foreground text-background hover:bg-foreground/90 shadow-xl shadow-foreground/10">
-                    <a href="/login">Get Started</a>
+                    <a href="/login">{language === 'id' ? 'Mulai' : 'Get Started'}</a>
                   </Button>
                 </SignedOut>
               </div>
@@ -161,15 +163,15 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
               <SignedIn>
                 <div className="flex items-center gap-4 px-4">
                   <UserButton afterSignOutUrl="/" />
-                  <span className="text-lg font-medium">Account Settings</span>
+                  <span className="text-lg font-medium">{language === 'id' ? 'Pengaturan Akun' : 'Account Settings'}</span>
                 </div>
               </SignedIn>
               <SignedOut>
                 <Button asChild variant="outline" className="w-full h-12 rounded-2xl">
-                  <a href="/login">Log In</a>
+                  <a href="/login">{language === 'id' ? 'Masuk' : 'Log In'}</a>
                 </Button>
                 <Button asChild className="w-full h-12 rounded-2xl bg-foreground text-background">
-                  <a href="/login">Get Started</a>
+                  <a href="/login">{language === 'id' ? 'Mulai' : 'Get Started'}</a>
                 </Button>
               </SignedOut>
             </div>
@@ -196,7 +198,10 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 <span className="text-xl font-bold tracking-tighter">WATCHTOWER</span>
               </Link>
               <p className="text-muted-foreground leading-relaxed max-w-sm mb-8">
-                Designed for speed, built for reliability. Monitoring infrastructure has never felt this effortless. Experience the zen of system health.
+                {language === 'id'
+                  ? 'Dirancang untuk kecepatan, dibangun untuk keandalan. Pemantauan infrastruktur terasa sangat mudah. Rasakan zen dari kesehatan sistem.'
+                  : 'Designed for speed, built for reliability. Monitoring infrastructure has never felt this effortless. Experience the zen of system health.'
+                }
               </p>
               <div className="flex gap-4">
                  {/* Social links placeholder */}
@@ -204,42 +209,42 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             </div>
             
             <div className="md:col-span-2 md:col-start-7">
-              <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/40 mb-6">Platform</h4>
+              <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/40 mb-6">{language === 'id' ? 'Platform' : 'Platform'}</h4>
               <ul className="space-y-4 text-muted-foreground font-medium">
-                <li><Link to="/dashboard" className="hover:text-primary transition-colors">Dashboard</Link></li>
-                <li><Link to="/monitoring" className="hover:text-primary transition-colors">Live View</Link></li>
-                <li><Link to="/agents" className="hover:text-primary transition-colors">Agents List</Link></li>
-                <li><Link to="/terminal" className="hover:text-primary transition-colors">Remote Shell</Link></li>
+                <li><Link to="/dashboard" className="hover:text-primary transition-colors">{language === 'id' ? 'Dasbor' : 'Dashboard'}</Link></li>
+                <li><Link to="/monitoring" className="hover:text-primary transition-colors">{language === 'id' ? 'Tampilan Langsung' : 'Live View'}</Link></li>
+                <li><Link to="/agents" className="hover:text-primary transition-colors">{language === 'id' ? 'Daftar Agen' : 'Agents List'}</Link></li>
+                <li><Link to="/terminal" className="hover:text-primary transition-colors">{language === 'id' ? 'Terminal Jarak Jauh' : 'Remote Shell'}</Link></li>
               </ul>
             </div>
 
             <div className="md:col-span-2">
-              <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/40 mb-6">Company</h4>
+              <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/40 mb-6">{language === 'id' ? 'Perusahaan' : 'Company'}</h4>
               <ul className="space-y-4 text-muted-foreground font-medium">
-                <li><Link to="/about" className="hover:text-primary transition-colors">Our Vision</Link></li>
-                <li><Link to="/contact" className="hover:text-primary transition-colors">Support</Link></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Privacy</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Security</a></li>
+                <li><Link to="/about" className="hover:text-primary transition-colors">{language === 'id' ? 'Visi Kami' : 'Our Vision'}</Link></li>
+                <li><Link to="/contact" className="hover:text-primary transition-colors">{language === 'id' ? 'Dukungan' : 'Support'}</Link></li>
+                <li><a href="#" className="hover:text-primary transition-colors">{language === 'id' ? 'Privasi' : 'Privacy'}</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">{language === 'id' ? 'Keamanan' : 'Security'}</a></li>
               </ul>
             </div>
 
             <div className="md:col-span-2">
-              <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/40 mb-6">Legal</h4>
+              <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/40 mb-6">{language === 'id' ? 'Hukum' : 'Legal'}</h4>
               <ul className="space-y-4 text-muted-foreground font-medium">
-                <li><a href="#" className="hover:text-primary transition-colors">Terms</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">License</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">{language === 'id' ? 'Syarat' : 'Terms'}</a></li>
+                <li><a href="#" className="hover:text-primary transition-colors">{language === 'id' ? 'Lisensi' : 'License'}</a></li>
               </ul>
             </div>
           </div>
           
           <div className="pt-12 border-t border-border flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-sm text-muted-foreground">
-              &copy; {new Date().getFullYear()} WATCHTOWER INDUSTRIES. PROUDLY DEPLOYED GLOBALLY.
+              &copy; {new Date().getFullYear()} WATCHTOWER INDUSTRIES. {language === 'id' ? 'DENGAN BANGGA DIGUNAKAN SECARA GLOBAL.' : 'PROUDLY DEPLOYED GLOBALLY.'}
             </p>
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                  <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                 <span className="text-xs font-mono font-bold">ALL SYSTEMS OPERATIONAL</span>
+                 <span className="text-xs font-mono font-bold">{language === 'id' ? 'SEMUA SISTEM BEROPERASI' : 'ALL SYSTEMS OPERATIONAL'}</span>
               </div>
               <span className="text-xs font-mono text-muted-foreground">BUILD v4.2.0-STABLE</span>
             </div>

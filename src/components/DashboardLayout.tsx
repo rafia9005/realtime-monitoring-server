@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
+import { useLanguage } from "@/lib/LanguageContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,14 +32,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { setTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const { language } = useLanguage();
 
   const menuItems = [
-    { icon: Home, label: "Dashboard", href: "/dashboard" },
-    { icon: Activity, label: "Monitoring", href: "/monitoring" },
-    { icon: Server, label: "Server", href: "/server" },
-    { icon: Thermometer, label: "MCU Sensors", href: "/mcu-sensors" },
-    { icon: Terminal, label: "Terminal", href: "/terminal" },
-    { icon: Boxes, label: "Agents", href: "/agents" },
+    { icon: Home, label: language === 'id' ? "Dasbor" : "Dashboard", href: "/dashboard" },
+    { icon: Activity, label: language === 'id' ? "Pemantauan" : "Monitoring", href: "/monitoring" },
+    { icon: Server, label: language === 'id' ? "Server" : "Server", href: "/server" },
+    { icon: Thermometer, label: language === 'id' ? "Sensor MCU" : "MCU Sensors", href: "/mcu-sensors" },
+    { icon: Terminal, label: language === 'id' ? "Terminal" : "Terminal", href: "/terminal" },
+    { icon: Boxes, label: language === 'id' ? "Agen" : "Agents", href: "/agents" },
   ];
 
   return (
@@ -114,7 +116,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </p>
                 <div className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-[8px] text-muted-foreground uppercase">Online</span>
+                  <span className="text-[8px] text-muted-foreground uppercase">{language === 'id' ? 'Aktif' : 'Online'}</span>
                 </div>
               </div>
             </div>
@@ -137,13 +139,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="hidden sm:flex items-center gap-2">
                 <span className="text-muted-foreground text-xs">/</span>
                 <h1 className="text-xs font-bold uppercase tracking-widest">
-                  {menuItems.find(item => item.href === location.pathname)?.label || "Dashboard"}
+                  {menuItems.find(item => item.href === location.pathname)?.label || (language === 'id' ? "Dasbor" : "Dashboard")}
                 </h1>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1 text-[10px] text-muted-foreground mr-4 hidden md:flex">
-                <span className="opacity-50">SYS_TIME:</span>
+                <span className="opacity-50">{language === 'id' ? 'WAKTU_SISTEM:' : 'SYS_TIME:'}</span>
                 <span>{new Date().toLocaleTimeString([], { hour12: false })}</span>
               </div>
               
@@ -158,13 +160,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="font-mono text-xs rounded-none border-border">
                   <DropdownMenuItem onClick={() => setTheme("light")} className="rounded-none">
-                    LIGHT_MODE
+                    {language === 'id' ? 'MODE_TERANG' : 'LIGHT_MODE'}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("dark")} className="rounded-none">
-                    DARK_MODE
+                    {language === 'id' ? 'MODE_GELAP' : 'DARK_MODE'}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("system")} className="rounded-none">
-                    SYSTEM_DEFAULT
+                    {language === 'id' ? 'STANDAR_SISTEM' : 'SYSTEM_DEFAULT'}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

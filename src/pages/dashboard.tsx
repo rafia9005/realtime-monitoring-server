@@ -16,11 +16,13 @@ import {
 } from "lucide-react";
 import { useSystemMetrics } from "@/lib/hooks/useSystemMetrics";
 import { useAgentMetrics } from "@/lib/hooks/useAgentMetrics";
+import { useLanguage } from "@/lib/LanguageContext";
 import { Link } from "react-router-dom";
 
 export default function Dashboard() {
   const { data: metrics, loading, error, refetch } = useSystemMetrics(true, 5000);
   const { agents } = useAgentMetrics(true, 10000);
+  const { language } = useLanguage();
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return "0 B";
@@ -53,7 +55,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-center">
               <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Loading metrics...</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{language === 'id' ? 'Memuat metrik...' : 'Loading metrics...'}</p>
           </div>
         </div>
       </DashboardLayout>
@@ -66,10 +68,10 @@ export default function Dashboard() {
         <div className="flex items-center justify-center h-[60vh]">
           <div className="text-center space-y-4 border border-slate-200 dark:border-slate-800 p-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl max-w-md">
             <AlertCircle className="w-8 h-8 text-red-600 mx-auto" />
-            <p className="text-sm font-semibold text-slate-900 dark:text-white">Connection Error</p>
+            <p className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Kesalahan Koneksi' : 'Connection Error'}</p>
             <p className="text-sm text-slate-600 dark:text-slate-400">{error}</p>
             <Button onClick={() => refetch()} size="sm" className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg mt-4">
-              Try Again
+              {language === 'id' ? 'Coba Lagi' : 'Try Again'}
             </Button>
           </div>
         </div>
@@ -97,9 +99,9 @@ export default function Dashboard() {
           </div>
              <div className="flex items-center gap-4">
             <div className="flex flex-col items-end">
-              <span className="text-xs text-slate-600 dark:text-slate-400 font-medium mb-1">Status</span>
+              <span className="text-xs text-slate-600 dark:text-slate-400 font-medium mb-1">{language === 'id' ? 'Status' : 'Status'}</span>
               <Badge className="rounded-full text-emerald-700 dark:text-emerald-300 border border-emerald-300/50 bg-emerald-50 dark:bg-emerald-950/30 text-sm px-3 py-1 font-medium">
-                ● Live
+                ● {language === 'id' ? 'Langsung' : 'Live'}
               </Badge>
             </div>
             <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800">
@@ -118,12 +120,12 @@ export default function Dashboard() {
                    <Cpu className="w-5 h-5 text-slate-900 dark:text-white" />
                  </div>
                  <div>
-                   <div className="text-sm font-semibold text-slate-900 dark:text-white">Processing Power</div>
+                   <div className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Daya Pemrosesan' : 'Processing Power'}</div>
                    <div className="text-xs text-slate-600 dark:text-slate-400">{metrics.cpu.cores}C / {metrics.cpu.threads}T</div>
                  </div>
                </div>
                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${cpuUsage > 80 ? 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300' : cpuUsage > 60 ? 'bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-300' : 'bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300'}`}>
-                 {cpuUsage > 80 ? "High" : cpuUsage > 60 ? "Medium" : "Normal"}
+                 {cpuUsage > 80 ? (language === 'id' ? "Tinggi" : "High") : cpuUsage > 60 ? (language === 'id' ? "Sedang" : "Medium") : (language === 'id' ? "Normal" : "Normal")}
                </span>
              </div>
             <div className={`text-3xl font-semibold text-slate-900 dark:text-white mb-3`}>
@@ -147,12 +149,12 @@ export default function Dashboard() {
                    <MemoryStick className="w-5 h-5 text-slate-900 dark:text-white" />
                  </div>
                  <div>
-                   <div className="text-sm font-semibold text-slate-900 dark:text-white">Active Memory</div>
+                   <div className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Memori Aktif' : 'Active Memory'}</div>
                    <div className="text-xs text-slate-600 dark:text-slate-400">{formatBytes(metrics.memory.used)}</div>
                  </div>
                </div>
                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${memUsage > 85 ? 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300' : memUsage > 70 ? 'bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-300' : 'bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300'}`}>
-                 {memUsage > 85 ? "High" : memUsage > 70 ? "Medium" : "Normal"}
+                 {memUsage > 85 ? (language === 'id' ? "Tinggi" : "High") : memUsage > 70 ? (language === 'id' ? "Sedang" : "Medium") : (language === 'id' ? "Normal" : "Normal")}
                </span>
              </div>
             <div className={`text-3xl font-semibold text-slate-900 dark:text-white mb-3`}>
@@ -176,12 +178,12 @@ export default function Dashboard() {
                    <HardDrive className="w-5 h-5 text-slate-900 dark:text-white" />
                  </div>
                  <div>
-                   <div className="text-sm font-semibold text-slate-900 dark:text-white">Storage</div>
+                   <div className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Penyimpanan' : 'Storage'}</div>
                    <div className="text-xs text-slate-600 dark:text-slate-400">{formatBytes(totalDiskSize)}</div>
                  </div>
                </div>
                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${diskUsage > 90 ? 'bg-red-100 dark:bg-red-950 text-red-700 dark:text-red-300' : diskUsage > 75 ? 'bg-yellow-100 dark:bg-yellow-950 text-yellow-700 dark:text-yellow-300' : 'bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300'}`}>
-                 {diskUsage > 90 ? "Critical" : diskUsage > 75 ? "Warning" : "Good"}
+                 {diskUsage > 90 ? (language === 'id' ? "Kritis" : "Critical") : diskUsage > 75 ? (language === 'id' ? "Peringatan" : "Warning") : (language === 'id' ? "Bagus" : "Good")}
                </span>
              </div>
             <div className={`text-3xl font-semibold text-slate-900 dark:text-white mb-3`}>
@@ -205,20 +207,20 @@ export default function Dashboard() {
                    <Network className="w-5 h-5 text-slate-900 dark:text-white" />
                  </div>
                  <div>
-                   <div className="text-sm font-semibold text-slate-900 dark:text-white">Network</div>
-                   <div className="text-xs text-slate-600 dark:text-slate-400">Connections</div>
+                   <div className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Jaringan' : 'Network'}</div>
+                   <div className="text-xs text-slate-600 dark:text-slate-400">{language === 'id' ? 'Koneksi' : 'Connections'}</div>
                  </div>
                </div>
                <span className={`text-xs font-semibold px-2 py-1 rounded-full bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300`}>
-                 Active
+                 {language === 'id' ? 'Aktif' : 'Active'}
                </span>
              </div>
              <div className="text-3xl font-semibold text-slate-900 dark:text-white mb-3">
                {metrics.network.connections.established}
              </div>
              <div className="text-xs text-slate-600 dark:text-slate-400 space-y-1">
-               <div>↑ Sent: {formatBytes(metrics.network.bytes_sent)}</div>
-               <div>↓ Received: {formatBytes(metrics.network.bytes_recv)}</div>
+               <div>↑ {language === 'id' ? 'Terkirim:' : 'Sent:'} {formatBytes(metrics.network.bytes_sent)}</div>
+               <div>↓ {language === 'id' ? 'Diterima:' : 'Received:'} {formatBytes(metrics.network.bytes_recv)}</div>
              </div>
           </div>
         </div>
@@ -226,19 +228,19 @@ export default function Dashboard() {
          {/* Secondary Info Bar */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">Uptime</div>
+              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">{language === 'id' ? 'Waktu Aktif' : 'Uptime'}</div>
               <div className="text-2xl font-semibold text-slate-900 dark:text-white">{formatUptime(metrics.system.uptime)}</div>
             </div>
             <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">Load Average</div>
+              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">{language === 'id' ? 'Rata-rata Beban' : 'Load Average'}</div>
               <div className="text-sm font-semibold text-slate-900 dark:text-white">{metrics.load.load1.toFixed(2)} / {metrics.load.load5.toFixed(2)}</div>
             </div>
             <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">Processes</div>
+              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">{language === 'id' ? 'Proses' : 'Processes'}</div>
               <div className="text-sm font-semibold text-slate-900 dark:text-white">{metrics.process.running}/{metrics.process.total}</div>
             </div>
             <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800">
-              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">Temperature</div>
+              <div className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">{language === 'id' ? 'Suhu' : 'Temperature'}</div>
               <div className="text-sm font-semibold text-slate-900 dark:text-white">{metrics.temperature?.cpu_temp ? `${metrics.temperature.cpu_temp.toFixed(1)}°C` : "N/A"}</div>
             </div>
           </div>

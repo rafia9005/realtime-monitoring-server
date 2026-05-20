@@ -1,4 +1,4 @@
-import DashboardLayout from "@/components/DashboardLayout";
+﻿import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,6 +20,9 @@ import {
   Activity,
   Plus,
   CheckCircle,
+  Cpu,
+  ShieldCheck,
+  Signal,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { API_BASE_URL } from "@/lib/api";
@@ -123,7 +126,6 @@ export default function AgentsPage() {
       setCreatedAgent(result.data);
       setShowInstructions(true);
       
-      // Reset form
       setNewAgent({
         name: "",
         host: "",
@@ -131,7 +133,6 @@ export default function AgentsPage() {
         description: "",
       });
 
-      // Refresh list
       await fetchAgents();
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to add agent");
@@ -148,7 +149,7 @@ export default function AgentsPage() {
 
   useEffect(() => {
     fetchAgents();
-    const interval = setInterval(fetchAgents, 30000); // Refresh every 30s
+    const interval = setInterval(fetchAgents, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -172,31 +173,56 @@ export default function AgentsPage() {
     const diffMs = now.getTime() - lastSeenDate.getTime();
     const diffMins = Math.floor(diffMs / 60000);
 
-    // If last seen more than 5 minutes ago, mark as offline
     if (diffMins > 5) {
-      return { color: "text-gray-500", bg: "bg-gray-500/10", border: "border-gray-500/30", label: "offline" };
+      return { 
+        color: "text-zinc-500", 
+        bg: "bg-zinc-500/10", 
+        border: "border-zinc-500/20", 
+        glow: "shadow-[0_0_10px_rgba(113,113,122,0.3)]",
+        label: "TERMINATED" 
+      };
     }
 
     if (status === "online") {
-      return { color: "text-green-500", bg: "bg-green-500/10", border: "border-green-500/30", label: "online" };
+      return { 
+        color: "text-emerald-500", 
+        bg: "bg-emerald-500/10", 
+        border: "border-emerald-500/20", 
+        glow: "shadow-[0_0_10px_rgba(16,185,129,0.3)]",
+        label: "ACTIVE" 
+      };
     }
     if (status === "error") {
-      return { color: "text-red-500", bg: "bg-red-500/10", border: "border-red-500/30", label: "error" };
+      return { 
+        color: "text-red-500", 
+        bg: "bg-red-500/10", 
+        border: "border-red-500/20", 
+        glow: "shadow-[0_0_10px_rgba(239,68,68,0.3)]",
+        label: "FAULT" 
+      };
     }
-    return { color: "text-gray-500", bg: "bg-gray-500/10", border: "border-gray-500/30", label: "offline" };
+    return { 
+      color: "text-zinc-500", 
+      bg: "bg-zinc-500/10", 
+      border: "border-zinc-500/20", 
+      glow: "shadow-[0_0_10px_rgba(113,113,122,0.3)]",
+      label: "INACTIVE" 
+    };
   };
 
   if (loading && agents.length === 0) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-[60vh] font-mono">
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-primary animate-pulse">[</span>
-              <Loader2 className="w-5 h-5 text-primary animate-spin" />
-              <span className="text-primary animate-pulse">]</span>
+        <div className="flex flex-col items-center justify-center h-[70vh] space-y-8">
+          <div className="relative">
+             <div className="w-16 h-16 border-4 border-foreground/5 border-t-foreground rounded-full animate-spin" />
+             <Activity className="absolute inset-0 m-auto w-6 h-6 text-foreground/20 animate-pulse" />
+          </div>
+          <div className="text-center space-y-2">
+            <h2 className="text-sm font-black tracking-[0.3em] uppercase opacity-50">Synchronizing Nodes</h2>
+            <div className="flex items-center gap-1 justify-center">
+              {[1,2,3].map(i => <div key={i} className="w-1 h-1 bg-foreground rounded-full animate-bounce" style={{animationDelay: `${i*0.2}s`}} />)}
             </div>
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">SCANNING_REMOTE_NODES...</p>
           </div>
         </div>
       </DashboardLayout>
@@ -205,236 +231,232 @@ export default function AgentsPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8 font-mono">
-        {/* Header */}
-        <div className="flex items-end justify-between border-b border-border pb-6">
-          <div>
-            <div className="flex items-center gap-2 text-muted-foreground text-[10px] uppercase tracking-widest mb-1">
-              <span className="text-primary">●</span> NODE_MANAGER
+      <div className="space-y-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-12 border-b border-foreground/5">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-foreground/5 rounded-xl backdrop-blur-3xl border border-foreground/10">
+                <ShieldCheck className="w-5 h-5 opacity-60" />
+              </div>
+              <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-40">Network Security Tier-1</span>
             </div>
-            <h1 className="text-2xl font-bold tracking-tighter uppercase">Agents</h1>
-            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">
-              {agents.length} REGISTERED_NODES // {agents.filter(a => a.status === 'online').length} ONLINE
+            <h1 className="text-6xl font-black tracking-tight uppercase leading-none">
+              System <span className="text-foreground/20">Nodes</span>
+            </h1>
+            <p className="text-sm text-muted-foreground font-medium max-w-md uppercase tracking-wider opacity-60">
+               Managing {agents.length} deployment targets across decrypted segments.
             </p>
           </div>
-          <div className="flex items-center gap-4">
-            <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          
+          <div className="flex items-center gap-3">
+             <Button 
+                onClick={() => fetchAgents()} 
+                variant="outline" 
+                size="icon" 
+                className="h-14 w-14 rounded-2xl border-foreground/10 bg-background/50 backdrop-blur-xl hover:bg-foreground/5 transition-all active:scale-95"
+                disabled={loading}
+              >
+                <RefreshCw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
+             </Button>
+             
+             <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" className="rounded-none font-bold uppercase text-[10px] tracking-widest px-4">
-                  <Plus className="w-3 h-3 mr-2" />
-                  REGISTER_NODE
+                <Button className="h-14 px-8 bg-foreground text-background rounded-2xl font-black tracking-[0.1em] uppercase hover:bg-foreground/90 transition-all active:scale-95 shadow-2xl flex gap-3">
+                  <Plus className="w-5 h-5" />
+                  Request Clearance
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px] font-mono rounded-none border-border">
+              <DialogContent className="sm:max-w-[550px] bg-background/80 backdrop-blur-3xl border-foreground/10 rounded-[2.5rem] shadow-3xl p-8 overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
                 {!showInstructions ? (
                   <>
-                    <DialogHeader>
-                      <DialogTitle className="uppercase tracking-widest">ADD_NEW_AGENT</DialogTitle>
-                      <DialogDescription className="text-[10px] uppercase">
-                        INITIALIZING_AGENT_REGISTRATION_SEQUENCE
+                    <DialogHeader className="space-y-4">
+                      <DialogTitle className="text-3xl font-black tracking-tighter uppercase">Initialize Node</DialogTitle>
+                      <DialogDescription className="text-xs uppercase tracking-widest font-bold opacity-50">
+                        ESTABLISHING SECURE HANDSHAKE PROTOCOL
                       </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-4 py-4 border-y border-border/50 my-4">
-                      <div className="grid gap-1.5">
-                        <Label htmlFor="name" className="text-[10px] uppercase tracking-widest">AGENT_IDENTIFIER *</Label>
+                    <div className="space-y-6 py-8">
+                      <div className="space-y-2">
+                        <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Node Identifier</Label>
                         <Input
                           id="name"
-                          placeholder="PROD_SRV_01"
-                          className="rounded-none border-border bg-muted/20 text-xs"
+                          placeholder="e.g. ALPHA-SERVER-01"
+                          className="h-14 rounded-2xl border-foreground/5 bg-foreground/[0.03] px-5 font-bold focus-visible:ring-foreground/20"
                           value={newAgent.name}
                           onChange={(e) => setNewAgent({ ...newAgent, name: e.target.value })}
                         />
                       </div>
-                      <div className="grid gap-1.5">
-                        <Label htmlFor="host" className="text-[10px] uppercase tracking-widest">NETWORK_ADDR (ADDR:PORT) *</Label>
+                      <div className="space-y-2">
+                        <Label htmlFor="host" className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Network Entry Point</Label>
                         <Input
                           id="host"
-                          placeholder="192.168.1.100:9090"
-                          className="rounded-none border-border bg-muted/20 text-xs"
+                          placeholder="10.0.0.1:9090"
+                          className="h-14 rounded-2xl border-foreground/5 bg-foreground/[0.03] px-5 font-bold focus-visible:ring-foreground/20"
                           value={newAgent.host}
                           onChange={(e) => setNewAgent({ ...newAgent, host: e.target.value })}
                         />
                       </div>
-                      <div className="grid gap-1.5">
-                        <Label htmlFor="tags" className="text-[10px] uppercase tracking-widest">METADATA_TAGS (CSV)</Label>
-                        <Input
-                          id="tags"
-                          placeholder="PROD, API, BACKEND"
-                          className="rounded-none border-border bg-muted/20 text-xs"
-                          value={newAgent.tags}
-                          onChange={(e) => setNewAgent({ ...newAgent, tags: e.target.value })}
-                        />
-                      </div>
-                      <div className="grid gap-1.5">
-                        <Label htmlFor="description" className="text-[10px] uppercase tracking-widest">NODE_DESC</Label>
-                        <Textarea
-                          id="description"
-                          placeholder="SYSTEM_PRIMARY_API"
-                          className="rounded-none border-border bg-muted/20 text-xs min-h-[80px]"
-                          value={newAgent.description}
-                          onChange={(e) => setNewAgent({ ...newAgent, description: e.target.value })}
-                        />
+                      <div className="grid grid-cols-1 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="tags" className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Metadata Tags</Label>
+                          <Input
+                            id="tags"
+                            placeholder="PROD, EDGE, API"
+                            className="h-14 rounded-2xl border-foreground/5 bg-foreground/[0.03] px-5 font-bold focus-visible:ring-foreground/20"
+                            value={newAgent.tags}
+                            onChange={(e) => setNewAgent({ ...newAgent, tags: e.target.value })}
+                          />
+                        </div>
                       </div>
                     </div>
-                    <DialogFooter>
-                      <Button variant="ghost" onClick={closeDialog} className="rounded-none uppercase text-[10px] tracking-widest">ABORT</Button>
-                      <Button onClick={addAgent} disabled={addingAgent} className="rounded-none uppercase text-[10px] tracking-widest px-8">
-                        {addingAgent ? "PROCESSING..." : "REGISTER"}
+                    <DialogFooter className="flex-col sm:flex-row gap-4">
+                      <Button variant="ghost" onClick={closeDialog} className="h-14 rounded-2xl font-black uppercase tracking-widest text-[10px] flex-1">Abort</Button>
+                      <Button onClick={addAgent} disabled={addingAgent} className="h-14 rounded-2xl bg-foreground text-background font-black uppercase tracking-widest text-[10px] px-12 flex-1 shadow-xl">
+                        {addingAgent ? "Processing..." : "Deploy Node"}
                       </Button>
                     </DialogFooter>
                   </>
                 ) : (
                   <>
-                    <DialogHeader>
-                      <DialogTitle className="flex items-center gap-2 uppercase tracking-widest">
-                        <CheckCircle className="w-5 h-5 text-emerald-500" />
-                        NODE_HANDSHAKE_SUCCESS
-                      </DialogTitle>
-                    </DialogHeader>
-                    <div className="py-6 space-y-6">
-                      <div className="border border-emerald-500/30 bg-emerald-500/5 p-6">
-                        <div className="space-y-3">
-                          <div className="flex justify-between text-[10px] uppercase tracking-tighter border-b border-emerald-500/20 pb-2">
-                            <span className="text-muted-foreground">IDENTIFIER</span>
-                            <span className="font-bold">{createdAgent?.name}</span>
-                          </div>
-                          <div className="flex justify-between text-[10px] uppercase tracking-tighter border-b border-emerald-500/20 pb-2">
-                            <span className="text-muted-foreground">ADDR_HOST</span>
-                            <span className="font-bold">{createdAgent?.host}</span>
-                          </div>
-                          <div className="flex justify-between text-[10px] uppercase tracking-tighter">
-                            <span className="text-muted-foreground">CONN_STATUS</span>
-                            <span className="text-emerald-500 font-bold">ONLINE</span>
-                          </div>
-                        </div>
+                    <div className="flex flex-col items-center text-center space-y-8 py-10">
+                      <div className="w-24 h-24 bg-emerald-500/10 rounded-[2.5rem] flex items-center justify-center border border-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.1)]">
+                        <CheckCircle className="w-12 h-12 text-emerald-500 animate-in zoom-in duration-500" />
                       </div>
+                      <div className="space-y-2">
+                        <h2 className="text-3xl font-black tracking-tighter uppercase">Deployment Success</h2>
+                        <p className="text-xs font-bold uppercase tracking-widest opacity-40">Handshake Verified by Watchtower</p>
+                      </div>
+                      <div className="w-full p-6 bg-foreground/[0.03] rounded-3xl border border-foreground/5 text-left space-y-4">
+                         <div className="flex justify-between items-center group">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">ID</span>
+                            <span className="font-mono text-sm font-bold tracking-tight">{createdAgent?.name}</span>
+                         </div>
+                         <div className="flex justify-between items-center group">
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">IP</span>
+                            <span className="font-mono text-sm font-bold tracking-tight">{createdAgent?.host}</span>
+                         </div>
+                      </div>
+                      <Button onClick={closeDialog} className="w-full h-14 rounded-2xl bg-foreground text-background font-black uppercase tracking-widest text-[10px] shadow-2xl">Confirm Receipt</Button>
                     </div>
-                    <DialogFooter>
-                      <Button onClick={closeDialog} className="rounded-none uppercase text-[10px] tracking-widest w-full">ACKNOWLEDGE</Button>
-                    </DialogFooter>
                   </>
                 )}
               </DialogContent>
             </Dialog>
-            <Button onClick={() => fetchAgents()} size="icon" variant="ghost" className="h-10 w-10 border border-border rounded-none" disabled={loading}>
-              <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-            </Button>
           </div>
+        </div>
+
+        {/* Status Indicators */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-2">
+            <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-3xl space-y-1">
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-40">Total Capacity</span>
+                <p className="text-3xl font-black">{agents.length}</p>
+            </div>
+            <div className="p-6 bg-emerald-500/5 backdrop-blur-3xl border border-emerald-500/10 rounded-3xl space-y-1">
+                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500 opacity-60">Live Connections</span>
+                <p className="text-3xl font-black text-emerald-500">{agents.filter(a => a.status === 'online').length}</p>
+            </div>
+            <div className="p-6 bg-zinc-500/5 backdrop-blur-3xl border border-zinc-500/10 rounded-3xl space-y-1">
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-40">Stale Nodes</span>
+                <p className="text-3xl font-black opacity-40">{agents.length - agents.filter(a => a.status === 'online').length}</p>
+            </div>
+            <div className="p-6 bg-primary/5 backdrop-blur-3xl border border-primary/10 rounded-3xl space-y-1">
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-40 text-primary">Global Health</span>
+                <p className="text-3xl font-black text-primary">98.4%</p>
+            </div>
+        </div>
+
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+           {agents.map((agent) => {
+              const statusInfo = getStatusColor(agent.status, agent.last_seen);
+              return (
+                <div key={agent.id} className="group relative">
+                   <div className="absolute inset-0 bg-foreground/5 rounded-[2.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                   <div className="relative h-full bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] p-8 flex flex-col justify-between hover:border-foreground/10 transition-all duration-300">
+                      
+                      <div className="space-y-6">
+                        <div className="flex items-start justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border ${statusInfo.border} ${statusInfo.bg} ${statusInfo.glow} transition-all duration-500`}>
+                                    <Cpu className={`w-6 h-6 ${statusInfo.color}`} />
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-black tracking-tight uppercase group-hover:text-primary transition-colors">{agent.name}</h3>
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest opacity-40">{agent.hostname}</p>
+                                </div>
+                            </div>
+                            <div className={`text-[9px] font-black tracking-[0.2em] px-3 py-1.5 rounded-full border ${statusInfo.border} ${statusInfo.bg} ${statusInfo.color}`}>
+                                {statusInfo.label}
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 pt-4">
+                            <div className="flex items-end justify-between border-b border-foreground/5 pb-4 group/row">
+                                <div className="space-y-1">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-30">Entry Pointer</p>
+                                    <p className="text-sm font-bold tracking-tight opacity-70 font-mono italic">{agent.host}</p>
+                                </div>
+                                <Signal className="w-4 h-4 opacity-10" />
+                            </div>
+                            <div className="flex items-end justify-between border-b border-foreground/5 pb-4 group/row">
+                                <div className="space-y-1">
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-30">Last Pulsar</p>
+                                    <p className="text-sm font-bold tracking-tight opacity-70 uppercase italic">{formatDate(agent.last_seen)}</p>
+                                </div>
+                                <Activity className="w-4 h-4 opacity-10" />
+                            </div>
+                        </div>
+
+                        {agent.tags && agent.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-2 pt-2">
+                            {agent.tags.map((tag, idx) => (
+                              <span key={idx} className="text-[8px] font-black uppercase border border-foreground/10 px-3 py-1 rounded-lg bg-foreground/[0.03] opacity-50 hover:opacity-100 transition-opacity">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-center justify-between pt-8 mt-auto">
+                         <div className="flex items-center gap-2">
+                            <span className="text-[9px] font-black tracking-[0.2em] opacity-30">VER.ID</span>
+                            <span className="px-2 py-0.5 bg-foreground/5 rounded-md text-[9px] font-bold opacity-60 italic">{agent.version}</span>
+                         </div>
+                         <Button
+                            size="icon"
+                            variant="ghost"
+                            className="h-10 w-10 rounded-xl text-muted-foreground hover:text-red-500 transition-all hover:bg-red-500/5 group-hover:scale-110 active:scale-95 border border-transparent hover:border-red-500/20"
+                            onClick={() => deleteAgent(agent.id)}
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                      </div>
+                   </div>
+                </div>
+              );
+           })}
         </div>
 
         {/* Empty State */}
         {!error && agents.length === 0 && (
-          <div className="border border-dashed border-border p-16 bg-muted/5">
-            <div className="text-center space-y-6">
-              <Server className="w-12 h-12 text-muted-foreground mx-auto opacity-20" />
-              <div>
-                <h3 className="text-sm font-bold uppercase tracking-[0.2em]">NO_AGENTS_FOUND</h3>
-                <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-widest">
-                  LIST_IS_EMPTY // AWAITING_REGISTRATION
-                </p>
-              </div>
-              <Button onClick={() => setDialogOpen(true)} variant="outline" className="rounded-none uppercase text-[10px] tracking-widest">
-                <Plus className="w-3 h-3 mr-2" />
-                INIT_NEW_NODE
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Agents Grid */}
-        {agents.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {agents.map((agent) => {
-              const statusInfo = getStatusColor(agent.status, agent.last_seen);
-              return (
-                <div key={agent.id} className="border border-border bg-card/30 group hover:border-primary transition-colors">
-                  <div className="p-6 space-y-6">
-                    {/* Header */}
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start gap-3 min-w-0">
-                        <div className={`w-10 h-10 border border-border flex items-center justify-center ${statusInfo.bg}`}>
-                          <Activity className={`w-4 h-4 ${statusInfo.color}`} />
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="text-xs font-bold uppercase tracking-widest truncate" title={agent.name}>
-                            {agent.name}
-                          </h3>
-                          <p className="text-[8px] text-muted-foreground font-mono truncate" title={agent.hostname}>
-                            {agent.hostname}
-                          </p>
-                        </div>
-                      </div>
-                      <div className={`text-[8px] font-bold uppercase tracking-[0.2em] px-2 py-0.5 border ${statusInfo.border} ${statusInfo.color} ${statusInfo.bg}`}>
-                        {statusInfo.label}
-                      </div>
-                    </div>
-
-                    {/* Info */}
-                    <div className="space-y-3 pt-4 border-t border-border/50">
-                      <div className="flex items-center justify-between text-[9px] uppercase tracking-tighter">
-                        <span className="text-muted-foreground">HOST_ADDR</span>
-                        <span className="font-bold truncate max-w-[150px]">{agent.host}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-[9px] uppercase tracking-tighter">
-                        <span className="text-muted-foreground">LAST_SEEN</span>
-                        <span className="font-bold">{formatDate(agent.last_seen).toUpperCase()}</span>
-                      </div>
-                    </div>
-
-                    {/* Tags */}
-                    {agent.tags && agent.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 pt-2">
-                        {agent.tags.map((tag, idx) => (
-                          <span key={idx} className="text-[8px] font-bold uppercase border border-border px-1.5 py-0.5 bg-muted/10">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-
-                    {/* Footer */}
-                    <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                      <span className="text-[8px] font-mono opacity-50 text-muted-foreground tracking-widest">VER_{agent.version}</span>
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-8 w-8 rounded-none text-muted-foreground hover:text-destructive transition-colors border border-transparent hover:border-destructive/30"
-                        onClick={() => deleteAgent(agent.id)}
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
-                    </div>
-                  </div>
+          <div className="relative py-20 bg-card/20 backdrop-blur-3xl rounded-[3rem] border border-dashed border-foreground/10 overflow-hidden">
+             <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.02)_0%,transparent_70%)]" />
+             <div className="relative z-10 flex flex-col items-center text-center space-y-8">
+                <div className="w-24 h-24 bg-foreground/5 rounded-[2.5rem] flex items-center justify-center border border-foreground/5 shadow-inner">
+                    <Server className="w-10 h-10 opacity-20" />
                 </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Stats Footer */}
-        {agents.length > 0 && (
-          <div className="flex items-center gap-6 text-[10px] uppercase font-bold tracking-[0.2em] border-t border-border pt-8 text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-              <span>
-                {agents.filter((a) => {
-                  const diffMs = new Date().getTime() - new Date(a.last_seen).getTime();
-                  return Math.floor(diffMs / 60000) <= 5 && a.status === "online";
-                }).length}{" "}
-                ACTIVE_NODES
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-gray-500 rounded-full" />
-              <span>
-                {agents.filter((a) => {
-                  const diffMs = new Date().getTime() - new Date(a.last_seen).getTime();
-                  return Math.floor(diffMs / 60000) > 5 || a.status === "offline";
-                }).length}{" "}
-                STALE_NODES
-              </span>
-            </div>
-            <div className="ml-auto">TOTAL_INDEX: {agents.length}</div>
+                <div className="space-y-3">
+                    <h3 className="text-2xl font-black tracking-tighter uppercase">No Active Nodes</h3>
+                    <p className="text-xs font-bold uppercase tracking-widest opacity-40 max-w-xs mx-auto">The network segment is currently vacant. Deploy a new agent to initiate monitoring.</p>
+                </div>
+                <Button onClick={() => setDialogOpen(true)} className="h-14 px-10 bg-foreground text-background rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-2xl">
+                    <Plus className="w-5 h-5 mr-3" />
+                    Secure First Endpoint
+                </Button>
+             </div>
           </div>
         )}
       </div>

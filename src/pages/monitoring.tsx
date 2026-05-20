@@ -32,12 +32,14 @@ import { DiskDetail } from "@/components/metrics/DiskDetail";
 import { NetworkDetail } from "@/components/metrics/NetworkDetail";
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useLanguage } from "@/lib/LanguageContext";
 
 type MetricSection = "cpu" | "memory" | "disk" | "network";
 
 export default function Monitoring() {
   const { id: agentIdFromUrl } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { language } = useLanguage();
   const [viewMode, setViewMode] = useState<"local" | "agents">(agentIdFromUrl ? "agents" : "local");
   const { data: localMetrics, loading: localLoading, error: localError, refetch: refetchLocal } = useSystemMetrics(viewMode === "local", 5000);
   const { agents, selectedAgent, metrics: agentMetrics, loading: agentLoading, error: agentError, selectAgent, refetch: refetchAgent } = useAgentMetrics(viewMode === "agents", 5000);
@@ -107,14 +109,12 @@ export default function Monitoring() {
   if (loading && !metrics) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-[60vh] font-mono">
+        <div className="flex items-center justify-center h-[60vh]">
           <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-primary animate-pulse">[</span>
-              <Loader2 className="w-5 h-5 text-primary animate-spin" />
-              <span className="text-primary animate-pulse">]</span>
+            <div className="flex items-center justify-center">
+              <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
             </div>
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">POLLING_TELEMETRY_DATA...</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{language === 'id' ? 'Memuat metrik...' : 'Loading metrics...'}</p>
           </div>
         </div>
       </DashboardLayout>
@@ -124,13 +124,13 @@ export default function Monitoring() {
   if (error) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-[60vh] font-mono">
-          <div className="text-center space-y-4 border border-destructive/30 p-8 bg-destructive/5 max-w-md">
-            <AlertCircle className="w-8 h-8 text-destructive mx-auto" />
-            <p className="text-[10px] uppercase font-bold text-destructive tracking-[0.2em]">IO_CONNECTION_FAILURE</p>
-            <p className="text-xs text-muted-foreground">{error}</p>
-            <Button onClick={() => refetch()} size="sm" variant="outline" className="rounded-none border-destructive/30 text-destructive uppercase text-[10px] tracking-widest">
-              RETRY_BUFFER_PULL
+        <div className="flex items-center justify-center h-[60vh]">
+          <div className="text-center space-y-4 border border-slate-200 dark:border-slate-800 p-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl max-w-md">
+            <AlertCircle className="w-8 h-8 text-red-600 mx-auto" />
+            <p className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Kesalahan Koneksi' : 'Connection Error'}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{error}</p>
+            <Button onClick={() => refetch()} size="sm" className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg mt-4">
+              {language === 'id' ? 'Coba Lagi' : 'Try Again'}
             </Button>
           </div>
         </div>
@@ -143,45 +143,45 @@ export default function Monitoring() {
   const sections = [
     {
       id: "cpu" as MetricSection,
-      title: "CPU_UNIT",
+      title: language === 'id' ? "Daya Pemrosesan" : "Processing Power",
       icon: Cpu,
       value: `${metrics.cpu.usage_percent.toFixed(1)}%`,
-      subtitle: `${metrics.cpu.cores}C / ${metrics.cpu.threads}T`,
-      color: "text-primary",
-      bgColor: "bg-primary/5",
+      subtitle: `${metrics.cpu.cores} ${language === 'id' ? 'inti' : 'cores'} / ${metrics.cpu.threads} ${language === 'id' ? 'utas' : 'threads'}`,
+      color: "text-blue-600",
+      bgColor: "bg-blue-50 dark:bg-blue-950/30",
       component: <CPUDetail cpu={metrics.cpu} />,
       fullscreenComponent: <CPUDetail cpu={metrics.cpu} fullscreen />
     },
     {
       id: "memory" as MetricSection,
-      title: "MEM_UNIT",
+      title: language === 'id' ? "Memori Aktif" : "Active Memory",
       icon: MemoryStick,
       value: `${metrics.memory.used_percent.toFixed(1)}%`,
       subtitle: `${formatBytes(metrics.memory.used)} / ${formatBytes(metrics.memory.total)}`,
-      color: "text-primary",
-      bgColor: "bg-primary/5",
+      color: "text-purple-600",
+      bgColor: "bg-purple-50 dark:bg-purple-950/30",
       component: <MemoryDetail memory={metrics.memory} />,
       fullscreenComponent: <MemoryDetail memory={metrics.memory} fullscreen />
     },
     {
       id: "disk" as MetricSection,
-      title: "DISK_UNIT",
+      title: language === 'id' ? "Penyimpanan" : "Storage",
       icon: HardDrive,
-      value: `NODE_0${metrics.disk.length}`,
-      subtitle: `${formatBytes(metrics.disk.reduce((acc, d) => acc + d.used, 0))} USED`,
-      color: "text-primary",
-      bgColor: "bg-primary/5",
+      value: `${metrics.disk.length} Disk${metrics.disk.length > 1 ? '' : ''}`,
+      subtitle: `${formatBytes(metrics.disk.reduce((acc, d) => acc + d.used, 0))} ${language === 'id' ? 'digunakan' : 'used'}`,
+      color: "text-orange-600",
+      bgColor: "bg-orange-50 dark:bg-orange-950/30",
       component: <DiskDetail disks={metrics.disk} />,
       fullscreenComponent: <DiskDetail disks={metrics.disk} fullscreen />
     },
     {
       id: "network" as MetricSection,
-      title: "NET_UNIT",
+      title: language === 'id' ? "Jaringan" : "Network",
       icon: Network,
-      value: `CONN_0${metrics.network.connections.established}`,
-      subtitle: `TX: ${formatBytes(metrics.network.bytes_sent)} RX: ${formatBytes(metrics.network.bytes_recv)}`,
-      color: "text-primary",
-      bgColor: "bg-primary/5",
+      value: `${metrics.network.connections.established} ${language === 'id' ? 'Koneksi' : 'Conn.'}`,
+      subtitle: `↑ ${formatBytes(metrics.network.bytes_sent)} ↓ ${formatBytes(metrics.network.bytes_recv)}`,
+      color: "text-green-600",
+      bgColor: "bg-green-50 dark:bg-green-950/30",
       component: <NetworkDetail network={metrics.network} />,
       fullscreenComponent: <NetworkDetail network={metrics.network} fullscreen />
     }
@@ -191,41 +191,38 @@ export default function Monitoring() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 font-mono">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border pb-6">
-          <div>
-            <div className="flex items-center gap-2 text-muted-foreground text-[10px] uppercase tracking-widest mb-1">
-              <span className="text-primary">●</span> TELEMETRY_STREAM
-            </div>
-            <h1 className="text-2xl font-bold tracking-tighter uppercase">Monitoring</h1>
-            <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider">
-              {viewMode === "local" ? "LOCALHOST" : selectedAgent ? `NODE::${selectedAgent.name}` : "UNSET_NODE"} // REAL-TIME_METRICS
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800">
+            <div>
+              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Metrik Detail' : 'Detailed Metrics'}</h1>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+              {viewMode === "local" ? (language === 'id' ? "Komputer Ini" : "This Computer") : selectedAgent ? `Server: ${selectedAgent.name}` : (language === 'id' ? "Pilih Server" : "Select a Server")} • {language === 'id' ? 'Pembaruan real-time' : 'Real-time updates'}
             </p>
           </div>
           <div className="flex items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-none border-border font-bold uppercase text-[10px] tracking-widest px-4">
-                  <Server className="w-3 h-3 mr-2" />
-                  {viewMode === "local" ? "LOCAL_SRC" : selectedAgent?.name || "SEL_NODE"}
-                  <ChevronDown className="w-3 h-3 ml-2" />
+                <Button variant="outline" size="sm" className="rounded-lg border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-medium">
+                  <Server className="w-4 h-4 mr-2" />
+                  {viewMode === "local" ? (language === 'id' ? "Komputer Ini" : "This Computer") : selectedAgent?.name || (language === 'id' ? "Pilih Server" : "Select Server")}
+                  <ChevronDown className="w-4 h-4 ml-2" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="rounded-none border-border font-mono text-[10px]">
-                <DropdownMenuLabel className="uppercase tracking-[0.2em] opacity-50">SRC_INDEX</DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-border" />
+              <DropdownMenuContent align="end" className="rounded-lg border-slate-200 dark:border-slate-800">
+                <DropdownMenuLabel>{language === 'id' ? 'Tersedia' : 'Available'}</DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem 
                   onClick={() => setViewMode("local")}
-                  className="cursor-pointer rounded-none"
+                  className="cursor-pointer rounded-md"
                 >
-                  LOCAL_SERVER
-                  {viewMode === "local" && <Check className="w-3 h-3 ml-auto" />}
+                  {language === 'id' ? 'Komputer Ini' : 'This Computer'}
+                  {viewMode === "local" && <Check className="w-4 h-4 ml-auto" />}
                 </DropdownMenuItem>
                 {agents.length > 0 && (
                   <>
-                    <DropdownMenuSeparator className="bg-border" />
-                    <DropdownMenuLabel className="uppercase tracking-[0.2em] opacity-50">NODE_AGENTS</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuLabel>Servers</DropdownMenuLabel>
                     {agents.map((agent) => (
                       <DropdownMenuItem
                         key={agent.id}
@@ -233,14 +230,14 @@ export default function Monitoring() {
                           setViewMode("agents");
                           selectAgent(agent.id);
                         }}
-                        className="cursor-pointer rounded-none"
+                        className="cursor-pointer rounded-md"
                       >
                         <div className="flex items-center gap-2 flex-1">
-                          <span className={`w-1.5 h-1.5 rounded-full ${agent.status === 'online' ? 'bg-emerald-500' : 'bg-gray-500'}`} />
-                          <span className="truncate">{agent.name.toUpperCase()}</span>
+                          <span className={`w-1.5 h-1.5 rounded-full ${agent.status === 'online' ? 'bg-green-500' : 'bg-gray-400'}`} />
+                          <span>{agent.name}</span>
                         </div>
                         {viewMode === "agents" && selectedAgent?.id === agent.id && (
-                          <Check className="w-3 h-3 ml-2" />
+                          <Check className="w-4 h-4 ml-2" />
                         )}
                       </DropdownMenuItem>
                     ))}
@@ -249,12 +246,10 @@ export default function Monitoring() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <div className="hidden sm:flex flex-col items-end">
-              <Badge variant="outline" className="rounded-none text-emerald-500 border-emerald-500/30 bg-emerald-500/5 text-[10px] px-2 py-0">
-                L_STREAM_01
-              </Badge>
-            </div>
-            <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 border border-border rounded-none">
+            <Badge variant="outline" className="rounded-full text-green-700 dark:text-green-300 border-green-300/50 bg-green-50 dark:bg-green-950/30">
+              ● {language === 'id' ? 'Langsung' : 'Live'}
+            </Badge>
+            <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800">
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </Button>
           </div>
@@ -263,54 +258,57 @@ export default function Monitoring() {
         {/* Collapsible Sections */}
         <div className="space-y-4">
           {sections.map((section) => (
-            <div key={section.id} className="border border-border bg-card/30">
+            <div key={section.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
               {/* Section Header */}
-              <div className="flex items-center justify-between p-4 group transition-colors border-b border-transparent hover:border-border/50">
-                <button
-                  onClick={() => toggleSection(section.id)}
-                  className="flex items-center gap-4 flex-1"
-                >
-                  <div className={`w-10 h-10 border border-border flex items-center justify-center ${section.bgColor}`}>
-                    <section.icon className={`w-4 h-4 ${section.color}`} />
+              <button
+                onClick={() => toggleSection(section.id)}
+                className="w-full flex items-center justify-between p-5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+              >
+                <div className="flex items-center gap-4 flex-1">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${section.bgColor}`}>
+                    <section.icon className={`w-5 h-5 ${section.color}`} />
                   </div>
                   <div className="text-left">
-                    <h3 className="text-xs font-bold uppercase tracking-widest">{section.title}</h3>
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-tight">{section.subtitle}</p>
+                     <h3 className="text-base font-semibold text-slate-900 dark:text-white">{section.title}</h3>
+                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{section.subtitle}</p>
                   </div>
-                </button>
-                <div className="flex items-center gap-6">
-                  <span className="text-xl font-bold tabular-nums tracking-tighter">
-                    {section.value}
-                  </span>
+                </div>
+                 <div className="flex items-center gap-4">
+                   <span className="text-2xl font-semibold text-slate-900 dark:text-white">
+                     {section.value}
+                   </span>
                   <div className="flex items-center gap-2">
                     <Button 
                       variant="ghost" 
                       size="icon" 
-                      className="h-8 w-8 rounded-none border border-transparent hover:border-border"
+                      className="h-8 w-8 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800"
                       onClick={(e) => {
                         e.stopPropagation();
                         setFullscreenSection(section.id);
                       }}
                     >
-                      <Maximize2 className="w-3 h-3 text-muted-foreground" />
+                      <Maximize2 className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                     </Button>
                     <button 
-                      onClick={() => toggleSection(section.id)}
-                      className="h-8 w-8 border border-transparent hover:border-border flex items-center justify-center"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleSection(section.id);
+                      }}
+                      className="h-8 w-8 flex items-center justify-center"
                     >
                       {expandedSections.includes(section.id) ? (
-                        <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                        <ChevronUp className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                       ) : (
-                        <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                        <ChevronDown className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                       )}
                     </button>
                   </div>
                 </div>
-              </div>
+              </button>
 
               {/* Section Content */}
               {expandedSections.includes(section.id) && (
-                <div className="border-t border-border bg-background/50">
+                <div className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 p-6">
                   {section.component}
                 </div>
               )}
@@ -321,34 +319,34 @@ export default function Monitoring() {
 
       {/* Fullscreen Modal */}
       {fullscreenSection && fullscreenSectionData && (
-        <div className="fixed inset-0 z-50 bg-background font-mono">
+        <div className="fixed inset-0 z-50 bg-white dark:bg-slate-950">
           {/* Fullscreen Header */}
-          <div className="sticky top-0 z-10 border-b border-border bg-background">
-            <div className="flex items-center justify-between h-16 px-6">
-              <div className="flex items-center gap-4 flex-1">
-                <div className="w-10 h-10 border border-border flex items-center justify-center bg-primary/5">
-                  <fullscreenSectionData.icon className="w-4 h-4 text-primary" />
-                </div>
-                <div>
-                  <h2 className="text-sm font-bold uppercase tracking-[0.2em]">{fullscreenSectionData.title}</h2>
-                  <p className="text-[10px] text-muted-foreground uppercase">{fullscreenSectionData.subtitle}</p>
-                </div>
+          <div className="sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
+            <div className="flex items-center justify-between h-16 px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${fullscreenSectionData.bgColor}`}>
+                      <fullscreenSectionData.icon className={`w-5 h-5 ${fullscreenSectionData.color}`} />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{fullscreenSectionData.title}</h2>
+                      <p className="text-sm text-slate-600 dark:text-slate-400">{fullscreenSectionData.subtitle}</p>
+                    </div>
               </div>
-              <div className="flex items-center gap-8">
+              <div className="flex items-center gap-4">
                 <div className="flex flex-col items-end">
-                  <span className="text-[8px] text-muted-foreground uppercase tracking-widest">REALTIME_VAL</span>
-                  <span className="text-2xl font-bold tabular-nums tracking-tighter">
+                  <span className="text-xs text-slate-600 dark:text-slate-400">Current Value</span>
+                  <span className="text-2xl font-semibold text-slate-900 dark:text-white">
                     {fullscreenSectionData.value}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 border border-border rounded-none">
+                  <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800">
                     <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                   </Button>
                   <Button 
                     variant="ghost" 
                     size="icon"
-                    className="h-10 w-10 border border-border rounded-none"
+                    className="h-10 w-10 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800"
                     onClick={() => setFullscreenSection(null)}
                   >
                     <X className="w-4 h-4" />
@@ -360,7 +358,7 @@ export default function Monitoring() {
 
           {/* Fullscreen Content */}
           <div className="overflow-auto h-[calc(100vh-64px)] p-6">
-            <div className="max-w-7xl mx-auto border border-border bg-card/30">
+            <div className="max-w-7xl mx-auto bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
               {fullscreenSectionData.fullscreenComponent}
             </div>
           </div>

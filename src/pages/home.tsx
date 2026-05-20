@@ -1,118 +1,121 @@
-import PublicLayout from "@/components/PublicLayout";
+﻿import PublicLayout from "@/components/PublicLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { useLandingPageMetrics } from "@/lib/hooks/useLandingPageMetrics";
+import { useLanguage } from "@/lib/LanguageContext";
 import { 
-    Server, 
     Activity, 
-    Monitor, 
     Cpu, 
-    HardDrive, 
-    Network, 
     Shield, 
     Zap, 
-    BarChart3, 
-    Sparkles, 
-    Mail,
-    ChevronRight,
     ArrowRight,
-    Phone,
-    Clock,
-    MessageCircle,
-    Send,
-    Lock
+    Lock,
+    Sparkles,
+    HardDrive,
+    Monitor,
+    Network
 } from "lucide-react";
 
 export default function Home() {
     const landingMetrics = useLandingPageMetrics();
+    const { language } = useLanguage();
 
     return (
         <PublicLayout>
             <div className="w-full">
                 {/* Hero Section */}
-                <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
+                <section className="relative pt-32 pb-20 md:pt-48 md:pb-40 overflow-hidden">
                     <div className="container mx-auto px-4 relative z-10">
-                        <div className="max-w-4xl mx-auto text-center">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-                                <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                                <span className="text-[10px] font-mono font-bold tracking-widest text-primary uppercase">System Status: Optimal</span>
-                                <Sparkles className="w-3 h-3 text-amber-500 ml-1" />
+                        <div className="w-full mx-auto text-center">
+                            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-2xl bg-muted/40 backdrop-blur-md border border-border/50 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                                <span className="relative flex h-3 w-3">
+                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]"></span>
+                                </span>
+                                <span className="text-[10px] font-black tracking-[0.3em] text-foreground/80 uppercase">
+                                    {language === 'id' ? 'Mesin Inti Online' : 'Core Engine Online'}
+                                </span>
                             </div>
                             
-                            <h1 className="text-5xl md:text-7xl lg:text-8xl font-sans font-bold tracking-tight text-foreground mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
-                                Monitor, Scale, and <span className="text-primary italic">Optimize</span>
+                            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-foreground mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
+                                {language === 'id' ? 'Amati. Analisis.' : 'Observe. Analyze.'} <br/>
+                                <span className="text-foreground/20">{language === 'id' ? 'Optimalkan.' : 'Optimize.'}</span>
                             </h1>
                             
-                            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-                                Watchtower is a high-performance monitoring engine built for modern infrastructure. 
-                                Real-time telemetry, advanced analytics, and seamless scaling.
+                            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 font-medium italic">
+                                {language === 'id' 
+                                  ? 'Watchtower memberikan intelijen infrastruktur elit. Telemetri real-time, diagnostik prediktif, dan kontrol terpadu.' 
+                                  : 'Watchtower delivers elite infrastructure intelligence. Real-time telemetry, predictive diagnostics, and unified control.'}
                             </p>
                             
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
-                                <Button asChild size="lg" className="h-14 px-8 text-base font-semibold rounded-full w-full sm:w-auto">
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-500">
+                                <Button asChild size="lg" className="h-16 px-12 text-lg font-black rounded-2xl w-full sm:w-auto bg-foreground text-background hover:scale-105 transition-all shadow-2xl shadow-foreground/10 active:scale-95 uppercase tracking-widest">
                                     <a href="/dashboard">
-                                        Get Started Free
-                                        <ArrowRight className="ml-2 w-4 h-4" />
+                                        {language === 'id' ? 'Inisialisasi' : 'Initialize'}
+                                        <ArrowRight className="ml-3 w-5 h-5" />
                                     </a>
                                 </Button>
-                                <Button asChild variant="outline" size="lg" className="h-14 px-8 text-base font-semibold rounded-full w-full sm:w-auto">
-                                    <a href="#control">
-                                        Watch Live Demo
+                                <Button asChild variant="outline" size="lg" className="h-16 px-12 text-lg font-black rounded-2xl w-full sm:w-auto backdrop-blur-md border-foreground/10 hover:bg-foreground/5 transition-all active:scale-95 uppercase tracking-widest">
+                                    <a href="#features">
+                                        {language === 'id' ? 'Jelajahi' : 'Explore'}
                                     </a>
                                 </Button>
                             </div>
                         </div>
 
-                        {/* Subtle code/metric display */}
-                        <div className="mt-20 relative max-w-5xl mx-auto animate-in fade-in zoom-in-95 duration-1000 delay-500">
-                            <div className="rounded-2xl border border-border bg-card/50 backdrop-blur-sm overflow-hidden shadow-2xl shadow-primary/5">
-                                <div className="flex items-center justify-between px-4 py-3 bg-muted/50 border-b border-border">
-                                    <div className="flex gap-1.5">
-                                        <div className="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/30" />
-                                        <div className="w-3 h-3 rounded-full bg-amber-500/20 border border-amber-500/30" />
-                                        <div className="w-3 h-3 rounded-full bg-emerald-500/20 border border-emerald-500/30" />
+                        {/* Visual Assets - Terminal-like UI */}
+                        <div className="mt-32 relative max-w-6xl mx-auto animate-in fade-in zoom-in-95 duration-1000 delay-700">
+                            <div className="rounded-[3rem] border border-foreground/5 bg-card/40 backdrop-blur-3xl overflow-hidden shadow-3xl group">
+                                <div className="flex items-center justify-between px-8 py-6 border-b border-foreground/5 bg-foreground/[0.02]">
+                                    <div className="flex gap-3">
+                                        <div className="w-3.5 h-3.5 rounded-full bg-red-500/80" />
+                                        <div className="w-3.5 h-3.5 rounded-full bg-orange-500/80" />
+                                        <div className="w-3.5 h-3.5 rounded-full bg-emerald-500/80" />
                                     </div>
-                                    <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">telemetry_node_01.sh</div>
-                                    <div className="w-12" />
+                                    <div className="flex items-center gap-2 text-[10px] font-black tracking-[0.3em] text-muted-foreground/60 uppercase italic">
+                                        <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
+                                        Secure Channel // Segment_Alpha_V
+                                    </div>
+                                    <div className="w-20" />
                                 </div>
-                                <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    <div className="space-y-4 font-mono">
-                                        <div className="flex items-center gap-3 text-sm">
-                                            <span className="text-primary opacity-50">$</span>
-                                            <span className="text-foreground">watchtower --stream-live</span>
+                                <div className="p-12 md:p-20 grid grid-cols-1 md:grid-cols-12 gap-16">
+                                    <div className="md:col-span-7 space-y-12">
+                                        <div className="flex items-center gap-6">
+                                            <div className="w-20 h-20 rounded-[2rem] bg-foreground/5 flex items-center justify-center text-foreground border border-foreground/10 shadow-inner">
+                                                <Activity className="w-10 h-10" />
+                                            </div>
+                                            <div>
+                                                <div className="text-3xl font-black tracking-tighter text-foreground uppercase">Cluster Node_01</div>
+                                                <div className="text-[10px] font-black text-muted-foreground flex items-center gap-3 uppercase tracking-widest opacity-40">
+                                                    Status: <span className="text-emerald-500">Synchronized</span> | Up: <span className="text-foreground">14.2d</span>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between items-center text-xs">
-                                                <span className="text-muted-foreground">CPU_USAGE</span>
-                                                <div className="flex gap-1">
-                                                    {[1,2,3,4,5,6,7,8].map(i => (
-                                                        <div key={i} className={`w-3 h-4 rounded-sm ${i < 4 ? 'bg-primary' : 'bg-primary/20'}`} />
-                                                    ))}
+                                        <div className="space-y-10">
+                                            {[
+                                                { label: language === 'id' ? "Mesin Saraf" : "Neural Engine", value: 34, color: "bg-foreground", hint: language === 'id' ? "OPTIMAL" : "OPTIMAL" },
+                                                { label: language === 'id' ? "Segmen Memori" : "Memory Segment", value: 45, color: "bg-foreground/60", hint: language === 'id' ? "STABIL" : "STABLE" },
+                                                { label: language === 'id' ? "Denyut Jaringan" : "Network Pulse", value: 68, color: "bg-foreground/40", hint: language === 'id' ? "AKTIF" : "ACTIVE" }
+                                            ].map((metric, i) => (
+                                                <div key={i} className="flex flex-col gap-4">
+                                                    <div className="flex justify-between items-center text-[10px] font-black tracking-[0.2em] uppercase italic">
+                                                        <span className="opacity-30">{metric.label}</span>
+                                                        <span className="text-foreground">{metric.value}% <span className="ml-2 text-emerald-500 font-black">{metric.hint}</span></span>
+                                                    </div>
+                                                    <div className="h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
+                                                        <div className={`h-full ${metric.color} rounded-full transition-all duration-1000 delay-1000`} style={{width: `${metric.value}%`}}></div>
+                                                    </div>
                                                 </div>
-                                                <span className="text-primary font-bold">34.2%</span>
-                                            </div>
-                                            <div className="flex justify-between items-center text-xs">
-                                                <span className="text-muted-foreground">MEM_POOL</span>
-                                                <div className="flex gap-1">
-                                                    {[1,2,3,4,5,6,7,8].map(i => (
-                                                        <div key={i} className={`w-3 h-4 rounded-sm ${i < 6 ? 'bg-primary' : 'bg-primary/20'}`} />
-                                                    ))}
-                                                </div>
-                                                <span className="text-primary font-bold">5.8GB</span>
-                                            </div>
-                                            <div className="flex justify-between items-center text-xs">
-                                                <span className="text-muted-foreground">NET_THROUGHPUT</span>
-                                                <span className="text-foreground">1.2 GB/s <span className="text-emerald-500">↑</span></span>
-                                            </div>
+                                            ))}
                                         </div>
                                     </div>
-                                    <div className="flex flex-col justify-center border-l border-border pl-8 hidden md:flex">
-                                        <div className="text-3xl font-mono font-bold tracking-tighter mb-2">99.9%</div>
-                                        <div className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground mb-4">Uptime SLA guaranteed</div>
-                                        <div className="h-px w-full bg-gradient-to-r from-border to-transparent mb-4" />
-                                        <div className="flex items-center gap-2 text-emerald-500">
-                                            <Shield className="w-4 h-4" />
-                                            <span className="text-[10px] font-mono font-bold uppercase tracking-widest">Encrypted Stream Active</span>
+                                    <div className="md:col-span-5 flex flex-col justify-center bg-foreground/[0.02] rounded-[3rem] p-12 border border-foreground/5 relative overflow-hidden group/card shadow-inner">
+                                        <div className="absolute -top-32 -right-32 w-64 h-64 bg-foreground/5 rounded-full blur-[100px]" />
+                                        <div className="text-7xl font-black text-foreground mb-4 tabular-nums tracking-tighter leading-none">99.99<span className="text-foreground/10">%</span></div>
+                                        <div className="text-[10px] font-black text-muted-foreground/40 mb-12 uppercase tracking-[0.4em] italic">{language === 'id' ? 'Waktu Operasi Presisi' : 'Precision Uptime'}</div>
+                                        <div className="h-px w-full bg-linear-to-r from-foreground/10 to-transparent mb-10" />
+                                        <div className="flex items-center gap-4 text-emerald-500 bg-emerald-500/5 px-6 py-4 rounded-[2rem] border border-emerald-500/10 w-fit">
+                                            <Shield className="w-5 h-5" />
+                                            <span className="text-[10px] font-black tracking-[0.3em] uppercase italic">{language === 'id' ? 'Protokol Keamanan' : 'Security Protocol'}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -122,22 +125,22 @@ export default function Home() {
                 </section>
 
                 {/* Metrics Bar */}
-                <section className="border-y border-border bg-muted/20 backdrop-blur-sm">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
+                <section className="relative z-10 py-12">
+                    <div className="max-w-7xl mx-auto px-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                             {[
-                                { icon: Activity, label: "Sensors Active", value: landingMetrics.sensorsActive.toString().padStart(2, '0'), color: "text-emerald-500" },
-                                { icon: Server, label: "Nodes Connected", value: landingMetrics.nodesConnected.toString().padStart(2, '0'), color: "text-primary" },
-                                { icon: BarChart3, label: "Daily Cycles", value: landingMetrics.dailyCycles, color: "text-amber-500" },
-                                { icon: Clock, label: "Avg Latency", value: landingMetrics.avgLatency, color: "text-cyan-500" }
+                                { label: language === 'id' ? "Simpul Aktif" : "Active Nodes", value: landingMetrics.nodesConnected.toString().padStart(2, '0'), unit: language === 'id' ? "STASIUN" : "STATIONS" },
+                                { label: language === 'id' ? "CPU Global" : "Global CPU", value: landingMetrics.globalCPU.replace('%', ''), unit: language === 'id' ? "PERSENTASE" : "PERCENTAGE" },
+                                { label: language === 'id' ? "IO Jaringan" : "Network IO", value: landingMetrics.avgLatency, unit: language === 'id' ? "LATENSI" : "LATENCY" },
+                                { label: language === 'id' ? "Siklus Harian" : "Daily Cycles", value: landingMetrics.dailyCycles, unit: language === 'id' ? "TELEMETRI" : "TELEMETRY" }
                             ].map((stat, i) => (
-                                <div key={i} className="p-8 group hover:bg-background/50 transition-colors">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <stat.icon className={`w-4 h-4 ${stat.color}`} />
-                                        <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground font-bold">{stat.label}</span>
-                                    </div>
-                                    <div className="text-3xl font-mono font-bold tracking-tighter tabular-nums">
-                                        {landingMetrics.isLoading ? "..." : stat.value}
+                                <div key={i} className="p-10 border border-foreground/5 rounded-[2.5rem] bg-card/20 backdrop-blur-3xl hover:bg-card transition-all duration-500 group">
+                                    <div className="text-[10px] font-black text-muted-foreground/30 tracking-[0.3em] uppercase mb-2 italic">{stat.label}</div>
+                                    <div className="flex items-baseline gap-2">
+                                        <div className="text-5xl font-black tracking-tighter text-foreground leading-none">
+                                           {landingMetrics.isLoading ? "--" : stat.value}
+                                        </div>
+                                        <div className="text-[9px] font-black text-muted-foreground/40 uppercase tracking-widest italic">{stat.unit}</div>
                                     </div>
                                 </div>
                             ))}
@@ -146,193 +149,73 @@ export default function Home() {
                 </section>
 
                 {/* Features Section */}
-                <section className="py-24 bg-background">
+                <section id="features" className="py-60 relative overflow-hidden">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-foreground/10 to-transparent" />
                     <div className="container mx-auto px-4">
-                        <div className="text-center max-w-2xl mx-auto mb-16">
-                            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">System Capabilities</h2>
-                            <p className="text-muted-foreground">High-performance monitoring modules engineered for mission-critical infrastructure.</p>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {[
-                                { icon: Cpu, title: "CPU Monitoring", desc: "Real-time usage tracking, thread analysis and thermal monitoring per core." },
-                                { icon: HardDrive, title: "Storage Analytics", desc: "Advanced disk I/O metrics, capacity forecasting and health diagnostics." },
-                                { icon: Monitor, title: "Memory Tracking", desc: "Detailed RAM allocation patterns, leak detection and swap usage analysis." },
-                                { icon: Network, title: "Network Analysis", desc: "Granular bandwidth tracking, packet loss detection and connection mapping." },
-                                { icon: Zap, title: "Intelligent Alerts", desc: "Low-latency notification system triggered by customizable performance thresholds." },
-                                { icon: Lock, title: "Secure Telemetry", desc: "End-to-end encrypted data transmission from nodes to your control panel." }
-                            ].map((feature, i) => (
-                                <Card key={i} className="border border-border bg-background hover:border-primary/50 transition-all duration-300 rounded-xl overflow-hidden group">
-                                    <CardContent className="p-8">
-                                        <div className="w-12 h-12 rounded-lg bg-primary/5 border border-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
-                                            <feature.icon className="w-6 h-6" />
-                                        </div>
-                                        <h3 className="text-lg font-bold mb-3 group-hover:text-primary transition-colors">{feature.title}</h3>
-                                        <p className="text-sm text-muted-foreground leading-relaxed">
-                                            {feature.desc}
-                                        </p>
-                                    </CardContent>
-                                </Card>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* How It Works */}
-                <section className="py-24 bg-muted/30 border-y border-border overflow-hidden">
-                    <div className="container mx-auto px-4">
-                        <div className="flex flex-col md:flex-row items-center gap-16">
-                            <div className="flex-1 space-y-8">
-                                <div className="inline-block px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
-                                    <span className="text-[10px] font-mono font-bold tracking-widest text-primary uppercase">Deployment Pipeline</span>
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-32">
+                            <div className="max-w-3xl space-y-6">
+                                <div className="text-[10px] font-black tracking-[0.4em] text-primary uppercase flex items-center gap-4">
+                                   <div className="w-12 h-px bg-primary" />
+                                   {language === 'id' ? 'Kemampuan Sistem' : 'System Capabilities'}
                                 </div>
-                                <h2 className="text-3xl md:text-5xl font-bold tracking-tight">From node to insight in under 60 seconds.</h2>
-                                <div className="space-y-6">
-                                    {[
-                                        { step: "01", title: "Install Agent", text: "Run our one-line installer on any Linux or Windows server." },
-                                        { step: "02", title: "Secure Handshake", text: "The agent establishes an encrypted TLS tunnel to our telemetry hub." },
-                                        { step: "03", title: "Real-time Stream", text: "Metrics begin streaming immediately to your unified dashboard." }
-                                    ].map((item, i) => (
-                                        <div key={i} className="flex gap-4">
-                                            <div className="flex-none w-10 h-10 rounded-full border border-border bg-background flex items-center justify-center font-mono text-xs font-bold text-primary">
-                                                {item.step}
-                                            </div>
-                                            <div>
-                                                <h4 className="font-bold text-base mb-1">{item.title}</h4>
-                                                <p className="text-sm text-muted-foreground">{item.text}</p>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-foreground leading-tight uppercase">
+                                    {language === 'id' ? 'Alat Presisi.' : 'Precision Tools.'}
+                                </h2>
                             </div>
-                            <div className="flex-1 relative">
-                                <div className="relative z-10 rounded-2xl border border-border bg-background p-2 shadow-2xl">
-                                    <div className="rounded-xl border border-border overflow-hidden">
-                                        <img src="public/img/server.png" alt="Server Datacenter" className="w-full h-auto object-cover grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-700" />
-                                    </div>
-                                </div>
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary/5 rounded-full blur-3xl -z-0" />
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Live Data Visualizer Preview */}
-                <section className="py-24 bg-background" id="control">
-                    <div className="container mx-auto px-4">
-                        <div className="flex flex-col lg:flex-row items-end justify-between mb-12 gap-6">
-                            <div className="max-w-2xl">
-                                <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">Unified Control</h2>
-                                <p className="text-muted-foreground">Manage all your infrastructure from a single pane of glass. No more jumping between tools.</p>
-                            </div>
-                            <Button asChild variant="link" className="text-primary font-bold uppercase tracking-widest text-[10px]">
-                                <a href="/monitoring" className="flex items-center">
-                                    Explore Monitoring Hub <ChevronRight className="ml-1 w-3 h-3" />
-                                </a>
-                            </Button>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                            {[
-                                { label: "Global CPU", value: landingMetrics.globalCPU, trend: landingMetrics.globalCPUTrend, icon: Cpu },
-                                { label: "Total RAM", value: landingMetrics.totalRAM, trend: landingMetrics.totalRAMTrend, icon: Monitor },
-                                { label: "Active Nodes", value: landingMetrics.activeNodes.toString(), trend: landingMetrics.activeNodesTrend, icon: Server },
-                                { label: "Alerts (24h)", value: landingMetrics.alerts24h.toString().padStart(2, '0'), trend: landingMetrics.alertsTrend, icon: Zap }
-                            ].map((card, i) => (
-                                <div key={i} className="p-6 rounded-xl border border-border bg-muted/10 hover:bg-muted/20 transition-colors">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div className="w-10 h-10 rounded-lg border border-border bg-background flex items-center justify-center">
-                                            <card.icon className="w-5 h-5 text-primary" />
-                                        </div>
-                                        <span className={`text-[10px] font-mono font-bold ${card.trend.startsWith('-') ? 'text-emerald-500' : card.trend === '0' ? 'text-muted-foreground' : 'text-amber-500'}`}>
-                                            {card.trend !== '0' && (card.trend.startsWith('-') ? '↓' : '↑')} {card.trend}
-                                        </span>
-                                    </div>
-                                    <h4 className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground mb-1">{card.label}</h4>
-                                    <div className="text-2xl font-bold tracking-tighter font-mono">{landingMetrics.isLoading ? "..." : card.value}</div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* Partners Section */}
-                <section className="py-16 border-t border-border bg-muted/10">
-                    <div className="container mx-auto px-4">
-                        <p className="text-center text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground mb-10">Trusted by Infrastructure Teams</p>
-                        <div className="flex flex-wrap justify-center gap-8 md:gap-16 grayscale hover:grayscale-0 transition-all">
-                            <a href="https://www.terarush.studio/" target="blank" className="flex items-center gap-3 opacity-50 hover:opacity-100 transition-opacity">
-                                <img className="w-8 h-8 rounded-sm" src="/img/terarush.webp" alt="Terarush" />
-                                <span className="font-mono font-bold text-sm tracking-tighter">TERARUSH.STUDIO</span>
-                            </a>
-                            <a href="https://pkl.senvada.id" target="blank" className="flex items-center gap-3 opacity-50 hover:opacity-100 transition-opacity">
-                                <img className="w-8 h-8 rounded-sm" src="/img/senvada.webp" alt="Senvada" />
-                                <span className="font-mono font-bold text-sm tracking-tighter">SENVADA.ID</span>
-                            </a>
-                        </div>
-                    </div>
-                </section>
-
-                {/* CTA Section */}
-                <section className="py-24 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-primary/5 -z-10" />
-                    <div className="container mx-auto px-4 text-center">
-                        <div className="max-w-3xl mx-auto space-y-8">
-                            <h2 className="text-4xl md:text-6xl font-bold tracking-tight">Ready to gain full visibility into your infrastructure?</h2>
-                            <p className="text-lg text-muted-foreground leading-relaxed">
-                                Join hundreds of developers and sysadmins who use Watchtower to monitor their mission-critical servers.
+                            <p className="text-xl text-muted-foreground max-w-sm font-bold leading-relaxed italic opacity-60">
+                                {language === 'id'
+                                    ? 'Dirancang untuk asupan data frekuensi tinggi dan analisis bedah.'
+                                    : 'Engineered for high-frequency data ingestion and surgical analysis.'}
                             </p>
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                                <Button asChild size="lg" className="h-14 px-10 text-base font-semibold rounded-full w-full sm:w-auto">
-                                    <a href="/login">Create Free Account</a>
-                                </Button>
-                                <Button asChild variant="outline" size="lg" className="h-14 px-10 text-base font-semibold rounded-full w-full sm:w-auto">
-                                    <a href="/contact">Contact Sales</a>
-                                </Button>
-                            </div>
                         </div>
-                    </div>
-                </section>
 
-                {/* Contact Links (Refined) */}
-                <section id="contact" className="py-24 bg-background">
-                    <div className="container mx-auto px-4">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div className="p-8 rounded-2xl border border-border bg-card/50 hover:border-primary/50 transition-all group">
-                                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:bg-blue-500 group-hover:text-white transition-all">
-                                    <Mail className="w-6 h-6" />
+                            {[
+                                { 
+                                  icon: Cpu, 
+                                  title: language === 'id' ? "Asupan Telemetri" : "Telemetry Ingestion", 
+                                  desc: language === 'id' ? "Pengumpulan data berbasis agen asli tanpa overhead tambahan pada simpul target Anda." : "Native agent-based data collection with zero-footprint overhead on your target nodes." 
+                                },
+                                { 
+                                  icon: HardDrive, 
+                                  title: language === 'id' ? "Penyimpanan Terpadu" : "Unified Storage", 
+                                  desc: language === 'id' ? "Agregasi metrik terpusat dengan persistensi historis untuk analisis tren yang mendalam." : "Centralized metric aggregation with historical persistence for deep trend analysis." 
+                                },
+                                { 
+                                  icon: Monitor, 
+                                  title: language === 'id' ? "Sintesis Visual" : "Visual Synthesis", 
+                                  desc: language === 'id' ? "Mengubah aliran mentah menjadi kecerdasan yang dapat dibaca manusia melalui desain minimalis." : "Transforming raw streams into human-readable intelligence through minimalist design." 
+                                },
+                                { 
+                                  icon: Network, 
+                                  title: language === 'id' ? "Konektivitas Tepi" : "Edge Connectivity", 
+                                  desc: language === 'id' ? "Cakupan pemantauan global dengan agen lokal yang melapor ke pusat kendali tunggal." : "Global monitoring coverage with localized agents reporting to a unified control center." 
+                                },
+                                { 
+                                  icon: Zap, 
+                                  title: language === 'id' ? "Peringatan Ambang" : "Threshold Alerts", 
+                                  desc: language === 'id' ? "Perutean pemberitahuan cerdas via Telegram, memastikan acara kritis langsung mencapai Anda." : "Intelligent notification routing via Telegram, ensuring critical events reach you instantly." 
+                                },
+                                { 
+                                  icon: Lock, 
+                                  title: language === 'id' ? "Penjaga Ujung-ke-Ujung" : "End-to-End Guard", 
+                                  desc: language === 'id' ? "Diamankan melalui autentikasi Clerk dan enkripsi HTTPS, menjaga infrastruktur Anda tetap pribadi." : "Secured through Clerk auth and HTTPS encryption, keeping your infrastructure private." 
+                                }
+                            ].map((feature, i) => (
+                                <div key={i} className="group p-12 border border-foreground/5 rounded-[3.5rem] bg-card/10 hover:bg-card hover:border-foreground/10 hover:shadow-2xl transition-all duration-700">
+                                    <div className="w-20 h-20 rounded-[2rem] bg-foreground/5 flex items-center justify-center mb-12 group-hover:scale-110 group-hover:bg-foreground group-hover:text-background transition-all duration-500 border border-foreground/10">
+                                        <feature.icon className="w-8 h-8" />
+                                    </div>
+                                    <h3 className="text-3xl font-black mb-4 text-foreground tracking-tighter uppercase">{feature.title}</h3>
+                                    <p className="text-muted-foreground font-bold leading-relaxed italic opacity-40 group-hover:opacity-80 transition-opacity">
+                                        {feature.desc}
+                                    </p>
                                 </div>
-                                <h3 className="text-lg font-bold mb-2">Technical Support</h3>
-                                <p className="text-sm text-muted-foreground mb-6">Need help with integration or custom monitoring scripts?</p>
-                                <a href="mailto:projects.watchtower@gmail.com" className="text-sm font-mono font-bold text-primary hover:underline">
-                                    projects.watchtower@gmail.com
-                                </a>
-                            </div>
-
-                            <div className="p-8 rounded-2xl border border-border bg-card/50 hover:border-primary/50 transition-all group">
-                                <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center mb-6 group-hover:bg-cyan-500 group-hover:text-white transition-all">
-                                    <Phone className="w-6 h-6" />
-                                </div>
-                                <h3 className="text-lg font-bold mb-2">Sales Inquiries</h3>
-                                <p className="text-sm text-muted-foreground mb-6">Looking for enterprise SLAs or high-volume node pricing?</p>
-                                <div className="text-sm font-mono font-bold text-primary">
-                                    +62 857-9126-8077
-                                </div>
-                            </div>
-
-                            <div className="p-8 rounded-2xl border border-border bg-card/50 hover:border-primary/50 transition-all group">
-                                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 group-hover:bg-emerald-500 group-hover:text-white transition-all">
-                                    <MessageCircle className="w-6 h-6" />
-                                </div>
-                                <h3 className="text-lg font-bold mb-2">Direct Handshake</h3>
-                                <p className="text-sm text-muted-foreground mb-6">Chat with our engineering team directly via WhatsApp.</p>
-                                <a href="https://wa.me/6285791268077" target="_blank" className="inline-flex items-center gap-2 text-sm font-mono font-bold text-primary hover:underline">
-                                    Start Chat <Send className="w-3 h-3" />
-                                </a>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </section>
+                
             </div>
         </PublicLayout>
     );

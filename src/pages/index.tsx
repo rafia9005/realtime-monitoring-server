@@ -1,4 +1,4 @@
-import { SignIn } from "@clerk/clerk-react";
+﻿import { SignIn } from "@clerk/clerk-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/theme-provider";
@@ -25,7 +25,7 @@ export default function Index() {
       <Button
         variant="ghost"
         size="icon"
-        className="absolute top-8 right-8 h-12 w-12 rounded-2xl z-20 hover:bg-foreground/5 border border-foreground/5 backdrop-blur-xl transition-all active:scale-95"
+        className="absolute top-8 right-8 h-12 w-12 rounded-2xl z-20 border border-foreground/5 backdrop-blur-xl transition-all active:scale-95"
         onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       >
         <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0 text-foreground" />
@@ -44,7 +44,7 @@ export default function Index() {
 
         <div className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-1000 delay-200">
           <div className="absolute inset-0 bg-foreground/5 blur-[100px] rounded-full -z-10 opacity-30" />
-          <Card className="accent-card accent-card-indigo border border-foreground/5 bg-card/40 backdrop-blur-3xl overflow-hidden rounded-[3rem] shadow-3xl">
+          <Card className="accent-card bg-card/40 backdrop-blur-3xl overflow-hidden rounded-[3rem] shadow-3xl">
             <CardContent className="p-10 pt-12">
               <SignIn
                 appearance={{

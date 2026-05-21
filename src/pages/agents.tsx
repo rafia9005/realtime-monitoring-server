@@ -1,4 +1,5 @@
 import DashboardLayout from "@/components/DashboardLayout";
+import LoadingScreen from "@/components/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -213,18 +214,7 @@ export default function AgentsPage() {
   if (loading && agents.length === 0) {
     return (
       <DashboardLayout>
-        <div className="flex flex-col items-center justify-center h-[70vh] space-y-8">
-          <div className="relative">
-             <div className="w-16 h-16 border-4 border-foreground/5 border-t-foreground rounded-full animate-spin" />
-             <Activity className="absolute inset-0 m-auto w-6 h-6 text-foreground/20 animate-pulse" />
-          </div>
-          <div className="text-center space-y-2">
-            <h2 className="text-sm font-black tracking-[0.3em] uppercase opacity-50">{t('agents.loading')}</h2>
-            <div className="flex items-center gap-1 justify-center">
-              {[1,2,3].map(i => <div key={i} className="w-1 h-1 bg-foreground rounded-full animate-bounce" style={{animationDelay: `${i*0.2}s`}} />)}
-            </div>
-          </div>
-        </div>
+        <LoadingScreen message={t('agents.loading')} />
       </DashboardLayout>
     );
   }

@@ -431,7 +431,9 @@
       "peakHeat": "Peak Heat",
       "trough": "Trough",
       "humidity": "Humidity",
-      "totalDatapoints": "Total Datapoints"
+      "totalDatapoints": "Total Datapoints",
+      "systemStatus": "System Status",
+      "safeRate": "Safe Rate"
     },
     "filters": {
       "title": "System Filters",
@@ -463,6 +465,9 @@
         "target": "Target Identity",
         "thermal": "Thermal",
         "moisture": "Moisture",
+        "status": "Status",
+        "safe": "Safe",
+        "danger": "Danger",
         "timestamp": "Local Timestamp"
       },
       "empty": "Sector Empty // No Response",

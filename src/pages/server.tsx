@@ -1,4 +1,5 @@
 import DashboardLayout from "@/components/DashboardLayout";
+import LoadingScreen from "@/components/LoadingScreen";
 import { Button } from "@/components/ui/button";
 import { 
   Server,
@@ -8,7 +9,6 @@ import {
   Monitor,
   Clock,
   RefreshCw,
-  Loader2,
   AlertCircle,
   Activity,
   Layers,
@@ -90,16 +90,7 @@ export default function ServerPage() {
   if (loading && !metrics) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-[60vh] font-mono">
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-primary animate-pulse">[</span>
-              <Loader2 className="w-5 h-5 text-primary animate-spin" />
-              <span className="text-primary animate-pulse">]</span>
-            </div>
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">{t('server.loading')}</p>
-          </div>
-        </div>
+        <LoadingScreen message={t('server.loading')} />
       </DashboardLayout>
     );
   }

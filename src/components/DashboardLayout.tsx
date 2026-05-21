@@ -13,7 +13,6 @@ import {
   Boxes,
   Thermometer,
   Languages,
-  LayoutDashboard
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";

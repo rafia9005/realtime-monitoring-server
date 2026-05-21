@@ -431,7 +431,9 @@
       "peakHeat": "Suhu Puncak",
       "trough": "Suhu Terendah",
       "humidity": "Kelembapan",
-      "totalDatapoints": "Total Titik Data"
+      "totalDatapoints": "Total Titik Data",
+      "systemStatus": "Status Sistem",
+      "safeRate": "Tingkat Aman"
     },
     "filters": {
       "title": "Filter Sistem",
@@ -463,6 +465,9 @@
         "target": "Identitas Target",
         "thermal": "Termal",
         "moisture": "Kelembapan",
+        "status": "Status",
+        "safe": "Aman",
+        "danger": "Bahaya",
         "timestamp": "Stempel Waktu Lokal"
       },
       "empty": "Sektor Kosong // Tidak Ada Tanggapan",

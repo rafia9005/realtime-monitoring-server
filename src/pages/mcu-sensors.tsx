@@ -1,4 +1,5 @@
 import DashboardLayout from "@/components/DashboardLayout";
+import LoadingScreen from "@/components/LoadingScreen";
 import { useMcuMetrics } from "@/lib/hooks/useMcuMetrics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,21 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+// Thresholds configuration for Sensor Status
+// Modify these values easily to adjust what is considered "Safe" (Aman)
+export const SENSOR_THRESHOLDS = {
+  TEMP_SAFE_MAX: 29.0,      // Safe if temperature is LESS than 29°C
+  HUMIDITY_SAFE_MIN: 40.0,  // Safe if humidity is >= 40%
+  HUMIDITY_SAFE_MAX: 60.0,  // Safe if humidity is <= 60%
+};
+
+export function getSensorStatus(temperature: number | null, humidity: number | null): "safe" | "danger" {
+  if (temperature === null || humidity === null) return "danger";
+  const isTempSafe = temperature < SENSOR_THRESHOLDS.TEMP_SAFE_MAX;
+  const isHumiditySafe = humidity >= SENSOR_THRESHOLDS.HUMIDITY_SAFE_MIN && humidity <= SENSOR_THRESHOLDS.HUMIDITY_SAFE_MAX;
+  return (isTempSafe && isHumiditySafe) ? "safe" : "danger";
+}
+
 export default function McuSensorsPage() {
   const { t } = useLanguage();
   const { data: metrics, loading, refetch } = useMcuMetrics(true, 10000);
@@ -36,7 +52,7 @@ export default function McuSensorsPage() {
   const [selectedMcu, setSelectedMcu] = useState<string>("");
   const [timePeriod, setTimePeriod] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 15;
+  const pageSize = 10;
 
   const mcuIds = useMemo(() => {
     const ids = new Set(metrics.map((m) => m.mcu_id || "unknown"));
@@ -98,10 +114,31 @@ export default function McuSensorsPage() {
     };
   }, [filteredData]);
 
+  const latestMetric = filteredData[0] || null;
+  const systemStatus = useMemo(() => {
+    if (!latestMetric) return "unknown";
+    return getSensorStatus(latestMetric.temperature, latestMetric.humidity);
+  }, [latestMetric]);
+
+  const safePercentage = useMemo(() => {
+    if (filteredData.length === 0) return 0;
+    const safeCount = filteredData.filter(
+      (m) => getSensorStatus(m.temperature, m.humidity) === "safe"
+    ).length;
+    return (safeCount / filteredData.length) * 100;
+  }, [filteredData]);
+
   const exportToCsv = () => {
     if (filteredData.length === 0) return;
-    const headers = ["MCU Name", "MCU ID", "Temperature (C)", "Humidity (%)", "Timestamp"];
-    const rows = filteredData.map((m) => [m.mcu_name || "Unknown", m.mcu_id || "Unknown", m.temperature?.toFixed(2) || "N/A", m.humidity?.toFixed(2) || "N/A", new Date(m.created_at).toLocaleString()]);
+    const headers = ["MCU Name", "MCU ID", "Temperature (C)", "Humidity (%)", "Status", "Timestamp"];
+    const rows = filteredData.map((m) => [
+      m.mcu_name || "Unknown",
+      m.mcu_id || "Unknown",
+      m.temperature?.toFixed(2) || "N/A",
+      m.humidity?.toFixed(2) || "N/A",
+      getSensorStatus(m.temperature, m.humidity) === "safe" ? t('mcuSensors.journal.table.safe') : t('mcuSensors.journal.table.danger'),
+      new Date(m.created_at).toLocaleString()
+    ]);
     const csv = [headers, ...rows].map((row) => row.map((cell) => `"${cell}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
@@ -113,10 +150,7 @@ export default function McuSensorsPage() {
   if (loading && metrics.length === 0) {
     return (
       <DashboardLayout>
-        <div className="flex flex-col items-center justify-center h-[70vh] space-y-6">
-           <div className="w-12 h-12 border-4 border-foreground/5 border-t-foreground rounded-full animate-spin" />
-           <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">{t('mcuSensors.loading')}</p>
-        </div>
+        <LoadingScreen message={t('mcuSensors.loading')} />
       </DashboardLayout>
     );
   }
@@ -150,14 +184,14 @@ export default function McuSensorsPage() {
         </div>
 
         {/* Real-time Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
            <div className="accent-card accent-card-orange group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 hover:border-orange-500/20 transition-all duration-500">
               <div className="flex items-center justify-between">
                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('mcuSensors.stats.avgTemp')}</span>
                  <Thermometer className="w-4 h-4 opacity-20 group-hover:text-orange-500 transition-colors" />
               </div>
               <div className="flex items-baseline gap-1">
-                 <p className="text-4xl font-black group-hover:scale-105 transition-transform duration-500">{stats.avgTemp.toFixed(1)}</p>
+                 <p className="text-4xl font-black">{stats.avgTemp.toFixed(1)}</p>
                  <span className="text-sm font-black opacity-30 italic">°C</span>
               </div>
            </div>
@@ -189,6 +223,38 @@ export default function McuSensorsPage() {
               <div className="flex items-baseline gap-1">
                  <p className="text-4xl font-black">{stats.avgHumidity.toFixed(1)}</p>
                  <span className="text-sm font-black opacity-30 italic">%</span>
+              </div>
+           </div>
+           <div className={`accent-card ${
+              systemStatus === "safe" 
+                 ? "accent-card-emerald bg-emerald-500/[0.03] border-emerald-500/10 hover:border-emerald-500/20" 
+                 : systemStatus === "danger" 
+                    ? "accent-card-rose bg-rose-500/[0.03] border-rose-500/10 hover:border-rose-500/20" 
+                    : "bg-card/40 border-foreground/5"
+           } group p-8 backdrop-blur-3xl border rounded-[2.5rem] space-y-4 transition-all duration-500`}>
+              <div className="flex items-center justify-between">
+                 <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('mcuSensors.stats.systemStatus')}</span>
+                 <Activity className={`w-4 h-4 opacity-40 transition-colors ${
+                    systemStatus === "safe" 
+                       ? "text-emerald-500 group-hover:opacity-100" 
+                       : systemStatus === "danger" 
+                          ? "text-rose-500 group-hover:opacity-100" 
+                          : ""
+                 }`} />
+              </div>
+              <div className="flex flex-col">
+                 <p className={`text-4xl font-black uppercase tracking-tight italic ${
+                    systemStatus === "safe" 
+                       ? "text-emerald-500" 
+                       : systemStatus === "danger" 
+                          ? "text-rose-500" 
+                          : "opacity-40"
+                 }`}>
+                   {latestMetric ? (systemStatus === "safe" ? t('mcuSensors.journal.table.safe') : t('mcuSensors.journal.table.danger')) : "---"}
+                 </p>
+                 <span className="text-[9px] font-bold opacity-30 uppercase tracking-widest mt-1">
+                   {t('mcuSensors.stats.safeRate')}: {safePercentage.toFixed(0)}%
+                 </span>
               </div>
            </div>
            <div className="accent-card accent-card-indigo hidden lg:block group p-8 bg-primary/5 backdrop-blur-3xl border border-primary/10 rounded-[2.5rem] space-y-4 overflow-hidden relative">
@@ -335,7 +401,7 @@ export default function McuSensorsPage() {
              </div>
              <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
-                   <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                   <span className="w-2 h-2 bg-emerald-500 rounded-full" />
                    <span className="text-[10px] font-black uppercase tracking-widest opacity-40 italic">{t('mcuSensors.journal.live')}</span>
                 </div>
                 <div className="text-[10px] font-black uppercase tracking-widest opacity-60 bg-foreground/5 px-4 py-2 rounded-full border border-foreground/10">
@@ -351,6 +417,7 @@ export default function McuSensorsPage() {
                   <th className="px-12 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic">{t('mcuSensors.journal.table.target')}</th>
                   <th className="px-8 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic text-center">{t('mcuSensors.journal.table.thermal')}</th>
                   <th className="px-8 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic text-center">{t('mcuSensors.journal.table.moisture')}</th>
+                  <th className="px-8 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic text-center">{t('mcuSensors.journal.table.status')}</th>
                   <th className="px-12 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic text-right">{t('mcuSensors.journal.table.timestamp')}</th>
                 </tr>
               </thead>
@@ -376,7 +443,7 @@ export default function McuSensorsPage() {
                           </div>
                           <div className="w-12 h-1.5 bg-foreground/5 rounded-full overflow-hidden">
                              <div 
-                                className="h-full bg-orange-500 transition-all duration-1000" 
+                                className="h-full bg-orange-500" 
                                 style={{width: `${Math.min(100, Math.max(0, ((metric.temperature || 0) - 20) * 5))}%`}} 
                              />
                           </div>
@@ -390,11 +457,27 @@ export default function McuSensorsPage() {
                           </div>
                           <div className="w-12 h-1.5 bg-foreground/5 rounded-full overflow-hidden">
                              <div 
-                                className="h-full bg-blue-500 transition-all duration-1000" 
+                                className="h-full bg-blue-500" 
                                 style={{width: `${metric.humidity || 0}%`}} 
                              />
                           </div>
                        </div>
+                    </td>
+                    <td className="px-8 py-8 text-center">
+                        {(() => {
+                           const status = getSensorStatus(metric.temperature, metric.humidity);
+                           return status === "safe" ? (
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase tracking-wider">
+                                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                                 {t('mcuSensors.journal.table.safe')}
+                              </span>
+                           ) : (
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-black uppercase tracking-wider">
+                                 <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
+                                 {t('mcuSensors.journal.table.danger')}
+                              </span>
+                           );
+                        })()}
                     </td>
                     <td className="px-12 py-8 text-right">
                        <div className="flex flex-col items-end gap-1">

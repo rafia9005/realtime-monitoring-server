@@ -1,4 +1,5 @@
 import DashboardLayout from "@/components/DashboardLayout";
+import LoadingScreen from "@/components/LoadingScreen";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
@@ -7,7 +8,6 @@ import {
   HardDrive,
   Network,
   RefreshCw,
-  Loader2,
   AlertCircle,
   Activity,
   ArrowUpRight,
@@ -45,14 +45,7 @@ export default function Dashboard() {
   if (loading && !metrics) {
     return (
       <DashboardLayout>
-        <div className="flex items-center justify-center h-[60vh]">
-          <div className="text-center space-y-4">
-            <div className="flex items-center justify-center">
-              <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
-            </div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">{t('dashboard.loading')}</p>
-          </div>
-        </div>
+        <LoadingScreen message={t('dashboard.loading')} />
       </DashboardLayout>
     );
   }

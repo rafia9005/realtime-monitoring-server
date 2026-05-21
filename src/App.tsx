@@ -1,4 +1,4 @@
-﻿import { createRoot } from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
 import './assets/globals.css'
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import Index from './pages'
@@ -43,7 +43,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!isSignedIn) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   const primaryEmail = user.primaryEmailAddress?.emailAddress?.toLowerCase();

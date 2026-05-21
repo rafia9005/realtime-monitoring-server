@@ -1,7 +1,46 @@
 import PublicLayout from "@/components/PublicLayout";
+import { useLanguage } from "@/lib/LanguageContext";
 import { Info, Target, Shield, Zap, LayoutDashboard, Cpu, Network } from "lucide-react";
 
 export default function About() {
+    const { language } = useLanguage();
+
+    const tRole = (role: string) => {
+        if (language === 'id') {
+            switch (role) {
+                case "Website Engineer": return "Insinyur Situs Web";
+                case "Wordpress Dev": return "Pengembang Wordpress";
+                case "Model Maker": return "Pembuat Model";
+                case "Lead": return "Pimpinan";
+                case "Lead Investigator": return "Penyelidik Utama";
+                case "Web Developer": return "Pengembang Web";
+                default: return role;
+            }
+        }
+        return role;
+    };
+
+    const tLabel = (label: string) => {
+        if (language === 'id') {
+            switch (label) {
+                case "SUSPECT #1": return "TERSANGKA #1";
+                case "SUSPECT": return "TERSANGKA";
+                case "WITNESS": return "SAKSI";
+                case "ACCOMPLICE": return "REKAN";
+                case "MASTERMIND": return "DALANG";
+                case "INFORMANT": return "INFORMAN";
+                case "MISSING": return "HILANG";
+                case "TOP SECRET": return "SANGAT RAHASIA";
+                case "UNDER COVER": return "PENYAMARAN";
+                case "WANTED": return "DICARI";
+                case "SOLVED": return "TERPECAHKAN";
+                case "URGENT": return "MENDESAK";
+                default: return label;
+            }
+        }
+        return label;
+    };
+
     return (
         <PublicLayout>
             <div className="w-full relative overflow-hidden pt-32 pb-40">
@@ -9,49 +48,64 @@ export default function About() {
                     <div className="max-w-4xl mx-auto text-center mb-32">
                         <div className="inline-flex items-center gap-3 px-5 py-2 rounded-2xl bg-muted/40 backdrop-blur-md border border-border/50 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                             <Info className="w-4 h-4 text-primary" />
-                            <span className="text-xs font-black tracking-[0.2em] uppercase text-foreground/80">Protocol Genesis</span>
+                            <span className="text-xs font-black tracking-[0.2em] uppercase text-foreground/80">
+                                {language === 'id' ? 'Protokol Genesis' : 'Protocol Genesis'}
+                            </span>
                         </div>
                         <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-foreground mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
-                            Simplicity in <br />
-                            <span className="text-muted-foreground/30">Infrastructure.</span>
+                            {language === 'id' ? 'Kesederhanaan dalam' : 'Simplicity in'} <br />
+                            <span className="text-muted-foreground/30">{language === 'id' ? 'Infrastruktur.' : 'Infrastructure.'}</span>
                         </h1>
                         <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
-                            Watchtower was forged from the need for clarity in an increasingly complex digital landscape. We build tools that make system health intuitive.
+                            {language === 'id' 
+                                ? 'Watchtower dibentuk dari kebutuhan akan kejelasan dalam lanskap digital yang semakin kompleks. Kami membangun alat yang membuat kesehatan sistem menjadi intuitif.' 
+                                : 'Watchtower was forged from the need for clarity in an increasingly complex digital landscape. We build tools that make system health intuitive.'}
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-40">
                         <div className="group p-12 border border-border/40 rounded-[3rem] bg-card/10 hover:bg-card transition-all duration-700">
                             <Target className="w-12 h-12 text-primary mb-8" />
-                            <h3 className="text-3xl font-bold mb-6 tracking-tight">Our Mission</h3>
+                            <h3 className="text-3xl font-bold mb-6 tracking-tight">
+                                {language === 'id' ? 'Misi Kami' : 'Our Mission'}
+                            </h3>
                             <p className="text-lg text-muted-foreground leading-relaxed font-medium">
-                                To democratize server monitoring. We believe that critical infrastructure data should be accessible, beautiful, and actionable for teams of all sizes.
+                                {language === 'id'
+                                    ? 'Mendemokrasikan pemantauan server. Kami percaya bahwa data infrastruktur penting harus mudah diakses, indah, dan dapat ditindaklanjuti untuk tim dari semua ukuran.'
+                                    : 'To democratize server monitoring. We believe that critical infrastructure data should be accessible, beautiful, and actionable for teams of all sizes.'}
                             </p>
                         </div>
                         <div className="group p-12 border border-border/40 rounded-[3rem] bg-card/10 hover:bg-card transition-all duration-700">
                             <Shield className="w-12 h-12 text-primary mb-8" />
-                            <h3 className="text-3xl font-bold mb-6 tracking-tight">Our Values</h3>
+                            <h3 className="text-3xl font-bold mb-6 tracking-tight">
+                                {language === 'id' ? 'Nilai Kami' : 'Our Values'}
+                            </h3>
                             <p className="text-lg text-muted-foreground leading-relaxed font-medium">
-                                Privacy by design, reliability as standard, and aesthetics as a core functional requirement. We don't just process metrics; we craft visibility.
+                                {language === 'id'
+                                    ? 'Privasi sejak awal, keandalan sebagai standar, dan estetika sebagai persyaratan fungsional inti. Kami tidak hanya memproses metrik; kami merancang visibilitas.'
+                                    : 'Privacy by design, reliability as standard, and aesthetics as a core functional requirement. We don\'t just process metrics; we craft visibility.'}
                             </p>
                         </div>
                     </div>
 
                     <div className="max-w-7xl mx-auto mb-24">
                         <div className="text-center mb-24">
-                            <h2 className="text-4xl font-bold tracking-tight">The Architecture of Watchtower</h2>
+                            <h2 className="text-4xl font-bold tracking-tight">
+                                {language === 'id' ? 'Arsitektur Watchtower' : 'The Architecture of Watchtower'}
+                            </h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                             {[
-                                { icon: Cpu, label: "Low Overhead", value: "< 1%", unit: "CPU Usage" },
-                                { icon: Network, label: "Global Reach", value: "Real-time", unit: "Telemetry" },
-                                { icon: Zap, label: "Fast Alerts", value: "< 5s", unit: "Notification" },
-                                { icon: LayoutDashboard, label: "Modern UI", value: "Zen", unit: "UX Design" }
+                                { icon: Cpu, label: language === 'id' ? "Beban Rendah" : "Low Overhead", value: "< 1%", unit: language === 'id' ? "Penggunaan CPU" : "CPU Usage" },
+                                { icon: Network, label: language === 'id' ? "Jangkauan Global" : "Global Reach", value: "Real-time", unit: language === 'id' ? "Telemetri" : "Telemetry" },
+                                { icon: Zap, label: language === 'id' ? "Peringatan Cepat" : "Fast Alerts", value: "< 5s", unit: language === 'id' ? "Notifikasi" : "Notification" },
+                                { icon: LayoutDashboard, label: language === 'id' ? "Antarmuka Modern" : "Modern UI", value: "Zen", unit: language === 'id' ? "Desain UX" : "UX Design" }
                             ].map((item, i) => (
                                 <div key={i} className="flex flex-col items-center p-10 border border-border/30 rounded-[2.5rem] bg-muted/10">
                                     <item.icon className="w-8 h-8 text-muted-foreground/40 mb-6" />
                                     <div className="text-4xl font-bold tracking-tighter mb-1">{item.value}</div>
                                     <div className="text-[10px] font-black tracking-[0.2em] uppercase text-primary">{item.label}</div>
+                                    <div className="text-[10px] font-medium text-muted-foreground/60 mt-1 uppercase tracking-wide">{item.unit}</div>
                                 </div>
                             ))}
                         </div>
@@ -62,10 +116,14 @@ export default function About() {
                         <div className="text-center mb-16 relative">
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-32 bg-red-500/5 blur-3xl rounded-full" />
                             <h2 className="text-3xl md:text-5xl font-bold mb-4 font-serif tracking-tight relative">
-                                <span className="inline-block border-b-4 border-red-600 pb-2">Meet the Team</span>
+                                <span className="inline-block border-b-4 border-red-600 pb-2">
+                                    {language === 'id' ? 'Temui Tim Kami' : 'Meet the Team'}
+                                </span>
                             </h2>
                             <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-mono text-sm uppercase tracking-widest mt-6">
-                                [CLASSIFIED FILE: The masterminds behind the scenes]
+                                {language === 'id'
+                                    ? '[BERKAS RAHASIA: Para dalang di balik layar]'
+                                    : '[CLASSIFIED FILE: The masterminds behind the scenes]'}
                             </p>
                         </div>
 
@@ -83,27 +141,37 @@ export default function About() {
                                 {/* Torn Paper / Evidence Notes */}
                                 <div className="absolute top-[25%] left-[5%] w-40 h-40 bg-[#fef08a] shadow-md -rotate-6 p-4 flex flex-col items-center justify-center pointer-events-none z-0 border border-yellow-300">
                                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-6 bg-white/40 rotate-[10deg] shadow-sm border border-white/20" />
-                                    <span className="text-red-600 font-bold text-2xl font-serif uppercase border-2 border-red-600 p-1 rotate-3">WANTED</span>
-                                    <span className="text-zinc-800 text-xs text-center mt-3 font-mono">For building awesome UIs</span>
+                                    <span className="text-red-600 font-bold text-2xl font-serif uppercase border-2 border-red-600 p-1 rotate-3">
+                                        {tLabel("WANTED")}
+                                    </span>
+                                    <span className="text-zinc-800 text-xs text-center mt-3 font-mono">
+                                        {language === 'id' ? 'Karena membangun UI keren' : 'For building awesome UIs'}
+                                    </span>
                                 </div>
 
                                 <div className="absolute top-[55%] right-[8%] w-56 h-72 bg-[#e5e5f7] rounded-sm shadow-md rotate-3 z-0 pointer-events-none overflow-hidden border border-zinc-300 opacity-90">
                                     <div className="w-full h-8 bg-zinc-300 mb-4 flex items-center px-3">
-                                        <span className="text-xs font-mono text-black/60 font-bold">CASE #9942</span>
+                                        <span className="text-xs font-mono text-black/60 font-bold">
+                                            {language === 'id' ? 'KASUS #9942' : 'CASE #9942'}
+                                        </span>
                                     </div>
                                     <div className="px-5 space-y-3">
                                         <div className="w-full h-2 bg-black/10 rounded" />
                                         <div className="w-3/4 h-2 bg-black/10 rounded" />
                                         <div className="w-5/6 h-2 bg-black/10 rounded" />
                                         <div className="mt-12 w-32 h-32 border-[6px] border-red-600/60 rounded-full mx-auto flex items-center justify-center rotate-[-15deg]">
-                                            <span className="text-red-600/70 font-black text-2xl tracking-widest border-y-4 border-red-600/70 py-1">SOLVED</span>
+                                            <span className="text-red-600/70 font-black text-2xl tracking-widest border-y-4 border-red-600/70 py-1">
+                                                {tLabel("SOLVED")}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="absolute bottom-[10%] right-[35%] w-32 h-16 bg-white shadow-sm rotate-[-8deg] flex items-center justify-center z-0 border border-zinc-200">
                                     <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-8 h-4 bg-white/50 rotate-[45deg] shadow-sm" />
-                                    <span className="font-mono text-sm font-bold text-red-600">URGENT</span>
+                                    <span className="font-mono text-sm font-bold text-red-600">
+                                        {tLabel("URGENT")}
+                                    </span>
                                 </div>
 
                                 {[
@@ -139,7 +207,7 @@ export default function About() {
                                             >
                                                 {/* Stamp / Label overlay */}
                                                 <div className={`absolute -right-6 -top-4 ${member.labelColor} px-2 py-1 text-[10px] font-black tracking-widest uppercase rotate-12 shadow-sm border-2 border-dashed z-20`}>
-                                                    {member.label}
+                                                    {tLabel(member.label)}
                                                 </div>
 
                                                 {/* Image container */}
@@ -166,7 +234,7 @@ export default function About() {
                                                         {member.name}
                                                     </h3>
                                                     <p className="text-red-600 text-[9px] uppercase tracking-widest text-center mt-1 font-bold">
-                                                        {member.role}
+                                                        {tRole(member.role)}
                                                     </p>
                                                 </div>
                                             </div>
@@ -197,12 +265,12 @@ export default function About() {
                                 {[
                                     { name: "Dafa", role: "Lead Investigator", image: "https://media.licdn.com/dms/image/v2/D5603AQF6GzKG8N6v3A/profile-displayphoto-scale_400_400/B56ZtcCr_VJIAg-/0/1766775769217?e=1779926400&v=beta&t=BnIVnuDzTjIiAOEiPdBRsDfSxkHsZyIBAt37BowJfAM", rotation: "-rotate-2", label: "MASTERMIND" },
                                     { name: "Ahmad Rafi", role: "Web Developer", image: "https://media.licdn.com/dms/image/v2/D5603AQH-748QtWnfLQ/profile-displayphoto-scale_400_400/B56Zhb.woSHkAo-/0/1753889838875?e=1779926400&v=beta&t=Aw52KLnisd9j_yFW_Lfws9hQzI4ClCGYN0cqpIZHZFI", rotation: "rotate-2", label: "SUSPECT" },
-                                    { name: "Dhinna Olivia", role: "Wordpress Dev", image: "public/img/team/dhinna.jpeg", rotation: "-rotate-1", label: "MISSING" },
-                                    { name: "Andina Stevy", role: "Wordpress Dev", image: "public/img/team/stevy.jpeg", rotation: "rotate-3", label: "WITNESS" },
-                                    { name: "Chelsea Meilany", role: "Wordpress Dev", image: "public/img/team/chelsea.jpeg", rotation: "-rotate-3", label: "INFORMANT" },
-                                    { name: "Afriza Nugraha", role: "Model Maker", image: "public/img/team/afriza.jpeg", rotation: "rotate-1", label: "ACCOMPLICE" },
-                                    { name: "Eric Aditya", role: "Model Maker", image: "public/img/team/eric.jpeg", rotation: "-rotate-2", label: "UNDER COVER" },
-                                    { name: "Amelia Salsa", role: "Model Maker", image: "public/img/team/amel.jpeg", rotation: "rotate-2", label: "TOP SECRET" },
+                                    { name: "Dhinna Olivia", role: "Wordpress Dev", image: "https://monitor.scholair.my.id/img/team/dhinna.jpeg", rotation: "-rotate-1", label: "MISSING" },
+                                    { name: "Andina Stevy", role: "Wordpress Dev", image: "https://monitor.scholair.my.id/img/team/stevy.jpeg", rotation: "rotate-3", label: "WITNESS" },
+                                    { name: "Chelsea Meilany", role: "Wordpress Dev", image: "https://monitor.scholair.my.id/img/team/chelsea.jpeg", rotation: "-rotate-3", label: "INFORMANT" },
+                                    { name: "Afriza Nugraha", role: "Model Maker", image: "https://monitor.scholair.my.id/img/team/afriza.jpeg", rotation: "rotate-1", label: "ACCOMPLICE" },
+                                    { name: "Eric Aditya", role: "Model Maker", image: "https://monitor.scholair.my.id/img/team/eric.jpeg", rotation: "-rotate-2", label: "UNDER COVER" },
+                                    { name: "Amelia Salsa", role: "Model Maker", image: "https://monitor.scholair.my.id/img/team/amel.jpeg", rotation: "rotate-2", label: "TOP SECRET" },
                                 ].map((member, index) => (
                                     <div
                                         key={index}
@@ -213,7 +281,7 @@ export default function About() {
 
                                         {/* Label */}
                                         <div className="absolute -right-2 -top-2 bg-red-600 text-white px-1 py-0.5 text-[8px] font-black tracking-widest uppercase rotate-12 shadow-sm border border-dashed border-red-800 z-20">
-                                            {member.label}
+                                            {tLabel(member.label)}
                                         </div>
 
                                         <div className="w-full aspect-square bg-zinc-200 overflow-hidden relative border border-zinc-300">
@@ -230,7 +298,7 @@ export default function About() {
                                                 {member.name}
                                             </h3>
                                             <p className="text-red-600 text-[8px] uppercase tracking-widest text-center mt-0.5 font-bold">
-                                                {member.role}
+                                                {tRole(member.role)}
                                             </p>
                                         </div>
                                     </div>

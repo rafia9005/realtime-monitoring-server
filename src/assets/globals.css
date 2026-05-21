@@ -205,6 +205,25 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
+/* GPU-accelerated backdrop blur pulse animation */
+@keyframes gpu-pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: translate3d(0, 0, 0) scale(1.03);
+  }
+}
+
+.animate-gpu-pulse {
+  animation: gpu-pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
+
 /* Fade In animation */
 @keyframes fadeIn {
   from { opacity: 0; }

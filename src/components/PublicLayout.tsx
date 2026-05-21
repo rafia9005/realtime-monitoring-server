@@ -3,9 +3,16 @@ import { Link, useLocation } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { Moon, Sun, Menu, X, Rocket, LayoutDashboard, Boxes, Contact, Info } from "lucide-react";
-import { UserButton, SignedIn, SignedOut } from "@clerk/clerk-react";
+import { UserButton, SignedIn, SignedOut, useUser } from "@clerk/clerk-react";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 interface PublicLayoutProps {
   children: ReactNode;
@@ -17,6 +24,123 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { language } = useLanguage();
+  const { isSignedIn } = useUser();
+  const [activeModal, setActiveModal] = useState<'privacy' | 'security' | 'terms' | 'license' | null>(null);
+
+  const modalContents = {
+    privacy: {
+      title: language === 'id' ? 'Kebijakan Privasi' : 'Privacy Policy',
+      desc: language === 'id' ? 'PROTOKOL PRIVASI METADATA SECURE' : 'SECURE METADATA PRIVACY PROTOCOL',
+      body: language === 'id' ? (
+        <div className="space-y-4 text-sm leading-relaxed text-muted-foreground/80">
+          <p>
+            Watchtower berkomitmen untuk melindungi telemetri infrastruktur Anda. Sistem kami hanya mengumpulkan metrik tingkat sistem yang penting seperti beban CPU, segmen memori, IO penyimpanan, dan statistik jaringan dari simpul yang Anda pantau.
+          </p>
+          <p>
+            Kami tidak mengumpulkan, mengirimkan, atau menyimpan informasi identitas pribadi (PII), kecuali data profil minimal yang diperlukan untuk autentikasi sesi Anda melalui Clerk.
+          </p>
+          <p>
+            Semua data telemetri mentah disimpan secara aman dalam basis data terenkripsi dan tidak akan pernah dibagikan, dijual, atau disewakan kepada pihak ketiga mana pun.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4 text-sm leading-relaxed text-muted-foreground/80">
+          <p>
+            Watchtower is committed to safeguarding your infrastructure telemetry. Our systems only collect essential system-level metrics such as CPU loads, memory segments, storage IO, and network status from your monitored nodes.
+          </p>
+          <p>
+            No personally identifiable information (PII) is gathered, transmitted, or stored, except for the minimal profile data required to authenticate your secure session via Clerk.
+          </p>
+          <p>
+            All raw telemetry is stored securely within encrypted databases and is never shared, sold, or rented to any third-party entities.
+          </p>
+        </div>
+      ),
+    },
+    security: {
+      title: language === 'id' ? 'Protokol Keamanan' : 'Security Protocols',
+      desc: language === 'id' ? 'SISTEM ENKRIPSI DAN OTORISASI MULTI-TIER' : 'MULTI-TIER ENCRYPTION AND AUTHORIZATION',
+      body: language === 'id' ? (
+        <div className="space-y-4 text-sm leading-relaxed text-muted-foreground/80">
+          <p>
+            <strong>Enkripsi dalam Transit:</strong> Semua komunikasi telemetri antara agen pemantauan lokal Anda dan platform pusat Watchtower dienkripsi secara ketat menggunakan protokol TLS tingkat tinggi (HTTPS/WSS).
+          </p>
+          <p>
+            <strong>Kontrol Akses Terisolasi:</strong> Akses ke panel kontrol Watchtower dilindungi sepenuhnya oleh sistem otentikasi Clerk. Ini mendukung otentikasi multi-faktor (MFA) untuk meminimalkan risiko akses tidak sah.
+          </p>
+          <p>
+            <strong>Sandbox Agen:</strong> Kode agen pemantau berjalan di ruang pengguna terisolasi dengan akses baca-saja ke statistik sistem. Agen tidak pernah menerima atau mengeksekusi perintah masukan arbiter secara default.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4 text-sm leading-relaxed text-muted-foreground/80">
+          <p>
+            <strong>Encryption in Transit:</strong> All telemetry communications between your local monitoring agents and the central Watchtower platform are strictly encrypted using high-grade TLS protocols (HTTPS/WSS).
+          </p>
+          <p>
+            <strong>Isolated Access Control:</strong> Access to the Watchtower control panels is fully gated by Clerk authentication, supporting multi-factor authentication (MFA) to minimize risk of unauthorized entry.
+          </p>
+          <p>
+            <strong>Agent Sandboxing:</strong> The monitoring agent code runs in an isolated user space with read-only privileges to system statistics. It does not accept or execute inbound arbitrary commands by default.
+          </p>
+        </div>
+      ),
+    },
+    terms: {
+      title: language === 'id' ? 'Ketentuan Layanan' : 'Terms of Service',
+      desc: language === 'id' ? 'SYARAT PENGGUNAAN WATCHTOWER PLATFORM' : 'WATCHTOWER PLATFORM TERMS OF USE',
+      body: language === 'id' ? (
+        <div className="space-y-4 text-sm leading-relaxed text-muted-foreground/80">
+          <p>
+            <strong>Pemantauan Sah:</strong> Anda setuju untuk menginstal dan menggunakan agen pemantau Watchtower hanya pada mesin, server, atau aset jaringan yang Anda miliki secara sah, atau di mana Anda memiliki izin tertulis eksplisit.
+          </p>
+          <p>
+            <strong>Integritas Layanan:</strong> Anda dilarang memanipulasi, membanjiri, atau merekayasa balik API asupan metrik untuk mengganggu stabilitas infrastruktur Watchtower.
+          </p>
+          <p>
+            <strong>Batasan Tanggung Jawab:</strong> Watchtower disediakan "sebagaimana adanya" tanpa jaminan apa pun. Kami tidak bertanggung jawab atas kehilangan data, kerusakan sistem, atau kerugian finansial akibat penggunaan perangkat lunak ini.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4 text-sm leading-relaxed text-muted-foreground/80">
+          <p>
+            <strong>Lawful Monitoring:</strong> You agree to install and deploy the Watchtower monitoring agent only on machines, servers, or network assets that you legally own or for which you have explicit written permission.
+          </p>
+          <p>
+            <strong>Service Integrity:</strong> You must not manipulate, flood, or reverse-engineer the metrics ingestion APIs to disrupt the stability of Watchtower infrastructure.
+          </p>
+          <p>
+            <strong>Limitation of Liability:</strong> Watchtower is provided "as is" without warranty of any kind. We are not liable for any data loss, system damage, or financial setbacks resulting from the use of this software.
+          </p>
+        </div>
+      ),
+    },
+    license: {
+      title: language === 'id' ? 'Lisensi Perangkat Lunak' : 'Software License',
+      desc: language === 'id' ? 'WATCHTOWER OPEN SOURCE MIT LICENSE' : 'WATCHTOWER OPEN SOURCE MIT LICENSE',
+      body: language === 'id' ? (
+        <div className="space-y-4 text-sm leading-relaxed text-muted-foreground/80 font-mono text-[11px]">
+          <p>Copyright (c) 2026 WATCHTOWER INDUSTRIES</p>
+          <p>
+            Dengan ini diberikan izin secara gratis kepada siapa pun yang memperoleh salinan perangkat lunak ini dan file dokumentasi terkait ("Perangkat Lunak"), untuk memperdagangkan Perangkat Lunak tanpa batasan, termasuk tanpa batasan hak untuk menggunakan, menyalin, memodifikasi, menggabungkan, menerbitkan, mendistribusikan, melisensikan, dan/atau menjual salinannya, dengan tunduk pada ketentuan berikut:
+          </p>
+          <p>
+            Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus dicantumkan dalam semua salinan atau bagian penting dari Perangkat Lunak.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-4 text-sm leading-relaxed text-muted-foreground/80 font-mono text-[11px]">
+          <p>Copyright (c) 2026 WATCHTOWER INDUSTRIES</p>
+          <p>
+            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, subject to the following conditions:
+          </p>
+          <p>
+            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+          </p>
+        </div>
+      ),
+    },
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,8 +168,8 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
       {/* Dynamic Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_0%,rgba(var(--primary),0.03)_0%,transparent_50%)]" />
-        <div className="absolute top-[10%] right-[5%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-[20%] left-[5%] w-[30%] h-[30%] bg-secondary/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-[10%] right-[5%] w-[40%] h-[40%] bg-primary/5 rounded-full blur-[120px] animate-gpu-pulse" />
+        <div className="absolute bottom-[20%] left-[5%] w-[30%] h-[30%] bg-secondary/10 rounded-full blur-[100px] animate-gpu-pulse" style={{ animationDelay: '2s' }} />
         
         {/* Grid Pattern */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(var(--primary),0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(var(--primary),0.03)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
@@ -75,7 +199,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center bg-muted/50 backdrop-blur-md rounded-full px-2 py-1.5 border border-border/50">
-              {navLinks.map((link) => {
+              {navLinks.filter(link => !link.protected || isSignedIn).map((link) => {
                 const isActive = location.pathname === link.href;
                 return (
                   <Link
@@ -120,11 +244,8 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                   </div>
                 </SignedIn>
                 <SignedOut>
-                  <Button asChild variant="ghost" className="rounded-xl font-medium hidden md:flex">
+                  <Button asChild variant="ghost" className="rounded-xl font-medium hidden md:flex bg-foreground text-background">
                     <a href="/login">{language === 'id' ? 'Masuk' : 'Log In'}</a>
-                  </Button>
-                  <Button asChild className="rounded-xl font-bold px-6 bg-foreground text-background hover:bg-foreground/90 shadow-xl shadow-foreground/10">
-                    <a href="/login">{language === 'id' ? 'Mulai' : 'Get Started'}</a>
                   </Button>
                 </SignedOut>
               </div>
@@ -148,7 +269,7 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
             }`}
         >
           <div className="px-6 py-8 space-y-2">
-            {navLinks.map((link) => (
+            {navLinks.filter(link => !link.protected || isSignedIn).map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
@@ -167,11 +288,8 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
                 </div>
               </SignedIn>
               <SignedOut>
-                <Button asChild variant="outline" className="w-full h-12 rounded-2xl">
+                <Button asChild variant="outline" className="w-full h-12 rounded-2xl bg-foreground text-background">
                   <a href="/login">{language === 'id' ? 'Masuk' : 'Log In'}</a>
-                </Button>
-                <Button asChild className="w-full h-12 rounded-2xl bg-foreground text-background">
-                  <a href="/login">{language === 'id' ? 'Mulai' : 'Get Started'}</a>
                 </Button>
               </SignedOut>
             </div>
@@ -220,19 +338,19 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
             <div className="md:col-span-2">
               <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/40 mb-6">{language === 'id' ? 'Perusahaan' : 'Company'}</h4>
-              <ul className="space-y-4 text-muted-foreground font-medium">
+              <ul className="space-y-4 text-muted-foreground font-medium flex flex-col items-start">
                 <li><Link to="/about" className="hover:text-primary transition-colors">{language === 'id' ? 'Visi Kami' : 'Our Vision'}</Link></li>
                 <li><Link to="/contact" className="hover:text-primary transition-colors">{language === 'id' ? 'Dukungan' : 'Support'}</Link></li>
-                <li><a href="#" className="hover:text-primary transition-colors">{language === 'id' ? 'Privasi' : 'Privacy'}</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">{language === 'id' ? 'Keamanan' : 'Security'}</a></li>
+                <li><button onClick={() => setActiveModal('privacy')} className="hover:text-primary transition-colors cursor-pointer text-left">{language === 'id' ? 'Privasi' : 'Privacy'}</button></li>
+                <li><button onClick={() => setActiveModal('security')} className="hover:text-primary transition-colors cursor-pointer text-left">{language === 'id' ? 'Keamanan' : 'Security'}</button></li>
               </ul>
             </div>
 
             <div className="md:col-span-2">
               <h4 className="text-sm font-bold uppercase tracking-widest text-foreground/40 mb-6">{language === 'id' ? 'Hukum' : 'Legal'}</h4>
-              <ul className="space-y-4 text-muted-foreground font-medium">
-                <li><a href="#" className="hover:text-primary transition-colors">{language === 'id' ? 'Syarat' : 'Terms'}</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">{language === 'id' ? 'Lisensi' : 'License'}</a></li>
+              <ul className="space-y-4 text-muted-foreground font-medium flex flex-col items-start">
+                <li><button onClick={() => setActiveModal('terms')} className="hover:text-primary transition-colors cursor-pointer text-left">{language === 'id' ? 'Syarat' : 'Terms'}</button></li>
+                <li><button onClick={() => setActiveModal('license')} className="hover:text-primary transition-colors cursor-pointer text-left">{language === 'id' ? 'Lisensi' : 'License'}</button></li>
               </ul>
             </div>
           </div>
@@ -251,6 +369,28 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
           </div>
         </div>
       </footer>
+
+      {/* Legal & Policy Modals */}
+      <Dialog open={activeModal !== null} onOpenChange={(open) => !open && setActiveModal(null)}>
+        <DialogContent className="sm:max-w-[500px] bg-background/80 backdrop-blur-3xl border border-foreground/10 rounded-[2.5rem] shadow-3xl p-8 overflow-hidden font-sans text-foreground">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
+          {activeModal && (
+            <>
+              <DialogHeader className="space-y-4">
+                <DialogTitle className="text-3xl font-black tracking-tighter uppercase text-foreground">
+                  {modalContents[activeModal].title}
+                </DialogTitle>
+                <DialogDescription className="text-[9px] font-black tracking-widest text-primary uppercase italic">
+                  {modalContents[activeModal].desc}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-6 max-h-[50vh] overflow-y-auto pr-2 border-t border-foreground/5 mt-4">
+                {modalContents[activeModal].body}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

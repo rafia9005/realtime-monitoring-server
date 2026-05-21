@@ -41,7 +41,7 @@ export default function Contact() {
                                 icon: Globe, 
                                 label: "Global Presence", 
                                 value: "Open Status",
-                                action: "#",
+                                action: "/about",
                                 desc: "We operate across multiple timezones to ensure perpetual coverage."
                             }
                         ].map((method, i) => (
@@ -72,7 +72,11 @@ export default function Contact() {
                                     Requiring high-scale deployment or custom monitoring solutions? Our systems architects are available for dedicated consultation.
                                 </p>
                             </div>
-                            <Button size="lg" className="rounded-2xl h-16 px-10 bg-foreground text-background font-bold text-lg hover:scale-105 transition-all">
+                            <Button 
+                                size="lg" 
+                                className="rounded-2xl h-16 px-10 bg-foreground text-background font-bold text-lg hover:scale-105 transition-all cursor-pointer"
+                                onClick={() => window.location.href = "mailto:projects.watchtower@gmail.com?subject=Enterprise Proposal Request"}
+                            >
                                 Request Proposal
                             </Button>
                         </div>

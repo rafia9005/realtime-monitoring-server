@@ -1,7 +1,8 @@
-﻿import PublicLayout from "@/components/PublicLayout";
+import PublicLayout from "@/components/PublicLayout";
 import { Button } from "@/components/ui/button";
 import { useLandingPageMetrics } from "@/lib/hooks/useLandingPageMetrics";
 import { useLanguage } from "@/lib/LanguageContext";
+import { useUser } from "@clerk/clerk-react";
 import {
     Activity,
     Cpu,
@@ -17,6 +18,7 @@ import {
 export default function Home() {
     const landingMetrics = useLandingPageMetrics();
     const { language } = useLanguage();
+    const { isSignedIn } = useUser();
 
     return (
         <PublicLayout>
@@ -25,16 +27,6 @@ export default function Home() {
                 <section className="relative pt-32 pb-20 md:pt-48 md:pb-40 overflow-hidden">
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="w-full mx-auto text-center">
-                            <div className="inline-flex items-center gap-3 px-5 py-2 rounded-2xl bg-muted/40 backdrop-blur-md border border-border/50 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                                <span className="relative flex h-3 w-3">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]"></span>
-                                </span>
-                                <span className="text-[10px] font-black tracking-[0.3em] text-foreground/80 uppercase">
-                                    {language === 'id' ? 'Mesin Inti Online' : 'Core Engine Online'}
-                                </span>
-                            </div>
-
                             <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-foreground mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
                                 {language === 'id' ? 'Amati. Analisis.' : 'Observe. Analyze.'} <br />
                                 <span className="text-foreground/20">{language === 'id' ? 'Optimalkan.' : 'Optimize.'}</span>
@@ -48,7 +40,7 @@ export default function Home() {
 
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-500">
                                 <Button asChild size="lg" className="h-16 px-12 text-lg font-black rounded-2xl w-full sm:w-auto bg-foreground text-background hover:scale-105 transition-all shadow-2xl shadow-foreground/10 active:scale-95 uppercase tracking-widest">
-                                    <a href="/dashboard">
+                                    <a href={isSignedIn ? "/dashboard" : "/login"}>
                                         {language === 'id' ? 'Inisialisasi' : 'Initialize'}
                                         <ArrowRight className="ml-3 w-5 h-5" />
                                     </a>
@@ -85,31 +77,67 @@ export default function Home() {
                                             <div>
                                                 <div className="text-3xl font-black tracking-tighter text-foreground uppercase">Cluster Node_01</div>
                                                 <div className="text-[10px] font-black text-muted-foreground flex items-center gap-3 uppercase tracking-widest opacity-40">
-                                                    Status: <span className="text-emerald-500">Synchronized</span> | Up: <span className="text-foreground">14.2d</span>
+                                                    Status: <span className={landingMetrics.nodeStatus === "online" ? "text-emerald-500" : "text-red-500"}>
+                                                        {landingMetrics.nodeStatus === "online" 
+                                                            ? (language === 'id' ? "Tersinkronisasi" : "Synchronized")
+                                                            : (language === 'id' ? "Terputus" : "Offline")
+                                                        }
+                                                    </span> | Up: <span className="text-foreground">{landingMetrics.nodeUptime}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="space-y-10">
                                             {[
-                                                { label: language === 'id' ? "Mesin Saraf" : "Neural Engine", value: 34, color: "bg-foreground", hint: language === 'id' ? "OPTIMAL" : "OPTIMAL" },
-                                                { label: language === 'id' ? "Segmen Memori" : "Memory Segment", value: 45, color: "bg-foreground/60", hint: language === 'id' ? "STABIL" : "STABLE" },
-                                                { label: language === 'id' ? "Denyut Jaringan" : "Network Pulse", value: 68, color: "bg-foreground/40", hint: language === 'id' ? "AKTIF" : "ACTIVE" }
-                                            ].map((metric, i) => (
-                                                <div key={i} className="flex flex-col gap-4">
-                                                    <div className="flex justify-between items-center text-[10px] font-black tracking-[0.2em] uppercase italic">
-                                                        <span className="opacity-30">{metric.label}</span>
-                                                        <span className="text-foreground">{metric.value}% <span className="ml-2 text-emerald-500 font-black">{metric.hint}</span></span>
+                                                { 
+                                                    label: language === 'id' ? "Mesin Saraf" : "Neural Engine", 
+                                                    value: Math.round(landingMetrics.nodeCpu), 
+                                                    color: "bg-foreground", 
+                                                    hint: Math.round(landingMetrics.nodeCpu) < 70 
+                                                        ? (language === 'id' ? "OPTIMAL" : "OPTIMAL") 
+                                                        : Math.round(landingMetrics.nodeCpu) < 90 
+                                                            ? (language === 'id' ? "TINGGI" : "HIGH") 
+                                                            : (language === 'id' ? "KRITIS" : "CRITICAL") 
+                                                },
+                                                { 
+                                                    label: language === 'id' ? "Segmen Memori" : "Memory Segment", 
+                                                    value: Math.round(landingMetrics.nodeMemory), 
+                                                    color: "bg-foreground/60", 
+                                                    hint: Math.round(landingMetrics.nodeMemory) < 80 
+                                                        ? (language === 'id' ? "STABIL" : "STABLE") 
+                                                        : Math.round(landingMetrics.nodeMemory) < 95 
+                                                            ? (language === 'id' ? "PERINGATAN" : "WARNING") 
+                                                            : (language === 'id' ? "KRITIS" : "CRITICAL") 
+                                                },
+                                                { 
+                                                    label: language === 'id' ? "Denyut Jaringan" : "Network Pulse", 
+                                                    value: Math.round(landingMetrics.nodeNetwork), 
+                                                    color: "bg-foreground/40", 
+                                                    hint: Math.round(landingMetrics.nodeNetwork) > 0 
+                                                        ? (language === 'id' ? "AKTIF" : "ACTIVE") 
+                                                        : (language === 'id' ? "LESU" : "IDLE") 
+                                                }
+                                            ].map((metric, i) => {
+                                                const isCritical = metric.hint.includes("CRITICAL") || metric.hint.includes("KRITIS");
+                                                const isWarning = metric.hint.includes("WARNING") || metric.hint.includes("PERINGATAN") || metric.hint.includes("HIGH") || metric.hint.includes("TINGGI");
+                                                const hintColor = isCritical ? "text-red-500" : isWarning ? "text-orange-500" : "text-emerald-500";
+                                                
+                                                return (
+                                                    <div key={i} className="flex flex-col gap-4">
+                                                        <div className="flex justify-between items-center text-[10px] font-black tracking-[0.2em] uppercase italic">
+                                                            <span className="opacity-30">{metric.label}</span>
+                                                            <span className="text-foreground">{metric.value}% <span className={`ml-2 font-black ${hintColor}`}>{metric.hint}</span></span>
+                                                        </div>
+                                                        <div className="h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
+                                                            <div className={`h-full ${metric.color} rounded-full transition-all duration-1000 delay-100`} style={{ width: `${metric.value}%` }}></div>
+                                                        </div>
                                                     </div>
-                                                    <div className="h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
-                                                        <div className={`h-full ${metric.color} rounded-full transition-all duration-1000 delay-1000`} style={{ width: `${metric.value}%` }}></div>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                     <div className="md:col-span-5 flex flex-col justify-center bg-foreground/[0.02] rounded-[3rem] p-12 border border-foreground/5 relative overflow-hidden group/card shadow-inner">
                                         <div className="absolute -top-32 -right-32 w-64 h-64 bg-foreground/5 rounded-full blur-[100px]" />
-                                        <div className="text-7xl font-black text-foreground mb-4 tabular-nums tracking-tighter leading-none">99.99<span className="text-foreground/10">%</span></div>
+                                        <div className="text-7xl font-black text-foreground mb-4 tabular-nums tracking-tighter leading-none">{landingMetrics.isLoading ? "99.99" : landingMetrics.nodeUptimePercent}<span className="text-foreground/10">%</span></div>
                                         <div className="text-[10px] font-black text-muted-foreground/40 mb-12 uppercase tracking-[0.4em] italic">{language === 'id' ? 'Waktu Operasi Presisi' : 'Precision Uptime'}</div>
                                         <div className="h-px w-full bg-linear-to-r from-foreground/10 to-transparent mb-10" />
                                         <div className="flex items-center gap-4 text-emerald-500 bg-emerald-500/5 px-6 py-4 rounded-[2rem] border border-emerald-500/10 w-fit">
@@ -163,7 +191,7 @@ export default function Home() {
                             </div>
 
                             <div className="w-full flex justify-end items-end">
-                                <video src="/vid/demonstrasi.mp4" autoPlay loop playsInline controls className="w-xl"></video>
+                                <video src="/vid/demonstrasi.mp4" autoPlay muted loop playsInline controls className="w-xl"></video>
                             </div>
                         </div>
 

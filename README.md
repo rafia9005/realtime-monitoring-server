@@ -1,75 +1,58 @@
-# React + TypeScript + Vite
+# 📡 WATCHTOWER — Real-time Infrastructure Monitoring
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Watchtower is an elite infrastructure intelligence and system health monitoring suite. It provides real-time telemetry, unified control segments, and predictive diagnostics for host servers and remote agents.
 
-Currently, two official plugins are available:
+## 🚀 Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Real-time Host Telemetry**: Directly monitors CPU, virtual memory, network activity, load average, temperature sensors, processes, and disk utilization on the system.
+- **Cluster Node_01 Live Telemetry**: The homepage includes a live dashboard for `Cluster Node_01` which pulls real-time telemetry directly from the `/api/v1/system-metrics` endpoint to monitor:
+  - **Neural Engine (CPU Usage %)**: Dynamic gauge showing processor load.
+  - **Memory Segment (RAM Usage %)**: Visualizer of RAM utilization.
+  - **Network Pulse (IO Traffic)**: Calculates system network activity percentage based on connection states.
+  - **System Uptime & Live Status**: Automatically reports system uptime and synchronized connectivity status.
+- **Multilingual Support (Indonesian & English)**: The entire application context supports runtime translation toggling. All pages, including the **Our Vision (About)** page and the Detective Blackboard team component, are fully translatable.
+- **Remote Terminal Integrations**: Remote command-line console interface utilizing xterm.js.
+- **Micro-controller (MCU) Logging**: Environmental tracking support (Temperature & Humidity) powered by IoT endpoints.
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+### Frontend
+- **Framework**: React 19 + TypeScript + Vite
+- **Styling**: TailwindCSS
+- **Libraries**: Recharts (for telemetry charts), Lucide React (icons), Clerk (authentication)
 
-Note: This will impact Vite dev & build performances.
+### Backend
+- **Framework**: Go + Echo v5
+- **Database**: SQLite (local status tracking) & Supabase (historical metrics persistence)
+- **Monitoring Utilities**: `gopsutil` for native host system details
 
-## Expanding the ESLint configuration
+## 🌐 API Overview
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- `GET /api/v1/system-metrics`: Fetch comprehensive host machine CPU, Memory, Disk, Network, and Thermal data.
+- `GET /api/v1/agents`: Retrieve all registered monitoring agents.
+- `POST /api/v1/agents/register`: Register a new host agent.
+- `GET /api/v1/mcu-metrics`: Query IoT environmental sensor telemetry.
+- `GET /health`: Server health check.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 📦 Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Prerequisites
+- Node.js (v18+)
+- Go (1.20+)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Setup Environment
+Configure the `.env` in the root:
+```env
+VITE_CLERK_PUBLISHABLE_KEY=your_clerk_key
+VITE_API_BASE_URL=http://localhost:8080
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Installation
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
+2. Run the client in development mode:
+   ```bash
+   npm run dev
+   ```

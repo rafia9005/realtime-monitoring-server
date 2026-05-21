@@ -11,7 +11,9 @@ import {
   Server,
   Terminal,
   Boxes,
-  Thermometer
+  Thermometer,
+  Languages,
+  LayoutDashboard
 } from "lucide-react";
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
@@ -32,7 +34,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { setTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
-  const { t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
 
   const menuItems = [
     { icon: Home, label: t("sidebar.dashboard"), href: "/dashboard" },
@@ -102,22 +104,41 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             })}
           </nav>
 
-          <div className="p-4 border-t border-foreground/5">
-            <div className="flex items-center gap-3 py-2">
-              <div className="w-10 h-10 bg-card/60 rounded-xl flex items-center justify-center border border-foreground/5 text-xs font-black shadow-inner">
-                {user?.firstName?.[0]}{user?.lastName?.[0]}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-[10px] font-black uppercase truncate italic">
-                  {user?.fullName || "SYSTEM_ROOT"}
-                </p>
-                <div className="flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-[8px] text-muted-foreground uppercase font-black">{t('status.online')}</span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <div className="p-4 border-t border-foreground/5 cursor-pointer hover:bg-foreground/5 transition-colors">
+                <div className="flex items-center gap-3 py-2">
+                  <div className="w-10 h-10 bg-card/60 rounded-xl flex items-center justify-center border border-foreground/5 text-xs font-black shadow-inner">
+                    {user?.firstName?.[0]}{user?.lastName?.[0]}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[10px] font-black uppercase truncate italic">
+                      {user?.fullName || "SYSTEM_ROOT"}
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                      <span className="text-[8px] text-muted-foreground uppercase font-black">{t('status.online')}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" side="top" className="w-56 mb-2 rounded-2xl border-foreground/10 bg-background/80 backdrop-blur-3xl p-2 font-mono text-xs shadow-2xl">
+              <DropdownMenuItem asChild className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-3 px-3 mb-1">
+                <Link to="/home" className="flex items-center gap-3 w-full">
+                  <Home className="w-4 h-4" />
+                  {t('publicLayout.menu.home')}
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => setLanguage(language === 'en' ? 'id' : 'en')}
+                className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-3 px-3"
+              >
+                <Languages className="w-4 h-4 mr-3" />
+                {language === 'en' ? 'Bahasa Indonesia' : 'English'}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </aside>
 

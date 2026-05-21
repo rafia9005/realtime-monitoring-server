@@ -114,7 +114,7 @@ export default function Dashboard() {
         {/* Main Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
            {/* CPU */}
-           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 transition-all duration-500 accent-card accent-card-indigo">
+           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-xl space-y-4 transition-all duration-500 accent-card accent-card-indigo">
              <div className="flex items-start justify-between">
                <div className="flex items-center gap-4">
                  <div className="w-12 h-12 bg-indigo-500/10 rounded-2xl flex items-center justify-center border border-indigo-500/20 text-indigo-500">
@@ -152,7 +152,7 @@ export default function Dashboard() {
            </div>
 
            {/* Memory */}
-           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 transition-all duration-500 accent-card accent-card-fuchsia">
+           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-xl space-y-4 transition-all duration-500 accent-card accent-card-fuchsia">
              <div className="flex items-start justify-between">
                <div className="flex items-center gap-4">
                  <div className="w-12 h-12 bg-fuchsia-500/10 rounded-2xl flex items-center justify-center border border-fuchsia-500/20 text-fuchsia-500">
@@ -190,7 +190,7 @@ export default function Dashboard() {
            </div>
 
            {/* Disk */}
-           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 transition-all duration-500 accent-card accent-card-amber">
+           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-xl space-y-4 transition-all duration-500 accent-card accent-card-amber">
              <div className="flex items-start justify-between">
                <div className="flex items-center gap-4">
                  <div className="w-12 h-12 bg-amber-500/10 rounded-2xl flex items-center justify-center border border-amber-500/20 text-amber-500">
@@ -228,7 +228,7 @@ export default function Dashboard() {
            </div>
 
            {/* Network */}
-           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 transition-all duration-500 accent-card accent-card-teal">
+           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-xl space-y-4 transition-all duration-500 accent-card accent-card-teal">
              <div className="flex items-start justify-between">
                <div className="flex items-center gap-4">
                  <div className="w-12 h-12 bg-teal-500/10 rounded-2xl flex items-center justify-center border border-teal-500/20 text-teal-500">
@@ -256,19 +256,19 @@ export default function Dashboard() {
 
         {/* Secondary Info Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1 accent-card accent-card-blue">
+          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-lg space-y-1 accent-card accent-card-blue">
             <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.info.uptime')}</div>
             <div className="text-2xl font-black tracking-tight">{formatUptime(metrics.system.uptime)}</div>
           </div>
-          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1 accent-card accent-card-indigo">
+          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-lg space-y-1 accent-card accent-card-indigo">
             <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.info.loadAverage')}</div>
             <div className="text-lg font-black tracking-tight font-mono">{metrics.load.load1.toFixed(2)} / {metrics.load.load5.toFixed(2)}</div>
           </div>
-          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1 accent-card accent-card-teal">
+          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-lg space-y-1 accent-card accent-card-teal">
             <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.info.processes')}</div>
             <div className="text-lg font-black tracking-tight font-mono">{metrics.process.running}/{metrics.process.total}</div>
           </div>
-          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1 accent-card accent-card-rose">
+          <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-lg space-y-1 accent-card accent-card-rose">
             <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.info.temperature')}</div>
             <div className="text-lg font-black tracking-tight font-mono">{metrics.temperature?.cpu_temp ? `${metrics.temperature.cpu_temp.toFixed(1)}°C` : "N/A"}</div>
           </div>
@@ -286,7 +286,7 @@ export default function Dashboard() {
              
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                {metrics.environment.map((env) => (
-                 <div key={env.id} className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2rem] space-y-4 accent-card accent-card-amber">
+                 <div key={env.id} className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-xl space-y-4 accent-card accent-card-amber">
                     <div className="flex justify-between items-start">
                       <div>
                         <div className="text-sm font-black tracking-tight uppercase">{env.mcu_name}</div>
@@ -353,7 +353,7 @@ export default function Dashboard() {
                 <Link
                   key={agent.id}
                   to={`/server/${agent.id}`}
-                  className={`group block p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2rem] transition-all duration-300 accent-card ${
+                  className={`group block p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-xl transition-all duration-300 accent-card ${
                     agent.status === 'online' ? 'accent-card-emerald' : 'accent-card-gray'
                   }`}
                 >
@@ -398,7 +398,7 @@ export default function Dashboard() {
 
         {/* Quick Navigation Footer */}
         <div className="flex flex-col sm:flex-row gap-6 pt-4">
-          <Link to="/monitoring" className="flex-1 p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2rem] transition-all duration-300 flex items-center justify-between group accent-card accent-card-blue">
+          <Link to="/monitoring" className="flex-1 p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-xl transition-all duration-300 flex items-center justify-between group accent-card accent-card-blue">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center border border-blue-500/20 text-blue-500">
                 <Activity className="w-5 h-5" />
@@ -410,7 +410,7 @@ export default function Dashboard() {
             </div>
             <ArrowUpRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all" />
           </Link>
-          <Link to="/terminal" className="flex-1 p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2rem] transition-all duration-300 flex items-center justify-between group accent-card accent-card-emerald">
+          <Link to="/terminal" className="flex-1 p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-xl transition-all duration-300 flex items-center justify-between group accent-card accent-card-emerald">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center border border-emerald-500/20 text-emerald-500">
                 <Terminal className="w-5 h-5" />

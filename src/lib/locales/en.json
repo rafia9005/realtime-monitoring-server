@@ -233,7 +233,7 @@
     "live": "Live",
     "cards": {
       "cpu": {
-        "title": "Processing Power",
+        "title": "CPU Usage",
         "normal": "Normal",
         "medium": "Medium",
         "high": "High"

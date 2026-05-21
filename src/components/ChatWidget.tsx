@@ -107,7 +107,7 @@ Saat ini pengguna sedang membuka halaman route: ${currentPath}.
 Bahasakan dengan natural, profesional dan santai.`;
 
       // Setup model gemini-2.5-flash with systemInstruction
-      const model = genAI.getGenerativeModel({ 
+      const model = genAI.getGenerativeModel({
         model: "gemini-2.5-flash",
         systemInstruction
       });
@@ -123,7 +123,7 @@ Bahasakan dengan natural, profesional dan santai.`;
       const chat = model.startChat({ history });
       const result = await chat.sendMessage(userMsg.text);
       const response = await result.response;
-      
+
       setMessages((prev) => [
         ...prev,
         { id: Date.now().toString() + "-ai", role: "model", text: response.text() },
@@ -170,27 +170,24 @@ Bahasakan dengan natural, profesional dan santai.`;
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`flex gap-3 max-w-[85%] ${
-                  msg.role === "user" ? "ml-auto flex-row-reverse" : "mr-auto"
-                }`}
+                className={`flex gap-3 max-w-[85%] ${msg.role === "user" ? "ml-auto flex-row-reverse" : "mr-auto"
+                  }`}
               >
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                    msg.role === "user" ? "bg-blue-500 text-white" : "bg-card border shadow-sm text-foreground"
-                  }`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === "user" ? "bg-blue-500 text-white" : "bg-card border shadow-sm text-foreground"
+                    }`}
                 >
                   {msg.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
                 </div>
                 <div
-                  className={`px-4 py-3 rounded-2xl text-[14px] leading-relaxed break-words shadow-sm ${
-                    msg.role === "user"
+                  className={`px-4 py-3 rounded-2xl text-[14px] leading-relaxed break-words shadow-sm ${msg.role === "user"
                       ? "bg-blue-500 text-white rounded-tr-sm"
                       : "bg-card border-border border text-card-foreground rounded-tl-sm"
-                  }`}
+                    }`}
                 >
                   {msg.role === "model" ? (
                     <div className="prose prose-sm dark:prose-invert max-w-none prose-pre:p-0 prose-pre:bg-transparent">
-                      <ReactMarkdown 
+                      <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{ code: CodeBlock as any }}
                       >
@@ -231,7 +228,7 @@ Bahasakan dengan natural, profesional dan santai.`;
                 }
               }}
               placeholder="Tanya sesuatu..."
-              className="flex-1 max-h-32 min-h-[44px] bg-muted/50 resize-none rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/50 p-2.5 text-sm"
+              className="flex-1 max-h-32 min-h-[44px] bg-muted/50 resize-none rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/50 px-4 text-sm"
               rows={1}
             />
             <button

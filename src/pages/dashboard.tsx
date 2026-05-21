@@ -22,7 +22,7 @@ import { Link } from "react-router-dom";
 export default function Dashboard() {
   const { data: metrics, loading, error, refetch } = useSystemMetrics(true, 5000);
   const { agents } = useAgentMetrics(true, 10000);
-  const { language } = useLanguage();
+  const { t } = useLanguage();
 
   const formatBytes = (bytes: number) => {
     if (bytes === 0) return "0 B";
@@ -50,7 +50,7 @@ export default function Dashboard() {
             <div className="flex items-center justify-center">
               <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
             </div>
-            <p className="text-sm text-slate-600 dark:text-slate-400">{language === 'id' ? 'Memuat metrik...' : 'Loading metrics...'}</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400">{t('dashboard.loading')}</p>
           </div>
         </div>
       </DashboardLayout>
@@ -63,10 +63,10 @@ export default function Dashboard() {
         <div className="flex items-center justify-center h-[60vh]">
           <div className="text-center space-y-4 border border-slate-200 dark:border-slate-800 p-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl max-w-md">
             <AlertCircle className="w-8 h-8 text-red-600 mx-auto" />
-            <p className="text-sm font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Kesalahan Koneksi' : 'Connection Error'}</p>
+            <p className="text-sm font-semibold text-slate-900 dark:text-white">{t('dashboard.error.title')}</p>
             <p className="text-sm text-slate-600 dark:text-slate-400">{error}</p>
             <Button onClick={() => refetch()} size="sm" className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg mt-4">
-              {language === 'id' ? 'Coba Lagi' : 'Try Again'}
+              {t('dashboard.error.retry')}
             </Button>
           </div>
         </div>
@@ -91,7 +91,7 @@ export default function Dashboard() {
               <div className="p-2 bg-foreground/5 rounded-xl backdrop-blur-3xl border border-foreground/10">
                 <Cpu className="w-5 h-5 opacity-60 text-primary" />
               </div>
-              <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-40 italic">System Overview v4.2</span>
+              <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-40 italic">{t('dashboard.overview')}</span>
             </div>
             <h1 className="text-6xl font-black tracking-tight uppercase leading-none">
               {metrics.system.hostname} <span className="text-foreground/20">{metrics.system.platform.split(" ")[0]}</span>
@@ -99,10 +99,10 @@ export default function Dashboard() {
           </div>
           <div className="flex items-center gap-4">
             <div className="flex flex-col items-end">
-              <span className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 italic font-bold">{language === 'id' ? 'Status' : 'Status'}</span>
+              <span className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-2 italic font-bold">{t('dashboard.status')}</span>
               <span className="text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-4 py-2 rounded-full backdrop-blur-3xl flex items-center gap-2">
                 <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                {language === 'id' ? 'Langsung' : 'Live'}
+                {t('dashboard.live')}
               </span>
             </div>
             <Button onClick={() => refetch()} variant="outline" className="h-14 w-14 rounded-2xl border-foreground/10 bg-background/50 backdrop-blur-3xl hover:bg-foreground/5 transition-all active:scale-95 flex items-center justify-center">
@@ -121,7 +121,7 @@ export default function Dashboard() {
                    <Cpu className="w-5 h-5 text-foreground/60" />
                  </div>
                  <div>
-                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Daya Pemrosesan' : 'Processing Power'}</div>
+                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.cards.cpu.title')}</div>
                    <div className="text-xs font-bold tracking-tight opacity-60 font-mono italic">{metrics.cpu.cores}C / {metrics.cpu.threads}T</div>
                  </div>
                </div>
@@ -132,7 +132,7 @@ export default function Dashboard() {
                      ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' 
                      : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
                }`}>
-                 {cpuUsage > 80 ? (language === 'id' ? "Tinggi" : "High") : cpuUsage > 60 ? (language === 'id' ? "Sedang" : "Medium") : (language === 'id' ? "Normal" : "Normal")}
+                 {cpuUsage > 80 ? t('dashboard.cards.cpu.high') : cpuUsage > 60 ? t('dashboard.cards.cpu.medium') : t('dashboard.cards.cpu.normal')}
                </span>
              </div>
              <div className="flex items-baseline gap-1">
@@ -159,7 +159,7 @@ export default function Dashboard() {
                    <MemoryStick className="w-5 h-5 text-foreground/60" />
                  </div>
                  <div>
-                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Memori Aktif' : 'Active Memory'}</div>
+                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.cards.memory.title')}</div>
                    <div className="text-xs font-bold tracking-tight opacity-60 font-mono italic">{formatBytes(metrics.memory.used)}</div>
                  </div>
                </div>
@@ -170,7 +170,7 @@ export default function Dashboard() {
                      ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' 
                      : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
                }`}>
-                 {memUsage > 85 ? (language === 'id' ? "Tinggi" : "High") : memUsage > 70 ? (language === 'id' ? "Sedang" : "Medium") : (language === 'id' ? "Normal" : "Normal")}
+                 {memUsage > 85 ? t('dashboard.cards.memory.high') : memUsage > 70 ? t('dashboard.cards.memory.medium') : t('dashboard.cards.memory.normal')}
                </span>
              </div>
              <div className="flex items-baseline gap-1">
@@ -197,7 +197,7 @@ export default function Dashboard() {
                    <HardDrive className="w-5 h-5 text-foreground/60" />
                  </div>
                  <div>
-                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Penyimpanan' : 'Storage'}</div>
+                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.cards.disk.title')}</div>
                    <div className="text-xs font-bold tracking-tight opacity-60 font-mono italic">{formatBytes(totalDiskSize)}</div>
                  </div>
                </div>
@@ -208,7 +208,7 @@ export default function Dashboard() {
                      ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' 
                      : 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
                }`}>
-                 {diskUsage > 90 ? (language === 'id' ? "Kritis" : "Critical") : diskUsage > 75 ? (language === 'id' ? "Peringatan" : "Warning") : (language === 'id' ? "Bagus" : "Good")}
+                 {diskUsage > 90 ? t('dashboard.cards.disk.critical') : diskUsage > 75 ? t('dashboard.cards.disk.warning') : t('dashboard.cards.disk.good')}
                </span>
              </div>
              <div className="flex items-baseline gap-1">
@@ -235,21 +235,21 @@ export default function Dashboard() {
                    <Network className="w-5 h-5 text-foreground/60" />
                  </div>
                  <div>
-                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Jaringan' : 'Network'}</div>
-                   <div className="text-xs font-bold tracking-tight opacity-60 font-mono italic">{language === 'id' ? 'Koneksi' : 'Connections'}</div>
+                   <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.cards.network.title')}</div>
+                   <div className="text-xs font-bold tracking-tight opacity-60 font-mono italic">{t('dashboard.cards.network.connections')}</div>
                  </div>
                </div>
                <span className="text-[8px] font-black tracking-widest px-3 py-1 rounded-full uppercase border bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
-                 {language === 'id' ? 'Aktif' : 'Active'}
+                 {t('dashboard.cards.network.active')}
                </span>
              </div>
              <div className="flex items-baseline gap-1">
                <p className="text-4xl font-black group-hover:scale-105 transition-all duration-500">{metrics.network.connections.established}</p>
-               <span className="text-xs font-black opacity-30 italic font-mono uppercase tracking-widest">{language === 'id' ? 'Koneksi' : 'CONN'}</span>
+               <span className="text-xs font-black opacity-30 italic font-mono uppercase tracking-widest">{t('dashboard.cards.network.connLabel')}</span>
              </div>
              <div className="text-[10px] font-black uppercase tracking-wider opacity-60 space-y-1 font-mono italic">
-               <div>↑ {language === 'id' ? 'Terkirim:' : 'Sent:'} {formatBytes(metrics.network.bytes_sent)}</div>
-               <div>↓ {language === 'id' ? 'Diterima:' : 'Received:'} {formatBytes(metrics.network.bytes_recv)}</div>
+               <div>↑ {t('dashboard.cards.network.sent')} {formatBytes(metrics.network.bytes_sent)}</div>
+               <div>↓ {t('dashboard.cards.network.received')} {formatBytes(metrics.network.bytes_recv)}</div>
              </div>
            </div>
         </div>
@@ -257,19 +257,19 @@ export default function Dashboard() {
         {/* Secondary Info Bar */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1">
-            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Waktu Aktif' : 'Uptime'}</div>
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.info.uptime')}</div>
             <div className="text-2xl font-black tracking-tight">{formatUptime(metrics.system.uptime)}</div>
           </div>
           <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1">
-            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Rata-rata Beban' : 'Load Average'}</div>
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.info.loadAverage')}</div>
             <div className="text-lg font-black tracking-tight font-mono">{metrics.load.load1.toFixed(2)} / {metrics.load.load5.toFixed(2)}</div>
           </div>
           <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1">
-            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Proses' : 'Processes'}</div>
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.info.processes')}</div>
             <div className="text-lg font-black tracking-tight font-mono">{metrics.process.running}/{metrics.process.total}</div>
           </div>
           <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[1.5rem] space-y-1">
-            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{language === 'id' ? 'Suhu' : 'Temperature'}</div>
+            <div className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('dashboard.info.temperature')}</div>
             <div className="text-lg font-black tracking-tight font-mono">{metrics.temperature?.cpu_temp ? `${metrics.temperature.cpu_temp.toFixed(1)}°C` : "N/A"}</div>
           </div>
         </div>
@@ -278,9 +278,9 @@ export default function Dashboard() {
         {metrics.environment && metrics.environment.length > 0 && (
           <div className="space-y-6">
              <div className="flex items-center justify-between border-b border-foreground/5 pb-4">
-               <h2 className="text-2xl font-black uppercase tracking-tight italic">Sensors Array</h2>
+               <h2 className="text-2xl font-black uppercase tracking-tight italic">{t('dashboard.sensors.title')}</h2>
                <Badge variant="outline" className="rounded-full text-[10px] font-black uppercase tracking-widest bg-foreground/5 border-foreground/10 px-3 py-1">
-                 {metrics.environment.length} CONNECTED
+                 {metrics.environment.length} {t('dashboard.sensors.connected')}
                </Badge>
              </div>
              
@@ -299,7 +299,7 @@ export default function Dashboard() {
                       {/* Temperature */}
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                           <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Temperature</span>
+                           <span className="text-[9px] font-black uppercase tracking-widest opacity-40">{t('mcuSensors.chart.temp')}</span>
                            <span className="text-xs font-black">
                             {env.temperature ? `${env.temperature.toFixed(1)}°C` : "N/A"}
                           </span>
@@ -317,7 +317,7 @@ export default function Dashboard() {
                       {/* Humidity */}
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                           <span className="text-[9px] font-black uppercase tracking-widest opacity-40">Humidity</span>
+                           <span className="text-[9px] font-black uppercase tracking-widest opacity-40">{t('mcuSensors.stats.humidity')}</span>
                            <span className="text-xs font-black">
                             {env.humidity ? `${env.humidity.toFixed(1)}%` : "N/A"}
                           </span>
@@ -342,9 +342,9 @@ export default function Dashboard() {
         {agents.length > 0 && (
           <div className="space-y-6">
             <div className="flex items-center justify-between border-b border-foreground/5 pb-4">
-              <h2 className="text-2xl font-black uppercase tracking-tight italic">Connected Servers</h2>
+              <h2 className="text-2xl font-black uppercase tracking-tight italic">{t('dashboard.servers.title')}</h2>
               <Link to="/agents" className="text-sm font-black uppercase tracking-widest text-primary/60 hover:text-primary transition-colors flex items-center gap-1">
-                Manage All <ArrowUpRight className="w-3 h-3" />
+                {t('dashboard.servers.manageAll')} <ArrowUpRight className="w-3 h-3" />
               </Link>
             </div>
             
@@ -374,17 +374,17 @@ export default function Dashboard() {
                         ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' 
                         : 'bg-foreground/5 text-muted-foreground border-foreground/10'
                     }`}>
-                      {agent.status === 'online' ? '● Online' : '○ Offline'}
+                      {agent.status === 'online' ? t('dashboard.servers.online') : t('dashboard.servers.offline')}
                     </span>
                   </div>
                   
                   <div className="space-y-2 text-[10px] font-black uppercase tracking-wider opacity-60 border-t border-foreground/5 pt-4 font-mono italic">
                     <div className="flex items-center justify-between">
-                      <span>IP Address</span>
+                      <span>{t('dashboard.servers.ipAddress')}</span>
                       <span className="font-bold opacity-100">{agent.ip_address}</span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span>Last Seen</span>
+                      <span>{t('dashboard.servers.lastSeen')}</span>
                       <span className="font-bold opacity-100">{new Date(agent.last_seen).toLocaleTimeString([], { hour12: false })}</span>
                     </div>
                   </div>
@@ -402,8 +402,8 @@ export default function Dashboard() {
                 <Activity className="w-5 h-5 text-foreground/60" />
               </div>
               <div>
-                <div className="text-sm font-black tracking-tight uppercase">{language === 'id' ? 'Metrik Detail' : 'Detailed Metrics'}</div>
-                <div className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic">{language === 'id' ? 'Lihat grafik waktu nyata' : 'View real-time charts'}</div>
+                <div className="text-sm font-black tracking-tight uppercase">{t('dashboard.quickNav.metrics.title')}</div>
+                <div className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic">{t('dashboard.quickNav.metrics.desc')}</div>
               </div>
             </div>
             <ArrowUpRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all" />
@@ -414,8 +414,8 @@ export default function Dashboard() {
                 <Terminal className="w-5 h-5 text-foreground/60" />
               </div>
               <div>
-                <div className="text-sm font-black tracking-tight uppercase">{language === 'id' ? 'Terminal' : 'Terminal'}</div>
-                <div className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic">{language === 'id' ? 'Akses langsung' : 'Direct access'}</div>
+                <div className="text-sm font-black tracking-tight uppercase">{t('dashboard.quickNav.terminal.title')}</div>
+                <div className="text-[10px] font-bold uppercase tracking-widest opacity-40 italic">{t('dashboard.quickNav.terminal.desc')}</div>
               </div>
             </div>
             <ArrowUpRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all" />

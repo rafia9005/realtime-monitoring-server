@@ -1,4 +1,4 @@
-﻿import DashboardLayout from "@/components/DashboardLayout";
+import DashboardLayout from "@/components/DashboardLayout";
 import { useMcuMetrics } from "@/lib/hooks/useMcuMetrics";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ import {
   Server
 } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
+import { useLanguage } from "@/lib/LanguageContext";
 import {
   AreaChart,
   Area,
@@ -28,6 +29,7 @@ import {
 } from "recharts";
 
 export default function McuSensorsPage() {
+  const { t } = useLanguage();
   const { data: metrics, loading, refetch } = useMcuMetrics(true, 10000);
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
@@ -113,7 +115,7 @@ export default function McuSensorsPage() {
       <DashboardLayout>
         <div className="flex flex-col items-center justify-center h-[70vh] space-y-6">
            <div className="w-12 h-12 border-4 border-foreground/5 border-t-foreground rounded-full animate-spin" />
-           <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">Reading Environmental Array</p>
+           <p className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">{t('mcuSensors.loading')}</p>
         </div>
       </DashboardLayout>
     );
@@ -130,10 +132,10 @@ export default function McuSensorsPage() {
               <div className="p-2 bg-foreground/5 rounded-xl backdrop-blur-3xl border border-foreground/10">
                 <Thermometer className="w-5 h-5 opacity-60 text-orange-500" />
               </div>
-              <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-40 italic">Environmental Telemetry v4.2</span>
+              <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-40 italic">{t('mcuSensors.header.subtitle')}</span>
             </div>
             <h1 className="text-6xl font-black tracking-tight uppercase leading-none">
-              Sensors <span className="text-foreground/20">Array</span>
+              {t('mcuSensors.header.title')} <span className="text-foreground/20">{t('mcuSensors.header.titleHighlight')}</span>
             </h1>
           </div>
           <div className="flex items-center gap-3">
@@ -142,7 +144,7 @@ export default function McuSensorsPage() {
              </Button>
              <Button onClick={exportToCsv} className="h-14 px-8 bg-foreground text-background rounded-2xl font-black tracking-widest uppercase hover:bg-foreground/90 transition-all active:scale-95 shadow-2xl flex gap-3 italic">
                 <Download className="w-5 h-5 font-black" />
-                DUMP_LOGS
+                {t('mcuSensors.header.dumpLogs')}
              </Button>
           </div>
         </div>
@@ -151,7 +153,7 @@ export default function McuSensorsPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
            <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 hover:border-orange-500/20 transition-all duration-500">
               <div className="flex items-center justify-between">
-                 <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Avg Temp</span>
+                 <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('mcuSensors.stats.avgTemp')}</span>
                  <Thermometer className="w-4 h-4 opacity-20 group-hover:text-orange-500 transition-colors" />
               </div>
               <div className="flex items-baseline gap-1">
@@ -161,7 +163,7 @@ export default function McuSensorsPage() {
            </div>
            <div className="group p-8 bg-orange-500/[0.03] backdrop-blur-3xl border border-orange-500/10 rounded-[2.5rem] space-y-4">
               <div className="flex items-center justify-between font-black uppercase tracking-[0.2em] text-[10px] text-orange-500/60 font-bold">
-                 <span>Peak Heat</span>
+                 <span>{t('mcuSensors.stats.peakHeat')}</span>
                  <TrendingUp className="w-4 h-4" />
               </div>
               <div className="flex items-baseline gap-1">
@@ -171,7 +173,7 @@ export default function McuSensorsPage() {
            </div>
            <div className="group p-8 bg-blue-500/[0.03] backdrop-blur-3xl border border-blue-500/10 rounded-[2.5rem] space-y-4">
               <div className="flex items-center justify-between font-black uppercase tracking-[0.2em] text-[10px] text-blue-500/60 font-bold">
-                 <span>Trough</span>
+                 <span>{t('mcuSensors.stats.trough')}</span>
                  <TrendingUp className="w-4 h-4 rotate-180" />
               </div>
               <div className="flex items-baseline gap-1">
@@ -181,7 +183,7 @@ export default function McuSensorsPage() {
            </div>
            <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 hover:border-cyan-500/20 transition-all duration-500">
               <div className="flex items-center justify-between">
-                 <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">Humidity</span>
+                 <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('mcuSensors.stats.humidity')}</span>
                  <Waves className="w-4 h-4 opacity-20 group-hover:text-cyan-500 transition-colors" />
               </div>
               <div className="flex items-baseline gap-1">
@@ -192,7 +194,7 @@ export default function McuSensorsPage() {
            <div className="hidden lg:block group p-8 bg-primary/5 backdrop-blur-3xl border border-primary/10 rounded-[2.5rem] space-y-4 overflow-hidden relative">
               <div className="absolute inset-0 bg-primary/20 blur-[100px] -mr-32 -mt-32 opacity-20" />
               <div className="relative z-10 flex items-center justify-between text-primary/60 font-black uppercase tracking-[0.2em] text-[10px]">
-                 <span>Total Datapoints</span>
+                 <span>{t('mcuSensors.stats.totalDatapoints')}</span>
                  <Activity className="w-4 h-4" />
               </div>
               <p className="relative z-10 text-4xl font-black text-primary">{filteredData.length}</p>
@@ -203,37 +205,37 @@ export default function McuSensorsPage() {
         <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] p-8 space-y-8">
            <div className="flex items-center gap-3">
               <Filter className="w-4 h-4 opacity-40" />
-              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">System Filters</h2>
+              <h2 className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40">{t('mcuSensors.filters.title')}</h2>
            </div>
            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="space-y-3">
-                 <label className="text-[10px] font-black uppercase tracking-widest opacity-30 ml-1 italic font-bold">Capture Range</label>
+                 <label className="text-[10px] font-black uppercase tracking-widest opacity-30 ml-1 italic font-bold">{t('mcuSensors.filters.range')}</label>
                  <select
                    value={timePeriod}
                    onChange={(e) => setTimePeriod(e.target.value)}
                    className="w-full h-14 bg-foreground/[0.03] border-none rounded-2xl px-5 text-sm font-bold focus:ring-2 ring-foreground/10 outline-none appearance-none cursor-pointer hover:bg-foreground/[0.06] transition-colors font-mono"
                  >
-                   <option value="all">ALL_HISTORY</option>
-                   <option value="24h">LAST_24_HOURS</option>
-                   <option value="7d">LAST_7_DAYS</option>
-                   <option value="30d">LAST_30_DAYS</option>
+                   <option value="all">{t('mcuSensors.filters.options.allHistory')}</option>
+                   <option value="24h">{t('mcuSensors.filters.options.last24h')}</option>
+                   <option value="7d">{t('mcuSensors.filters.options.last7d')}</option>
+                   <option value="30d">{t('mcuSensors.filters.options.last30d')}</option>
                  </select>
               </div>
               <div className="space-y-3">
-                 <label className="text-[10px] font-black uppercase tracking-widest opacity-30 ml-1 italic font-bold">Node Identity</label>
+                 <label className="text-[10px] font-black uppercase tracking-widest opacity-30 ml-1 italic font-bold">{t('mcuSensors.filters.identity')}</label>
                  <select
                    value={selectedMcu}
                    onChange={(e) => setSelectedMcu(e.target.value)}
                    className="w-full h-14 bg-foreground/[0.03] border-none rounded-2xl px-5 text-sm font-bold focus:ring-2 ring-foreground/10 outline-none appearance-none cursor-pointer hover:bg-foreground/[0.06] transition-colors font-mono"
                  >
-                   <option value="">GLOBAL_ARRAY</option>
+                   <option value="">{t('mcuSensors.filters.options.globalArray')}</option>
                    {mcuIds.map((id) => (
                      <option key={id} value={id}>{id.toUpperCase()}</option>
                    ))}
                  </select>
               </div>
               <div className="space-y-3">
-                 <label className="text-[10px] font-black uppercase tracking-widest opacity-30 ml-1 italic font-bold">Epoch Start</label>
+                 <label className="text-[10px] font-black uppercase tracking-widest opacity-30 ml-1 italic font-bold">{t('mcuSensors.filters.start')}</label>
                  <div className="relative">
                     <Input
                       type="date"
@@ -245,7 +247,7 @@ export default function McuSensorsPage() {
                  </div>
               </div>
               <div className="space-y-3">
-                 <label className="text-[10px] font-black uppercase tracking-widest opacity-30 ml-1 italic font-bold">Epoch End</label>
+                 <label className="text-[10px] font-black uppercase tracking-widest opacity-30 ml-1 italic font-bold">{t('mcuSensors.filters.end')}</label>
                  <div className="relative">
                     <Input
                       type="date"
@@ -264,17 +266,17 @@ export default function McuSensorsPage() {
            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/[0.03] blur-[120px] rounded-full pointer-events-none -mr-64 -mt-64" />
            <div className="flex items-center justify-between relative z-10">
               <div className="space-y-2">
-                 <h3 className="text-2xl font-black tracking-tighter uppercase leading-none">Telemetry Visualization</h3>
-                 <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 italic">Environmental Waveforms</p>
+                 <h3 className="text-2xl font-black tracking-tighter uppercase leading-none">{t('mcuSensors.chart.title')}</h3>
+                 <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 italic">{t('mcuSensors.chart.subtitle')}</p>
               </div>
               <div className="flex gap-4">
                  <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-orange-500 rounded-full" />
-                    <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Temp</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest opacity-60">{t('mcuSensors.chart.temp')}</span>
                  </div>
                  <div className="flex items-center gap-2">
                     <div className="w-3 h-3 bg-blue-500 rounded-full" />
-                    <span className="text-[10px] font-black uppercase tracking-widest opacity-60">Humidity</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest opacity-60">{t('mcuSensors.chart.humidity')}</span>
                  </div>
               </div>
            </div>
@@ -318,7 +320,7 @@ export default function McuSensorsPage() {
               ) : (
                 <div className="h-full flex flex-col items-center justify-center space-y-4 opacity-20">
                     <Activity className="w-12 h-12" />
-                    <p className="text-[10px] font-black uppercase tracking-[0.4em]">Historical Data Unavailable</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.4em]">{t('mcuSensors.chart.unavailable')}</p>
                 </div>
               )}
            </div>
@@ -328,16 +330,16 @@ export default function McuSensorsPage() {
         <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[3rem] overflow-hidden">
           <div className="px-12 py-10 flex items-center justify-between border-b border-foreground/5">
              <div className="space-y-1">
-                <h3 className="text-2xl font-black tracking-tighter uppercase leading-none italic">Log Journal</h3>
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 italic">Binary Array Serialization</p>
+                <h3 className="text-2xl font-black tracking-tighter uppercase leading-none italic">{t('mcuSensors.journal.title')}</h3>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 italic">{t('mcuSensors.journal.subtitle')}</p>
              </div>
              <div className="flex items-center gap-6">
                 <div className="flex items-center gap-2">
                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                   <span className="text-[10px] font-black uppercase tracking-widest opacity-40 italic">Live Stream</span>
+                   <span className="text-[10px] font-black uppercase tracking-widest opacity-40 italic">{t('mcuSensors.journal.live')}</span>
                 </div>
                 <div className="text-[10px] font-black uppercase tracking-widest opacity-60 bg-foreground/5 px-4 py-2 rounded-full border border-foreground/10">
-                   Total Entries: {filteredData.length}
+                   {t('mcuSensors.journal.totalEntries', { count: filteredData.length })}
                 </div>
              </div>
           </div>
@@ -346,10 +348,10 @@ export default function McuSensorsPage() {
             <table className="w-full text-left">
               <thead>
                 <tr className="bg-foreground/[0.02] border-b border-foreground/5">
-                  <th className="px-12 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic">Target Identity</th>
-                  <th className="px-8 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic text-center">Thermal</th>
-                  <th className="px-8 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic text-center">Moisture</th>
-                  <th className="px-12 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic text-right">Local Timestamp</th>
+                  <th className="px-12 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic">{t('mcuSensors.journal.table.target')}</th>
+                  <th className="px-8 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic text-center">{t('mcuSensors.journal.table.thermal')}</th>
+                  <th className="px-8 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic text-center">{t('mcuSensors.journal.table.moisture')}</th>
+                  <th className="px-12 py-8 text-[11px] font-black uppercase tracking-[0.3em] opacity-30 italic text-right">{t('mcuSensors.journal.table.timestamp')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-foreground/[0.03]">
@@ -408,7 +410,7 @@ export default function McuSensorsPage() {
             {paginatedData.length === 0 && (
               <div className="py-24 flex flex-col items-center gap-4 opacity-20 italic">
                  <AlertCircle className="w-12 h-12" />
-                 <p className="text-[10px] font-black uppercase tracking-[0.5em]">Sector Empty // No Response</p>
+                 <p className="text-[10px] font-black uppercase tracking-[0.5em]">{t('mcuSensors.journal.empty')}</p>
               </div>
             )}
           </div>
@@ -417,7 +419,7 @@ export default function McuSensorsPage() {
           {totalPages > 1 && (
             <div className="px-12 py-8 bg-foreground/[0.01] border-t border-foreground/5 flex items-center justify-between">
               <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-30 italic">
-                Segment {currentPage} of {totalPages} // Index {filteredData.length}
+                {t('mcuSensors.journal.pagination', { current: currentPage, total: totalPages, count: filteredData.length })}
               </span>
               <div className="flex gap-4">
                  <Button

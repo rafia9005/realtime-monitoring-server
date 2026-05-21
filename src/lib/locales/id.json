@@ -1,0 +1,476 @@
+{
+  "sidebar": {
+    "dashboard": "Dasbor",
+    "monitoring": "Pemantauan",
+    "server": "Server",
+    "mcuSensors": "Sensor MCU",
+    "terminal": "Terminal",
+    "agents": "Agen"
+  },
+  "status": {
+    "active": "Aktif",
+    "online": "Aktif"
+  },
+  "header": {
+    "sysTime": "WAKTU_SISTEM:",
+    "theme": {
+      "light": "MODE_TERANG",
+      "dark": "MODE_GELAP",
+      "system": "STANDAR_SISTEM"
+    }
+  },
+  "publicLayout": {
+    "login": "Masuk",
+    "accountSettings": "Pengaturan Akun",
+    "footer": {
+      "desc": "Dirancang untuk kecepatan, dibangun untuk keandalan. Pemantauan infrastruktur terasa sangat mudah. Rasakan zen dari kesehatan sistem.",
+      "platform": "Platform",
+      "company": "Perusahaan",
+      "legal": "Hukum",
+      "operational": "SEMUA SISTEM BEROPERASI",
+      "deployed": "DENGAN BANGGA DIGUNAKAN SECARA GLOBAL."
+    },
+    "menu": {
+      "home": "Beranda",
+      "dashboard": "Dasbor",
+      "agents": "Agen",
+      "about": "Tentang",
+      "contact": "Kontak",
+      "ourVision": "Visi Kami",
+      "support": "Dukungan",
+      "privacy": "Privasi",
+      "security": "Keamanan",
+      "terms": "Syarat",
+      "license": "Lisensi",
+      "liveView": "Tampilan Langsung",
+      "agentsList": "Daftar Agen",
+      "remoteShell": "Terminal Jarak Jauh"
+    },
+    "modals": {
+      "privacy": {
+        "title": "Kebijakan Privasi",
+        "desc": "PROTOKOL PRIVASI METADATA SECURE",
+        "p1": "Watchtower berkomitmen untuk melindungi telemetri infrastruktur Anda. Sistem kami hanya mengumpulkan metrik tingkat sistem yang penting seperti beban CPU, segmen memori, IO penyimpanan, dan statistik jaringan dari simpul yang Anda pantau.",
+        "p2": "Kami tidak mengumpulkan, mengirimkan, atau menyimpan informasi identitas pribadi (PII), kecuali data profil minimal yang diperlukan untuk autentikasi sesi Anda melalui Clerk.",
+        "p3": "Semua data telemetri mentah disimpan secara aman dalam basis data terenkripsi dan tidak akan pernah dibagikan, dijual, atau disewakan kepada pihak ketiga mana pun."
+      },
+      "security": {
+        "title": "Protokol Keamanan",
+        "desc": "SISTEM ENKRIPSI DAN OTORISASI MULTI-TIER",
+        "p1": "Enkripsi dalam Transit: Semua komunikasi telemetri antara agen pemantauan lokal Anda dan platform pusat Watchtower dienkripsi secara ketat menggunakan protokol TLS tingkat tinggi (HTTPS/WSS).",
+        "p2": "Kontrol Akses Terisolasi: Akses ke panel kontrol Watchtower dilindungi sepenuhnya oleh sistem otentikasi Clerk. Ini mendukung otentikasi multi-faktor (MFA) untuk meminimalkan risiko akses tidak sah.",
+        "p3": "Sandbox Agen: Kode agen pemantau berjalan di ruang pengguna terisolasi dengan akses baca-saja ke statistik sistem. Agen tidak pernah menerima atau mengeksekusi perintah masukan arbiter secara default."
+      },
+      "terms": {
+        "title": "Ketentuan Layanan",
+        "desc": "SYARAT PENGGUNAAN WATCHTOWER PLATFORM",
+        "p1": "Pemantauan Sah: Anda setuju untuk menginstal dan menggunakan agen pemantau Watchtower hanya pada mesin, server, atau aset jaringan yang Anda miliki secara sah, atau di mana Anda memiliki izin tertulis eksplisit.",
+        "p2": "Integritas Layanan: Anda dilarang memanipulasi, membanjiri, atau merekayasa balik API asupan metrik untuk mengganggu stabilitas infrastruktur Watchtower.",
+        "p3": "Batasan Tanggung Jawab: Watchtower disediakan \"sebagaimana adanya\" tanpa jaminan apa pun. Kami tidak bertanggung jawab atas kehilangan data, kerusakan sistem, atau kerugian finansial akibat penggunaan perangkat soh ini."
+      },
+      "license": {
+        "title": "Lisensi Perangkat Lunak",
+        "desc": "WATCHTOWER OPEN SOURCE MIT LICENSE",
+        "p1": "Copyright (c) 2026 WATCHTOWER INDUSTRIES",
+        "p2": "Dengan ini diberikan izin secara gratis kepada siapa pun yang memperoleh salinan perangkat lunak ini dan file dokumentasi terkait (\"Perangkat Lunak\"), untuk memperdagangkan Perangkat Lunak tanpa batasan, termasuk tanpa batasan hak untuk menggunakan, menyalin, memodifikasi, menggabungkan, menerbitkan, mendistribusikan, melisensikan, dan/atau menjual salinannya, dengan tunduk pada ketentuan berikut:",
+        "p3": "Pemberitahuan hak cipta di atas dan pemberitahuan izin ini harus dicantumkan dalam semua salinan atau bagian penting dari Perangkat Lunak."
+      }
+    }
+  },
+  "home": {
+    "hero": {
+      "observe": "Amati. Analisis.",
+      "optimize": "Optimalkan.",
+      "desc": "Watchtower memberikan intelijen infrastruktur elit. Telemetri real-time, diagnostik prediktif, dan kontrol terpadu.",
+      "btnInit": "Inisialisasi",
+      "btnExplore": "Jelajahi"
+    },
+    "node": {
+      "synchronized": "Tersinkronisasi",
+      "offline": "Terputus",
+      "neuralEngine": "Mesin Saraf",
+      "memorySegment": "Segmen Memori",
+      "networkPulse": "Denyut Jaringan",
+      "statusOptimal": "OPTIMAL",
+      "statusHigh": "TINGGI",
+      "statusCritical": "KRITIS",
+      "statusStable": "STABIL",
+      "statusWarning": "PERINGATAN",
+      "statusActive": "AKTIF",
+      "statusIdle": "LESU",
+      "precisionUptime": "Waktu Operasi Presisi",
+      "securityProtocol": "Protokol Keamanan"
+    },
+    "stats": {
+      "activeNodes": "Simpul Aktif",
+      "stations": "STASIUN",
+      "globalCpu": "CPU Global",
+      "percentage": "PERSENTASE",
+      "networkIo": "IO Jaringan",
+      "latency": "LATENSI",
+      "dailyCycles": "Siklus Harian",
+      "telemetry": "TELEMETRY"
+    },
+    "capabilities": {
+      "title": "Kemampuan Sistem",
+      "subtitle": "Alat Presisi.",
+      "telemetryIngestion": {
+        "title": "Asupan Telemetri",
+        "desc": "Pengumpulan data berbasis agen asli tanpa overhead tambahan pada simpul target Anda."
+      },
+      "unifiedStorage": {
+        "title": "Penyimpanan Terpadu",
+        "desc": "Agregasi metrik terpusat dengan persistensi historis untuk analisis tren yang mendalam."
+      },
+      "visualSynthesis": {
+        "title": "Sintesis Visual",
+        "desc": "Mengubah aliran mentah menjadi kecerdasan yang dapat dibaca manusia melalui desain minimalis."
+      },
+      "edgeConnectivity": {
+        "title": "Konektivitas Tepi",
+        "desc": "Cakupan pemantauan global dengan agen lokal yang melapor ke pusat kendali tunggal."
+      },
+      "thresholdAlerts": {
+        "title": "Peringatan Ambang",
+        "desc": "Perutean pemberitahuan cerdas via Telegram, memastikan acara kritis langsung mencapai Anda."
+      },
+      "endToEndGuard": {
+        "title": "Penjaga Ujung-ke-Ujung",
+        "desc": "Diamankan melalui autentikasi Clerk dan enkripsi HTTPS, menjaga infrastruktur Anda tetap pribadi."
+      }
+    }
+  },
+  "about": {
+    "genesis": "Protokol Genesis",
+    "title": "Kesederhanaan dalam",
+    "subtitle": "Infrastruktur.",
+    "desc": "Watchtower dibentuk dari kebutuhan akan kejelasan dalam lanskap digital yang semakin kompleks. Kami membangun alat yang membuat kesehatan sistem menjadi intuitif.",
+    "mission": {
+      "title": "Misi Kami",
+      "desc": "Mendemokrasikan pemantauan server. Kami percaya bahwa data infrastruktur penting harus mudah diakses, indah, dan dapat ditindaklanjuti untuk tim dari semua ukuran."
+    },
+    "values": {
+      "title": "Nilai Kami",
+      "desc": "Privasi sejak awal, keandalan sebagai standar, dan estetika sebagai persyaratan fungsional inti. Kami tidak hanya memproses metrik; kami merancang visibilitas."
+    },
+    "architecture": {
+      "title": "Arsitektur Watchtower",
+      "items": {
+        "lowOverhead": "Beban Rendah",
+        "cpuUsage": "Penggunaan CPU",
+        "globalReach": "Jangkauan Global",
+        "telemetry": "Telemetri",
+        "fastAlerts": "Peringatan Cepat",
+        "notification": "Notifikasi",
+        "modernUi": "Antarmuka Modern",
+        "uxDesign": "Desain UX"
+      }
+    },
+    "team": {
+      "title": "Temui Tim Kami",
+      "classified": "[BERKAS RAHASIA: Para dalang di balik layar]",
+      "wantedDesc": "Karena membangun UI keren",
+      "case": "KASUS #9942",
+      "roles": {
+        "webEngineer": "Insinyur Situs Web",
+        "wordpressDev": "Pengembang Wordpress",
+        "modelMaker": "Pembuat Model",
+        "lead": "Pimpinan",
+        "leadInvestigator": "Penyelidik Utama",
+        "webDev": "Pengembang Web"
+      },
+      "labels": {
+        "suspect1": "TERSANGKA #1",
+        "suspect": "TERSANGKA",
+        "witness": "SAKSI",
+        "accomplice": "REKAN",
+        "mastermind": "DALANG",
+        "informant": "INFORMAN",
+        "missing": "HILANG",
+        "topSecret": "SANGAT RAHASIA",
+        "underCover": "PENYAMARAN",
+        "wanted": "DICARI",
+        "solved": "TERPECAHKAN",
+        "urgent": "MENDESAK"
+      }
+    }
+  },
+  "contact": {
+    "protocol": "Protokol Dukungan",
+    "title": "Membangun",
+    "subtitle": "Hubungan.",
+    "desc": "Tim spesialis infrastruktur kami siap membantu. Baik Anda membutuhkan dukungan teknis, saran arsitektur, atau pertanyaan perusahaan.",
+    "methods": {
+      "email": {
+        "label": "Surat Elektronik",
+        "desc": "Saluran komunikasi utama untuk pertanyaan teknis non-darurat."
+      },
+      "phone": {
+        "label": "Frekuensi Suara",
+        "desc": "Jalur langsung untuk dukungan kritis dan konsultasi arsitektur."
+      },
+      "presence": {
+        "label": "Kehadiran Global",
+        "value": "Status Terbuka",
+        "desc": "Kami beroperasi di berbagai zona waktu untuk memastikan cakupan abadi."
+      },
+      "btnInit": "Inisialisasi"
+    },
+    "enterprise": {
+      "title": "Pertanyaan Perusahaan",
+      "desc": "Membutuhkan penerapan skala tinggi atau solusi pemantauan khusus? Arsitek sistem kami siap untuk konsultasi khusus.",
+      "btnRequest": "Ajukan Proposal"
+    }
+  },
+  "dashboard": {
+    "loading": "Memuat metrik...",
+    "error": {
+      "title": "Kesalahan Koneksi",
+      "retry": "Coba Lagi"
+    },
+    "overview": "Ikhtisar Sistem v4.2",
+    "status": "Status",
+    "live": "Langsung",
+    "cards": {
+      "cpu": {
+        "title": "Daya Pemrosesan",
+        "normal": "Normal",
+        "medium": "Sedang",
+        "high": "Tinggi"
+      },
+      "memory": {
+        "title": "Memori Aktif",
+        "normal": "Normal",
+        "medium": "Sedang",
+        "high": "Tinggi"
+      },
+      "disk": {
+        "title": "Penyimpanan",
+        "good": "Bagus",
+        "warning": "Peringatan",
+        "critical": "Kritis"
+      },
+      "network": {
+        "title": "Jaringan",
+        "connections": "Koneksi",
+        "active": "Aktif",
+        "sent": "Terkirim:",
+        "received": "Diterima:",
+        "connLabel": "Koneksi"
+      }
+    },
+    "info": {
+      "uptime": "Waktu Aktif",
+      "loadAverage": "Rata-rata Beban",
+      "processes": "Proses",
+      "temperature": "Suhu"
+    },
+    "sensors": {
+      "title": "Rangkaian Sensor",
+      "connected": "TERHUBUNG"
+    },
+    "servers": {
+      "title": "Server Terhubung",
+      "manageAll": "Kelola Semua",
+      "online": "● Daring",
+      "offline": "○ Luring",
+      "ipAddress": "Alamat IP",
+      "lastSeen": "Terakhir Terlihat"
+    },
+    "quickNav": {
+      "metrics": {
+        "title": "Metrik Detail",
+        "desc": "Lihat grafik waktu nyata"
+      },
+      "terminal": {
+        "title": "Terminal",
+        "desc": "Akses langsung"
+      }
+    }
+  },
+  "monitoring": {
+    "loading": "Memuat metrik...",
+    "error": {
+      "title": "Kesalahan Koneksi",
+      "retry": "Coba Lagi"
+    },
+    "overview": "Rangkaian Telemetri v4.2",
+    "title": "Metrik Detail",
+    "cpu": {
+      "title": "Daya Pemrosesan",
+      "cores": "inti",
+      "threads": "utas"
+    },
+    "memory": {
+      "title": "Memori Aktif"
+    },
+    "disk": {
+      "title": "Penyimpanan",
+      "used": "digunakan"
+    },
+    "network": {
+      "title": "Jaringan",
+      "conn": "Koneksi"
+    },
+    "serverSelector": {
+      "localSrc": "Komputer Ini",
+      "selectServer": "Pilih Server",
+      "selectServerShort": "Pilih Server",
+      "realtimeUpdates": "Pembaruan langsung",
+      "available": "Tersedia"
+    },
+    "live": "Langsung",
+    "currentValue": "Nilai Saat Ini"
+  },
+  "server": {
+    "loading": "MEMINDAI_ARS_SISTEM...",
+    "error": {
+      "title": "KEGAGALAN_PINDAI_HW",
+      "retry": "PINDAI_ULANG"
+    },
+    "manifest": "MANIFEST_HW",
+    "inventoryId": "ID_INVENTARIS",
+    "status": "STATUS",
+    "online": "DARING",
+    "offline": "LURING",
+    "localSrc": "SUMBER_LOKAL",
+    "srvIndex": "INDEKS_SRV",
+    "sysManifest": "MANIFEST_SYS",
+    "cpuConfig": "KONFIG_CPU",
+    "loadAvg": "BEBAN_RATA2",
+    "memSnapshot": "SNAPSHOT_MEM",
+    "fsTable": "TABEL_FS",
+    "activePartitions": "PARTISI_AKTIF",
+    "uptimeParts": {
+      "days": "hari",
+      "hours": "jam",
+      "minutes": "menit",
+      "justStarted": "Baru saja mulai"
+    }
+  },
+  "terminal": {
+    "welcome": "Selamat datang di Terminal Server Kelompok 2",
+    "connecting": "Menghubungkan ke server...",
+    "connectionInactive": "Koneksi terminal belum aktif!",
+    "connected": "✓ Terhubung ke server terminal",
+    "disconnected": "✗ Terputus dari server",
+    "connectionError": "✗ Kesalahan koneksi",
+    "failedToConnect": "✗ Gagal menghubungkan",
+    "title": "Terminal",
+    "secureSsh": "SSH_AMAN_TERBENTUK",
+    "awaitingHandshake": "MENUNGGU_JABAT_TANGAN",
+    "online": "DARING",
+    "offline": "LURING",
+    "clearBuf": "BERSIHKAN_BUFFER",
+    "errorPrefix": "KESALAHAN:"
+  },
+  "agents": {
+    "loading": "Menyinkronkan Node",
+    "alert": {
+      "confirmDelete": "Apakah Anda yakin ingin menghapus agen ini?",
+      "deleteFailed": "Gagal menghapus agen",
+      "requiredFields": "Silakan isi bidang yang wajib diisi: Nama dan Host",
+      "addFailed": "Gagal menambahkan agen"
+    },
+    "header": {
+      "securityTier": "Keamanan Jaringan Tingkat-1",
+      "title": "Node",
+      "titleHighlight": "Sistem",
+      "desc": "Mengelola {{count}} target penerapan di seluruh segmen terdekripsi."
+    },
+    "dialog": {
+      "trigger": "Minta Izin",
+      "title": "Inisialisasi Node",
+      "subtitle": "MEMBANGUN PROTOKOL JABAT TANGAN AMAN",
+      "nodeId": "Pengidentifikasi Node",
+      "entryPoint": "Titik Masuk Jaringan",
+      "tags": "Tag Metadata",
+      "abort": "Batal",
+      "deploy": "Terapkan Node",
+      "processing": "Memproses...",
+      "success": "Penerapan Sukses",
+      "successSub": "Jabat Tangan Diverifikasi oleh Watchtower",
+      "confirmReceipt": "Konfirmasi Penerimaan"
+    },
+    "stats": {
+      "total": "Kapasitas Total",
+      "live": "Koneksi Langsung",
+      "stale": "Node Usang",
+      "health": "Kesehatan Global"
+    },
+    "card": {
+      "terminated": "DIHENTIKAN",
+      "active": "AKTIF",
+      "glow": "Glow",
+      "fault": "KESALAHAN",
+      "inactive": "TIDAK AKTIF",
+      "entryPointer": "Petunjuk Masuk",
+      "lastPulsar": "Denyut Terakhir",
+      "justNow": "Baru saja",
+      "minsAgo": "{{count}}m yang lalu",
+      "hoursAgo": "{{count}}j yang lalu",
+      "daysAgo": "{{count}}h yang lalu",
+      "ver": "VER.ID"
+    },
+    "empty": {
+      "title": "Tidak Ada Node Aktif",
+      "desc": "Segmen jaringan saat ini kosong. Terapkan agen baru untuk memulai pemantauan.",
+      "btn": "Amankan Titik Akhir Pertama"
+    }
+  },
+  "mcuSensors": {
+    "loading": "Membaca Rangkaian Lingkungan",
+    "header": {
+      "subtitle": "Telemetri Lingkungan v4.2",
+      "title": "Rangkaian",
+      "titleHighlight": "Sensor",
+      "dumpLogs": "DUMP_LOG"
+    },
+    "stats": {
+      "avgTemp": "Suhu Rerata",
+      "peakHeat": "Suhu Puncak",
+      "trough": "Suhu Terendah",
+      "humidity": "Kelembapan",
+      "totalDatapoints": "Total Titik Data"
+    },
+    "filters": {
+      "title": "Filter Sistem",
+      "range": "Rentang Penangkapan",
+      "identity": "Identitas Node",
+      "start": "Mulai Epoch",
+      "end": "Akhir Epoch",
+      "options": {
+        "allHistory": "SEMUA_RIWAYAT",
+        "last24h": "24_JAM_TERAKHIR",
+        "last7d": "7_HARI_TERAKHIR",
+        "last30d": "30_HARI_TERAKHIR",
+        "globalArray": "RANGKAIAN_GLOBAL"
+      }
+    },
+    "chart": {
+      "title": "Visualisasi Telemetri",
+      "subtitle": "Gelombang Lingkungan",
+      "temp": "Suhu",
+      "humidity": "Kelembapan",
+      "unavailable": "Data Riwayat Tidak Tersedia"
+    },
+    "journal": {
+      "title": "Jurnal Log",
+      "subtitle": "Serialisasi Rangkaian Biner",
+      "live": "Aliran Langsung",
+      "totalEntries": "Total Entri: {{count}}",
+      "table": {
+        "target": "Identitas Target",
+        "thermal": "Termal",
+        "moisture": "Kelembapan",
+        "timestamp": "Stempel Waktu Lokal"
+      },
+      "empty": "Sektor Kosong // Tidak Ada Tanggapan",
+      "pagination": "Segmen {{current}} dari {{total}} // Indeks {{count}}"
+    }
+  },
+  "index": {
+    "subtitle": "Inisialisasi Sesi Aman",
+    "shieldActive": "Perisai Aktif"
+  }
+}

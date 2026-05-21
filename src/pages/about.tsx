@@ -3,42 +3,38 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { Info, Target, Shield, Zap, LayoutDashboard, Cpu, Network } from "lucide-react";
 
 export default function About() {
-    const { language } = useLanguage();
+    const { t } = useLanguage();
 
     const tRole = (role: string) => {
-        if (language === 'id') {
-            switch (role) {
-                case "Website Engineer": return "Insinyur Situs Web";
-                case "Wordpress Dev": return "Pengembang Wordpress";
-                case "Model Maker": return "Pembuat Model";
-                case "Lead": return "Pimpinan";
-                case "Lead Investigator": return "Penyelidik Utama";
-                case "Web Developer": return "Pengembang Web";
-                default: return role;
-            }
-        }
-        return role;
+        const keyMap: Record<string, string> = {
+            "Website Engineer": "about.team.roles.webEngineer",
+            "Wordpress Dev": "about.team.roles.wordpressDev",
+            "Model Maker": "about.team.roles.modelMaker",
+            "Lead": "about.team.roles.lead",
+            "Lead Investigator": "about.team.roles.leadInvestigator",
+            "Web Developer": "about.team.roles.webDev"
+        };
+        const key = keyMap[role];
+        return key ? t(key) : role;
     };
 
     const tLabel = (label: string) => {
-        if (language === 'id') {
-            switch (label) {
-                case "SUSPECT #1": return "TERSANGKA #1";
-                case "SUSPECT": return "TERSANGKA";
-                case "WITNESS": return "SAKSI";
-                case "ACCOMPLICE": return "REKAN";
-                case "MASTERMIND": return "DALANG";
-                case "INFORMANT": return "INFORMAN";
-                case "MISSING": return "HILANG";
-                case "TOP SECRET": return "SANGAT RAHASIA";
-                case "UNDER COVER": return "PENYAMARAN";
-                case "WANTED": return "DICARI";
-                case "SOLVED": return "TERPECAHKAN";
-                case "URGENT": return "MENDESAK";
-                default: return label;
-            }
-        }
-        return label;
+        const keyMap: Record<string, string> = {
+            "SUSPECT #1": "about.team.labels.suspect1",
+            "SUSPECT": "about.team.labels.suspect",
+            "WITNESS": "about.team.labels.witness",
+            "ACCOMPLICE": "about.team.labels.accomplice",
+            "MASTERMIND": "about.team.labels.mastermind",
+            "INFORMANT": "about.team.labels.informant",
+            "MISSING": "about.team.labels.missing",
+            "TOP SECRET": "about.team.labels.topSecret",
+            "UNDER COVER": "about.team.labels.underCover",
+            "WANTED": "about.team.labels.wanted",
+            "SOLVED": "about.team.labels.solved",
+            "URGENT": "about.team.labels.urgent"
+        };
+        const key = keyMap[label];
+        return key ? t(key) : label;
     };
 
     return (
@@ -49,17 +45,15 @@ export default function About() {
                         <div className="inline-flex items-center gap-3 px-5 py-2 rounded-2xl bg-muted/40 backdrop-blur-md border border-border/50 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                             <Info className="w-4 h-4 text-primary" />
                             <span className="text-xs font-black tracking-[0.2em] uppercase text-foreground/80">
-                                {language === 'id' ? 'Protokol Genesis' : 'Protocol Genesis'}
+                                {t('about.genesis')}
                             </span>
                         </div>
                         <h1 className="text-6xl md:text-8xl font-bold tracking-tighter text-foreground mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
-                            {language === 'id' ? 'Kesederhanaan dalam' : 'Simplicity in'} <br />
-                            <span className="text-muted-foreground/30">{language === 'id' ? 'Infrastruktur.' : 'Infrastructure.'}</span>
+                            {t('about.title')} <br />
+                            <span className="text-muted-foreground/30">{t('about.subtitle')}</span>
                         </h1>
                         <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-medium">
-                            {language === 'id' 
-                                ? 'Watchtower dibentuk dari kebutuhan akan kejelasan dalam lanskap digital yang semakin kompleks. Kami membangun alat yang membuat kesehatan sistem menjadi intuitif.' 
-                                : 'Watchtower was forged from the need for clarity in an increasingly complex digital landscape. We build tools that make system health intuitive.'}
+                            {t('about.desc')}
                         </p>
                     </div>
 
@@ -67,23 +61,19 @@ export default function About() {
                         <div className="group p-12 border border-border/40 rounded-[3rem] bg-card/10 hover:bg-card transition-all duration-700">
                             <Target className="w-12 h-12 text-primary mb-8" />
                             <h3 className="text-3xl font-bold mb-6 tracking-tight">
-                                {language === 'id' ? 'Misi Kami' : 'Our Mission'}
+                                {t('about.mission.title')}
                             </h3>
                             <p className="text-lg text-muted-foreground leading-relaxed font-medium">
-                                {language === 'id'
-                                    ? 'Mendemokrasikan pemantauan server. Kami percaya bahwa data infrastruktur penting harus mudah diakses, indah, dan dapat ditindaklanjuti untuk tim dari semua ukuran.'
-                                    : 'To democratize server monitoring. We believe that critical infrastructure data should be accessible, beautiful, and actionable for teams of all sizes.'}
+                                {t('about.mission.desc')}
                             </p>
                         </div>
                         <div className="group p-12 border border-border/40 rounded-[3rem] bg-card/10 hover:bg-card transition-all duration-700">
                             <Shield className="w-12 h-12 text-primary mb-8" />
                             <h3 className="text-3xl font-bold mb-6 tracking-tight">
-                                {language === 'id' ? 'Nilai Kami' : 'Our Values'}
+                                {t('about.values.title')}
                             </h3>
                             <p className="text-lg text-muted-foreground leading-relaxed font-medium">
-                                {language === 'id'
-                                    ? 'Privasi sejak awal, keandalan sebagai standar, dan estetika sebagai persyaratan fungsional inti. Kami tidak hanya memproses metrik; kami merancang visibilitas.'
-                                    : 'Privacy by design, reliability as standard, and aesthetics as a core functional requirement. We don\'t just process metrics; we craft visibility.'}
+                                {t('about.values.desc')}
                             </p>
                         </div>
                     </div>
@@ -91,15 +81,15 @@ export default function About() {
                     <div className="max-w-7xl mx-auto mb-24">
                         <div className="text-center mb-24">
                             <h2 className="text-4xl font-bold tracking-tight">
-                                {language === 'id' ? 'Arsitektur Watchtower' : 'The Architecture of Watchtower'}
+                                {t('about.architecture.title')}
                             </h2>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                             {[
-                                { icon: Cpu, label: language === 'id' ? "Beban Rendah" : "Low Overhead", value: "< 1%", unit: language === 'id' ? "Penggunaan CPU" : "CPU Usage" },
-                                { icon: Network, label: language === 'id' ? "Jangkauan Global" : "Global Reach", value: "Real-time", unit: language === 'id' ? "Telemetri" : "Telemetry" },
-                                { icon: Zap, label: language === 'id' ? "Peringatan Cepat" : "Fast Alerts", value: "< 5s", unit: language === 'id' ? "Notifikasi" : "Notification" },
-                                { icon: LayoutDashboard, label: language === 'id' ? "Antarmuka Modern" : "Modern UI", value: "Zen", unit: language === 'id' ? "Desain UX" : "UX Design" }
+                                { icon: Cpu, label: t("about.architecture.items.lowOverhead"), value: "< 1%", unit: t("about.architecture.items.cpuUsage") },
+                                { icon: Network, label: t("about.architecture.items.globalReach"), value: "Real-time", unit: t("about.architecture.items.telemetry") },
+                                { icon: Zap, label: t("about.architecture.items.fastAlerts"), value: "< 5s", unit: t("about.architecture.items.notification") },
+                                { icon: LayoutDashboard, label: t("about.architecture.items.modernUi"), value: "Zen", unit: t("about.architecture.items.uxDesign") }
                             ].map((item, i) => (
                                 <div key={i} className="flex flex-col items-center p-10 border border-border/30 rounded-[2.5rem] bg-muted/10">
                                     <item.icon className="w-8 h-8 text-muted-foreground/40 mb-6" />
@@ -117,13 +107,11 @@ export default function About() {
                             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-32 bg-red-500/5 blur-3xl rounded-full" />
                             <h2 className="text-3xl md:text-5xl font-bold mb-4 font-serif tracking-tight relative">
                                 <span className="inline-block border-b-4 border-red-600 pb-2">
-                                    {language === 'id' ? 'Temui Tim Kami' : 'Meet the Team'}
+                                    {t('about.team.title')}
                                 </span>
                             </h2>
                             <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-mono text-sm uppercase tracking-widest mt-6">
-                                {language === 'id'
-                                    ? '[BERKAS RAHASIA: Para dalang di balik layar]'
-                                    : '[CLASSIFIED FILE: The masterminds behind the scenes]'}
+                                {t('about.team.classified')}
                             </p>
                         </div>
 
@@ -145,14 +133,14 @@ export default function About() {
                                         {tLabel("WANTED")}
                                     </span>
                                     <span className="text-zinc-800 text-xs text-center mt-3 font-mono">
-                                        {language === 'id' ? 'Karena membangun UI keren' : 'For building awesome UIs'}
+                                        {t('about.team.wantedDesc')}
                                     </span>
                                 </div>
 
                                 <div className="absolute top-[55%] right-[8%] w-56 h-72 bg-[#e5e5f7] rounded-sm shadow-md rotate-3 z-0 pointer-events-none overflow-hidden border border-zinc-300 opacity-90">
                                     <div className="w-full h-8 bg-zinc-300 mb-4 flex items-center px-3">
                                         <span className="text-xs font-mono text-black/60 font-bold">
-                                            {language === 'id' ? 'KASUS #9942' : 'CASE #9942'}
+                                            {t('about.team.case')}
                                         </span>
                                     </div>
                                     <div className="px-5 space-y-3">

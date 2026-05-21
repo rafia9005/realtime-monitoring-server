@@ -1,4 +1,4 @@
-import PublicLayout from "@/components/PublicLayout";
+﻿import PublicLayout from "@/components/PublicLayout";
 import { Button } from "@/components/ui/button";
 import { useLandingPageMetrics } from "@/lib/hooks/useLandingPageMetrics";
 import { useLanguage } from "@/lib/LanguageContext";
@@ -17,7 +17,7 @@ import {
 
 export default function Home() {
     const landingMetrics = useLandingPageMetrics();
-    const { language } = useLanguage();
+    const { t } = useLanguage();
     const { isSignedIn } = useUser();
 
     return (
@@ -25,29 +25,27 @@ export default function Home() {
             <div className="w-full">
                 {/* Hero Section */}
                 <section className="relative pt-32 pb-20 md:pt-48 md:pb-40 overflow-hidden">
-                    <div className="container mx-auto px-4 relative z-10">
+                     <div className="container mx-auto px-4 relative z-10">
                         <div className="w-full mx-auto text-center">
                             <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-foreground mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
-                                {language === 'id' ? 'Amati. Analisis.' : 'Observe. Analyze.'} <br />
-                                <span className="text-foreground/20">{language === 'id' ? 'Optimalkan.' : 'Optimize.'}</span>
+                                {t('home.hero.observe')} <br />
+                                <span className="text-foreground/20">{t('home.hero.optimize')}</span>
                             </h1>
 
                             <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 font-medium italic">
-                                {language === 'id'
-                                    ? 'Watchtower memberikan intelijen infrastruktur elit. Telemetri real-time, diagnostik prediktif, dan kontrol terpadu.'
-                                    : 'Watchtower delivers elite infrastructure intelligence. Real-time telemetry, predictive diagnostics, and unified control.'}
+                                {t('home.hero.desc')}
                             </p>
 
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-500">
                                 <Button asChild size="lg" className="h-16 px-12 text-lg font-black rounded-2xl w-full sm:w-auto bg-foreground text-background hover:scale-105 transition-all shadow-2xl shadow-foreground/10 active:scale-95 uppercase tracking-widest">
                                     <a href={isSignedIn ? "/dashboard" : "/login"}>
-                                        {language === 'id' ? 'Inisialisasi' : 'Initialize'}
+                                        {t('home.hero.btnInit')}
                                         <ArrowRight className="ml-3 w-5 h-5" />
                                     </a>
                                 </Button>
                                 <Button asChild variant="outline" size="lg" className="h-16 px-12 text-lg font-black rounded-2xl w-full sm:w-auto backdrop-blur-md border-foreground/10 hover:bg-foreground/5 transition-all active:scale-95 uppercase tracking-widest">
                                     <a href="#features">
-                                        {language === 'id' ? 'Jelajahi' : 'Explore'}
+                                        {t('home.hero.btnExplore')}
                                     </a>
                                 </Button>
                             </div>
@@ -79,8 +77,8 @@ export default function Home() {
                                                 <div className="text-[10px] font-black text-muted-foreground flex items-center gap-3 uppercase tracking-widest opacity-40">
                                                     Status: <span className={landingMetrics.nodeStatus === "online" ? "text-emerald-500" : "text-red-500"}>
                                                         {landingMetrics.nodeStatus === "online" 
-                                                            ? (language === 'id' ? "Tersinkronisasi" : "Synchronized")
-                                                            : (language === 'id' ? "Terputus" : "Offline")
+                                                            ? t("home.node.synchronized")
+                                                            : t("home.node.offline")
                                                         }
                                                     </span> | Up: <span className="text-foreground">{landingMetrics.nodeUptime}</span>
                                                 </div>
@@ -89,36 +87,49 @@ export default function Home() {
                                         <div className="space-y-10">
                                             {[
                                                 { 
-                                                    label: language === 'id' ? "Mesin Saraf" : "Neural Engine", 
+                                                    label: t("home.node.neuralEngine"), 
                                                     value: Math.round(landingMetrics.nodeCpu), 
                                                     color: "bg-foreground", 
-                                                    hint: Math.round(landingMetrics.nodeCpu) < 70 
-                                                        ? (language === 'id' ? "OPTIMAL" : "OPTIMAL") 
+                                                    status: Math.round(landingMetrics.nodeCpu) < 70 
+                                                        ? "optimal" 
                                                         : Math.round(landingMetrics.nodeCpu) < 90 
-                                                            ? (language === 'id' ? "TINGGI" : "HIGH") 
-                                                            : (language === 'id' ? "KRITIS" : "CRITICAL") 
+                                                            ? "warning" 
+                                                            : "critical",
+                                                    hint: Math.round(landingMetrics.nodeCpu) < 70 
+                                                        ? t("home.node.statusOptimal") 
+                                                        : Math.round(landingMetrics.nodeCpu) < 90 
+                                                            ? t("home.node.statusHigh") 
+                                                            : t("home.node.statusCritical") 
                                                 },
                                                 { 
-                                                    label: language === 'id' ? "Segmen Memori" : "Memory Segment", 
+                                                    label: t("home.node.memorySegment"), 
                                                     value: Math.round(landingMetrics.nodeMemory), 
                                                     color: "bg-foreground/60", 
-                                                    hint: Math.round(landingMetrics.nodeMemory) < 80 
-                                                        ? (language === 'id' ? "STABIL" : "STABLE") 
+                                                    status: Math.round(landingMetrics.nodeMemory) < 80 
+                                                        ? "optimal" 
                                                         : Math.round(landingMetrics.nodeMemory) < 95 
-                                                            ? (language === 'id' ? "PERINGATAN" : "WARNING") 
-                                                            : (language === 'id' ? "KRITIS" : "CRITICAL") 
+                                                            ? "warning" 
+                                                            : "critical",
+                                                    hint: Math.round(landingMetrics.nodeMemory) < 80 
+                                                        ? t("home.node.statusStable") 
+                                                        : Math.round(landingMetrics.nodeMemory) < 95 
+                                                            ? t("home.node.statusWarning") 
+                                                            : t("home.node.statusCritical") 
                                                 },
                                                 { 
-                                                    label: language === 'id' ? "Denyut Jaringan" : "Network Pulse", 
+                                                    label: t("home.node.networkPulse"), 
                                                     value: Math.round(landingMetrics.nodeNetwork), 
                                                     color: "bg-foreground/40", 
+                                                    status: Math.round(landingMetrics.nodeNetwork) > 0 
+                                                        ? "optimal" 
+                                                        : "idle",
                                                     hint: Math.round(landingMetrics.nodeNetwork) > 0 
-                                                        ? (language === 'id' ? "AKTIF" : "ACTIVE") 
-                                                        : (language === 'id' ? "LESU" : "IDLE") 
+                                                        ? t("home.node.statusActive") 
+                                                        : t("home.node.statusIdle") 
                                                 }
                                             ].map((metric, i) => {
-                                                const isCritical = metric.hint.includes("CRITICAL") || metric.hint.includes("KRITIS");
-                                                const isWarning = metric.hint.includes("WARNING") || metric.hint.includes("PERINGATAN") || metric.hint.includes("HIGH") || metric.hint.includes("TINGGI");
+                                                const isCritical = metric.status === "critical";
+                                                const isWarning = metric.status === "warning";
                                                 const hintColor = isCritical ? "text-red-500" : isWarning ? "text-orange-500" : "text-emerald-500";
                                                 
                                                 return (
@@ -138,11 +149,11 @@ export default function Home() {
                                     <div className="md:col-span-5 flex flex-col justify-center bg-foreground/[0.02] rounded-[3rem] p-12 border border-foreground/5 relative overflow-hidden group/card shadow-inner">
                                         <div className="absolute -top-32 -right-32 w-64 h-64 bg-foreground/5 rounded-full blur-[100px]" />
                                         <div className="text-7xl font-black text-foreground mb-4 tabular-nums tracking-tighter leading-none">{landingMetrics.isLoading ? "99.99" : landingMetrics.nodeUptimePercent}<span className="text-foreground/10">%</span></div>
-                                        <div className="text-[10px] font-black text-muted-foreground/40 mb-12 uppercase tracking-[0.4em] italic">{language === 'id' ? 'Waktu Operasi Presisi' : 'Precision Uptime'}</div>
+                                        <div className="text-[10px] font-black text-muted-foreground/40 mb-12 uppercase tracking-[0.4em] italic">{t('home.node.precisionUptime')}</div>
                                         <div className="h-px w-full bg-linear-to-r from-foreground/10 to-transparent mb-10" />
                                         <div className="flex items-center gap-4 text-emerald-500 bg-emerald-500/5 px-6 py-4 rounded-[2rem] border border-emerald-500/10 w-fit">
                                             <Shield className="w-5 h-5" />
-                                            <span className="text-[10px] font-black tracking-[0.3em] uppercase italic">{language === 'id' ? 'Protokol Keamanan' : 'Security Protocol'}</span>
+                                            <span className="text-[10px] font-black tracking-[0.3em] uppercase italic">{t('home.node.securityProtocol')}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -156,10 +167,10 @@ export default function Home() {
                     <div className="max-w-7xl mx-auto px-4">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                             {[
-                                { label: language === 'id' ? "Simpul Aktif" : "Active Nodes", value: landingMetrics.nodesConnected.toString().padStart(2, '0'), unit: language === 'id' ? "STASIUN" : "STATIONS" },
-                                { label: language === 'id' ? "CPU Global" : "Global CPU", value: landingMetrics.globalCPU.replace('%', ''), unit: language === 'id' ? "PERSENTASE" : "PERCENTAGE" },
-                                { label: language === 'id' ? "IO Jaringan" : "Network IO", value: landingMetrics.avgLatency, unit: language === 'id' ? "LATENSI" : "LATENCY" },
-                                { label: language === 'id' ? "Siklus Harian" : "Daily Cycles", value: landingMetrics.dailyCycles, unit: language === 'id' ? "TELEMETRI" : "TELEMETRY" }
+                                { label: t("home.stats.activeNodes"), value: landingMetrics.nodesConnected.toString().padStart(2, '0'), unit: t("home.stats.stations") },
+                                { label: t("home.stats.globalCpu"), value: landingMetrics.globalCPU.replace('%', ''), unit: t("home.stats.percentage") },
+                                { label: t("home.stats.networkIo"), value: landingMetrics.avgLatency, unit: t("home.stats.latency") },
+                                { label: t("home.stats.dailyCycles"), value: landingMetrics.dailyCycles, unit: t("home.stats.telemetry") }
                             ].map((stat, i) => (
                                 <div key={i} className="p-10 border border-foreground/5 rounded-[2.5rem] bg-card/20 backdrop-blur-3xl hover:bg-card transition-all duration-500 group">
                                     <div className="text-[10px] font-black text-muted-primary/80 tracking-[0.3em] uppercase mb-2 italic">{stat.label}</div>
@@ -183,10 +194,10 @@ export default function Home() {
                             <div className="max-w-3xl space-y-6">
                                 <div className="text-[10px] font-black tracking-[0.4em] text-primary uppercase flex items-center gap-4">
                                     <div className="w-12 h-px bg-primary" />
-                                    {language === 'id' ? 'Kemampuan Sistem' : 'System Capabilities'}
+                                    {t('home.capabilities.title')}
                                 </div>
                                 <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-foreground leading-tight uppercase">
-                                    {language === 'id' ? 'Alat Presisi.' : 'Precision Tools.'}
+                                    {t('home.capabilities.subtitle')}
                                 </h2>
                             </div>
 
@@ -199,33 +210,33 @@ export default function Home() {
                             {[
                                 {
                                     icon: Cpu,
-                                    title: language === 'id' ? "Asupan Telemetri" : "Telemetry Ingestion",
-                                    desc: language === 'id' ? "Pengumpulan data berbasis agen asli tanpa overhead tambahan pada simpul target Anda." : "Native agent-based data collection with zero-footprint overhead on your target nodes."
+                                    title: t("home.capabilities.telemetryIngestion.title"),
+                                    desc: t("home.capabilities.telemetryIngestion.desc")
                                 },
                                 {
                                     icon: HardDrive,
-                                    title: language === 'id' ? "Penyimpanan Terpadu" : "Unified Storage",
-                                    desc: language === 'id' ? "Agregasi metrik terpusat dengan persistensi historis untuk analisis tren yang mendalam." : "Centralized metric aggregation with historical persistence for deep trend analysis."
+                                    title: t("home.capabilities.unifiedStorage.title"),
+                                    desc: t("home.capabilities.unifiedStorage.desc")
                                 },
                                 {
                                     icon: Monitor,
-                                    title: language === 'id' ? "Sintesis Visual" : "Visual Synthesis",
-                                    desc: language === 'id' ? "Mengubah aliran mentah menjadi kecerdasan yang dapat dibaca manusia melalui desain minimalis." : "Transforming raw streams into human-readable intelligence through minimalist design."
+                                    title: t("home.capabilities.visualSynthesis.title"),
+                                    desc: t("home.capabilities.visualSynthesis.desc")
                                 },
                                 {
                                     icon: Network,
-                                    title: language === 'id' ? "Konektivitas Tepi" : "Edge Connectivity",
-                                    desc: language === 'id' ? "Cakupan pemantauan global dengan agen lokal yang melapor ke pusat kendali tunggal." : "Global monitoring coverage with localized agents reporting to a unified control center."
+                                    title: t("home.capabilities.edgeConnectivity.title"),
+                                    desc: t("home.capabilities.edgeConnectivity.desc")
                                 },
                                 {
                                     icon: Zap,
-                                    title: language === 'id' ? "Peringatan Ambang" : "Threshold Alerts",
-                                    desc: language === 'id' ? "Perutean pemberitahuan cerdas via Telegram, memastikan acara kritis langsung mencapai Anda." : "Intelligent notification routing via Telegram, ensuring critical events reach you instantly."
+                                    title: t("home.capabilities.thresholdAlerts.title"),
+                                    desc: t("home.capabilities.thresholdAlerts.desc")
                                 },
                                 {
                                     icon: Lock,
-                                    title: language === 'id' ? "Penjaga Ujung-ke-Ujung" : "End-to-End Guard",
-                                    desc: language === 'id' ? "Diamankan melalui autentikasi Clerk dan enkripsi HTTPS, menjaga infrastruktur Anda tetap pribadi." : "Secured through Clerk auth and HTTPS encryption, keeping your infrastructure private."
+                                    title: t("home.capabilities.endToEndGuard.title"),
+                                    desc: t("home.capabilities.endToEndGuard.desc")
                                 }
                             ].map((feature, i) => (
                                 <div key={i} className="group p-12 border border-foreground/5 rounded-[3.5rem] bg-card/10 hover:bg-card hover:border-foreground/10 hover:shadow-2xl transition-all duration-700">

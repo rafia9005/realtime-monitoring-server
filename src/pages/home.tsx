@@ -2,11 +2,11 @@
 import { Button } from "@/components/ui/button";
 import { useLandingPageMetrics } from "@/lib/hooks/useLandingPageMetrics";
 import { useLanguage } from "@/lib/LanguageContext";
-import { 
-    Activity, 
-    Cpu, 
-    Shield, 
-    Zap, 
+import {
+    Activity,
+    Cpu,
+    Shield,
+    Zap,
     ArrowRight,
     Lock,
     HardDrive,
@@ -27,25 +27,25 @@ export default function Home() {
                         <div className="w-full mx-auto text-center">
                             <div className="inline-flex items-center gap-3 px-5 py-2 rounded-2xl bg-muted/40 backdrop-blur-md border border-border/50 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                                 <span className="relative flex h-3 w-3">
-                                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                  <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]"></span>
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]"></span>
                                 </span>
                                 <span className="text-[10px] font-black tracking-[0.3em] text-foreground/80 uppercase">
                                     {language === 'id' ? 'Mesin Inti Online' : 'Core Engine Online'}
                                 </span>
                             </div>
-                            
+
                             <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-foreground mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
-                                {language === 'id' ? 'Amati. Analisis.' : 'Observe. Analyze.'} <br/>
+                                {language === 'id' ? 'Amati. Analisis.' : 'Observe. Analyze.'} <br />
                                 <span className="text-foreground/20">{language === 'id' ? 'Optimalkan.' : 'Optimize.'}</span>
                             </h1>
-                            
+
                             <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300 font-medium italic">
-                                {language === 'id' 
-                                  ? 'Watchtower memberikan intelijen infrastruktur elit. Telemetri real-time, diagnostik prediktif, dan kontrol terpadu.' 
-                                  : 'Watchtower delivers elite infrastructure intelligence. Real-time telemetry, predictive diagnostics, and unified control.'}
+                                {language === 'id'
+                                    ? 'Watchtower memberikan intelijen infrastruktur elit. Telemetri real-time, diagnostik prediktif, dan kontrol terpadu.'
+                                    : 'Watchtower delivers elite infrastructure intelligence. Real-time telemetry, predictive diagnostics, and unified control.'}
                             </p>
-                            
+
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-500">
                                 <Button asChild size="lg" className="h-16 px-12 text-lg font-black rounded-2xl w-full sm:w-auto bg-foreground text-background hover:scale-105 transition-all shadow-2xl shadow-foreground/10 active:scale-95 uppercase tracking-widest">
                                     <a href="/dashboard">
@@ -101,7 +101,7 @@ export default function Home() {
                                                         <span className="text-foreground">{metric.value}% <span className="ml-2 text-emerald-500 font-black">{metric.hint}</span></span>
                                                     </div>
                                                     <div className="h-1.5 w-full bg-foreground/5 rounded-full overflow-hidden">
-                                                        <div className={`h-full ${metric.color} rounded-full transition-all duration-1000 delay-1000`} style={{width: `${metric.value}%`}}></div>
+                                                        <div className={`h-full ${metric.color} rounded-full transition-all duration-1000 delay-1000`} style={{ width: `${metric.value}%` }}></div>
                                                     </div>
                                                 </div>
                                             ))}
@@ -124,7 +124,7 @@ export default function Home() {
                 </section>
 
                 {/* Metrics Bar */}
-                <section className="relative z-10 py-12">
+                <section className="relative z-10 py-0">
                     <div className="max-w-7xl mx-auto px-4">
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                             {[
@@ -134,12 +134,12 @@ export default function Home() {
                                 { label: language === 'id' ? "Siklus Harian" : "Daily Cycles", value: landingMetrics.dailyCycles, unit: language === 'id' ? "TELEMETRI" : "TELEMETRY" }
                             ].map((stat, i) => (
                                 <div key={i} className="p-10 border border-foreground/5 rounded-[2.5rem] bg-card/20 backdrop-blur-3xl hover:bg-card transition-all duration-500 group">
-                                    <div className="text-[10px] font-black text-muted-foreground/30 tracking-[0.3em] uppercase mb-2 italic">{stat.label}</div>
+                                    <div className="text-[10px] font-black text-muted-primary/80 tracking-[0.3em] uppercase mb-2 italic">{stat.label}</div>
                                     <div className="flex items-baseline gap-2">
                                         <div className="text-5xl font-black tracking-tighter text-foreground leading-none">
-                                           {landingMetrics.isLoading ? "--" : stat.value}
+                                            {landingMetrics.isLoading ? "--" : stat.value}
                                         </div>
-                                        <div className="text-[9px] font-black text-muted-foreground/40 uppercase tracking-widest italic">{stat.unit}</div>
+                                        <div className="text-[9px] font-black text-muted-foreground/60 uppercase tracking-widest italic">{stat.unit}</div>
                                     </div>
                                 </div>
                             ))}
@@ -151,54 +151,53 @@ export default function Home() {
                 <section id="features" className="py-60 relative overflow-hidden">
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-linear-to-r from-transparent via-foreground/10 to-transparent" />
                     <div className="container mx-auto px-4">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-32">
+                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-12">
                             <div className="max-w-3xl space-y-6">
                                 <div className="text-[10px] font-black tracking-[0.4em] text-primary uppercase flex items-center gap-4">
-                                   <div className="w-12 h-px bg-primary" />
-                                   {language === 'id' ? 'Kemampuan Sistem' : 'System Capabilities'}
+                                    <div className="w-12 h-px bg-primary" />
+                                    {language === 'id' ? 'Kemampuan Sistem' : 'System Capabilities'}
                                 </div>
                                 <h2 className="text-6xl md:text-8xl font-black tracking-tighter text-foreground leading-tight uppercase">
                                     {language === 'id' ? 'Alat Presisi.' : 'Precision Tools.'}
                                 </h2>
                             </div>
-                            <p className="text-xl text-muted-foreground max-w-sm font-bold leading-relaxed italic opacity-60">
-                                {language === 'id'
-                                    ? 'Dirancang untuk asupan data frekuensi tinggi dan analisis bedah.'
-                                    : 'Engineered for high-frequency data ingestion and surgical analysis.'}
-                            </p>
+
+                            <div className="w-full flex justify-end items-end">
+                                <video src="/vid/demonstrasi.mp4" autoPlay loop playsInline controls className="w-xl"></video>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {[
-                                { 
-                                  icon: Cpu, 
-                                  title: language === 'id' ? "Asupan Telemetri" : "Telemetry Ingestion", 
-                                  desc: language === 'id' ? "Pengumpulan data berbasis agen asli tanpa overhead tambahan pada simpul target Anda." : "Native agent-based data collection with zero-footprint overhead on your target nodes." 
+                                {
+                                    icon: Cpu,
+                                    title: language === 'id' ? "Asupan Telemetri" : "Telemetry Ingestion",
+                                    desc: language === 'id' ? "Pengumpulan data berbasis agen asli tanpa overhead tambahan pada simpul target Anda." : "Native agent-based data collection with zero-footprint overhead on your target nodes."
                                 },
-                                { 
-                                  icon: HardDrive, 
-                                  title: language === 'id' ? "Penyimpanan Terpadu" : "Unified Storage", 
-                                  desc: language === 'id' ? "Agregasi metrik terpusat dengan persistensi historis untuk analisis tren yang mendalam." : "Centralized metric aggregation with historical persistence for deep trend analysis." 
+                                {
+                                    icon: HardDrive,
+                                    title: language === 'id' ? "Penyimpanan Terpadu" : "Unified Storage",
+                                    desc: language === 'id' ? "Agregasi metrik terpusat dengan persistensi historis untuk analisis tren yang mendalam." : "Centralized metric aggregation with historical persistence for deep trend analysis."
                                 },
-                                { 
-                                  icon: Monitor, 
-                                  title: language === 'id' ? "Sintesis Visual" : "Visual Synthesis", 
-                                  desc: language === 'id' ? "Mengubah aliran mentah menjadi kecerdasan yang dapat dibaca manusia melalui desain minimalis." : "Transforming raw streams into human-readable intelligence through minimalist design." 
+                                {
+                                    icon: Monitor,
+                                    title: language === 'id' ? "Sintesis Visual" : "Visual Synthesis",
+                                    desc: language === 'id' ? "Mengubah aliran mentah menjadi kecerdasan yang dapat dibaca manusia melalui desain minimalis." : "Transforming raw streams into human-readable intelligence through minimalist design."
                                 },
-                                { 
-                                  icon: Network, 
-                                  title: language === 'id' ? "Konektivitas Tepi" : "Edge Connectivity", 
-                                  desc: language === 'id' ? "Cakupan pemantauan global dengan agen lokal yang melapor ke pusat kendali tunggal." : "Global monitoring coverage with localized agents reporting to a unified control center." 
+                                {
+                                    icon: Network,
+                                    title: language === 'id' ? "Konektivitas Tepi" : "Edge Connectivity",
+                                    desc: language === 'id' ? "Cakupan pemantauan global dengan agen lokal yang melapor ke pusat kendali tunggal." : "Global monitoring coverage with localized agents reporting to a unified control center."
                                 },
-                                { 
-                                  icon: Zap, 
-                                  title: language === 'id' ? "Peringatan Ambang" : "Threshold Alerts", 
-                                  desc: language === 'id' ? "Perutean pemberitahuan cerdas via Telegram, memastikan acara kritis langsung mencapai Anda." : "Intelligent notification routing via Telegram, ensuring critical events reach you instantly." 
+                                {
+                                    icon: Zap,
+                                    title: language === 'id' ? "Peringatan Ambang" : "Threshold Alerts",
+                                    desc: language === 'id' ? "Perutean pemberitahuan cerdas via Telegram, memastikan acara kritis langsung mencapai Anda." : "Intelligent notification routing via Telegram, ensuring critical events reach you instantly."
                                 },
-                                { 
-                                  icon: Lock, 
-                                  title: language === 'id' ? "Penjaga Ujung-ke-Ujung" : "End-to-End Guard", 
-                                  desc: language === 'id' ? "Diamankan melalui autentikasi Clerk dan enkripsi HTTPS, menjaga infrastruktur Anda tetap pribadi." : "Secured through Clerk auth and HTTPS encryption, keeping your infrastructure private." 
+                                {
+                                    icon: Lock,
+                                    title: language === 'id' ? "Penjaga Ujung-ke-Ujung" : "End-to-End Guard",
+                                    desc: language === 'id' ? "Diamankan melalui autentikasi Clerk dan enkripsi HTTPS, menjaga infrastruktur Anda tetap pribadi." : "Secured through Clerk auth and HTTPS encryption, keeping your infrastructure private."
                                 }
                             ].map((feature, i) => (
                                 <div key={i} className="group p-12 border border-foreground/5 rounded-[3.5rem] bg-card/10 hover:bg-card hover:border-foreground/10 hover:shadow-2xl transition-all duration-700">
@@ -214,7 +213,7 @@ export default function Home() {
                         </div>
                     </div>
                 </section>
-                
+
             </div>
         </PublicLayout>
     );

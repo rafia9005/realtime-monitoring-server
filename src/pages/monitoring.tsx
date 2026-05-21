@@ -1,5 +1,4 @@
 import DashboardLayout from "@/components/DashboardLayout";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { 
   Cpu,
@@ -14,7 +13,8 @@ import {
   Maximize2,
   X,
   Server,
-  Check
+  Check,
+  Activity
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -140,15 +140,16 @@ export default function Monitoring() {
 
   if (!metrics) return null;
 
+  const cpuUsage = metrics.cpu.usage_percent;
   const sections = [
     {
       id: "cpu" as MetricSection,
       title: language === 'id' ? "Daya Pemrosesan" : "Processing Power",
       icon: Cpu,
-      value: `${metrics.cpu.usage_percent.toFixed(1)}%`,
+      value: `${cpuUsage.toFixed(1)}%`,
       subtitle: `${metrics.cpu.cores} ${language === 'id' ? 'inti' : 'cores'} / ${metrics.cpu.threads} ${language === 'id' ? 'utas' : 'threads'}`,
-      color: "text-blue-600",
-      bgColor: "bg-blue-50 dark:bg-blue-950/30",
+      color: "text-foreground/60",
+      bgColor: "bg-foreground/5 border border-foreground/10",
       component: <CPUDetail cpu={metrics.cpu} />,
       fullscreenComponent: <CPUDetail cpu={metrics.cpu} fullscreen />
     },
@@ -158,8 +159,8 @@ export default function Monitoring() {
       icon: MemoryStick,
       value: `${metrics.memory.used_percent.toFixed(1)}%`,
       subtitle: `${formatBytes(metrics.memory.used)} / ${formatBytes(metrics.memory.total)}`,
-      color: "text-purple-600",
-      bgColor: "bg-purple-50 dark:bg-purple-950/30",
+      color: "text-foreground/60",
+      bgColor: "bg-foreground/5 border border-foreground/10",
       component: <MemoryDetail memory={metrics.memory} />,
       fullscreenComponent: <MemoryDetail memory={metrics.memory} fullscreen />
     },
@@ -167,10 +168,10 @@ export default function Monitoring() {
       id: "disk" as MetricSection,
       title: language === 'id' ? "Penyimpanan" : "Storage",
       icon: HardDrive,
-      value: `${metrics.disk.length} Disk${metrics.disk.length > 1 ? '' : ''}`,
+      value: `${metrics.disk.length} Disk`,
       subtitle: `${formatBytes(metrics.disk.reduce((acc, d) => acc + d.used, 0))} ${language === 'id' ? 'digunakan' : 'used'}`,
-      color: "text-orange-600",
-      bgColor: "bg-orange-50 dark:bg-orange-950/30",
+      color: "text-foreground/60",
+      bgColor: "bg-foreground/5 border border-foreground/10",
       component: <DiskDetail disks={metrics.disk} />,
       fullscreenComponent: <DiskDetail disks={metrics.disk} fullscreen />
     },
@@ -180,8 +181,8 @@ export default function Monitoring() {
       icon: Network,
       value: `${metrics.network.connections.established} ${language === 'id' ? 'Koneksi' : 'Conn.'}`,
       subtitle: `↑ ${formatBytes(metrics.network.bytes_sent)} ↓ ${formatBytes(metrics.network.bytes_recv)}`,
-      color: "text-green-600",
-      bgColor: "bg-green-50 dark:bg-green-950/30",
+      color: "text-foreground/60",
+      bgColor: "bg-foreground/5 border border-foreground/10",
       component: <NetworkDetail network={metrics.network} />,
       fullscreenComponent: <NetworkDetail network={metrics.network} fullscreen />
     }
@@ -191,38 +192,46 @@ export default function Monitoring() {
 
   return (
     <DashboardLayout>
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="flex items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800">
-            <div>
-              <h1 className="text-3xl font-semibold text-slate-900 dark:text-white">{language === 'id' ? 'Metrik Detail' : 'Detailed Metrics'}</h1>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-12 border-b border-foreground/5">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-foreground/5 rounded-xl backdrop-blur-3xl border border-foreground/10">
+                <Activity className="w-5 h-5 opacity-60 text-primary" />
+              </div>
+              <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-40 italic">Telemetry Array v4.2</span>
+            </div>
+            <h1 className="text-6xl font-black tracking-tight uppercase leading-none">
+              {language === 'id' ? 'Metrik Detail' : 'Detailed Metrics'}
+            </h1>
+            <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest font-mono italic">
               {viewMode === "local" ? (language === 'id' ? "Komputer Ini" : "This Computer") : selectedAgent ? `Server: ${selectedAgent.name}` : (language === 'id' ? "Pilih Server" : "Select a Server")} • {language === 'id' ? 'Pembaruan real-time' : 'Real-time updates'}
             </p>
           </div>
           <div className="flex items-center gap-4">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="rounded-lg border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white font-medium">
+                <Button variant="outline" className="h-14 px-6 rounded-2xl border-foreground/10 bg-background/50 backdrop-blur-3xl hover:bg-foreground/5 text-xs font-black uppercase tracking-widest transition-all">
                   <Server className="w-4 h-4 mr-2" />
                   {viewMode === "local" ? (language === 'id' ? "Komputer Ini" : "This Computer") : selectedAgent?.name || (language === 'id' ? "Pilih Server" : "Select Server")}
                   <ChevronDown className="w-4 h-4 ml-2" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="rounded-lg border-slate-200 dark:border-slate-800">
-                <DropdownMenuLabel>{language === 'id' ? 'Tersedia' : 'Available'}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
+              <DropdownMenuContent align="end" className="font-mono text-xs rounded-2xl border-foreground/10 bg-background/80 backdrop-blur-3xl p-2 min-w-[200px]">
+                <DropdownMenuLabel className="uppercase font-black text-[9px] tracking-widest opacity-40 py-2 px-3">{language === 'id' ? 'Tersedia' : 'Available'}</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-foreground/5" />
                 <DropdownMenuItem 
                   onClick={() => setViewMode("local")}
-                  className="cursor-pointer rounded-md"
+                  className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-2 px-3 flex justify-between"
                 >
-                  {language === 'id' ? 'Komputer Ini' : 'This Computer'}
-                  {viewMode === "local" && <Check className="w-4 h-4 ml-auto" />}
+                  <span>{language === 'id' ? 'Komputer Ini' : 'This Computer'}</span>
+                  {viewMode === "local" && <Check className="w-4 h-4" />}
                 </DropdownMenuItem>
                 {agents.length > 0 && (
                   <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuLabel>Servers</DropdownMenuLabel>
+                    <DropdownMenuSeparator className="bg-foreground/5" />
+                    <DropdownMenuLabel className="uppercase font-black text-[9px] tracking-widest opacity-40 py-2 px-3">Servers</DropdownMenuLabel>
                     {agents.map((agent) => (
                       <DropdownMenuItem
                         key={agent.id}
@@ -230,14 +239,14 @@ export default function Monitoring() {
                           setViewMode("agents");
                           selectAgent(agent.id);
                         }}
-                        className="cursor-pointer rounded-md"
+                        className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-2 px-3 flex justify-between items-center"
                       >
-                        <div className="flex items-center gap-2 flex-1">
-                          <span className={`w-1.5 h-1.5 rounded-full ${agent.status === 'online' ? 'bg-green-500' : 'bg-gray-400'}`} />
+                        <div className="flex items-center gap-2">
+                          <span className={`w-1.5 h-1.5 rounded-full ${agent.status === 'online' ? 'bg-green-500 animate-pulse' : 'bg-gray-400'}`} />
                           <span>{agent.name}</span>
                         </div>
                         {viewMode === "agents" && selectedAgent?.id === agent.id && (
-                          <Check className="w-4 h-4 ml-2" />
+                          <Check className="w-4 h-4" />
                         )}
                       </DropdownMenuItem>
                     ))}
@@ -246,69 +255,64 @@ export default function Monitoring() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Badge variant="outline" className="rounded-full text-green-700 dark:text-green-300 border-green-300/50 bg-green-50 dark:bg-green-950/30">
-              ● {language === 'id' ? 'Langsung' : 'Live'}
-            </Badge>
-            <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800">
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <span className="text-[10px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-4 py-2.5 rounded-full backdrop-blur-3xl flex items-center gap-2 h-14">
+              <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              {language === 'id' ? 'Langsung' : 'Live'}
+            </span>
+            <Button onClick={() => refetch()} variant="outline" className="h-14 w-14 rounded-2xl border-foreground/10 bg-background/50 backdrop-blur-3xl hover:bg-foreground/5 transition-all active:scale-95 flex items-center justify-center">
+              <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
             </Button>
           </div>
         </div>
 
         {/* Collapsible Sections */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {sections.map((section) => (
-            <div key={section.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden hover:border-slate-300 dark:hover:border-slate-700 transition-colors">
+            <div key={section.id} className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
               {/* Section Header */}
               <button
                 onClick={() => toggleSection(section.id)}
-                className="w-full flex items-center justify-between p-5 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                className="w-full flex items-center justify-between p-8 hover:bg-foreground/[0.02] transition-colors"
               >
-                <div className="flex items-center gap-4 flex-1">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${section.bgColor}`}>
-                    <section.icon className={`w-5 h-5 ${section.color}`} />
+                <div className="flex items-center gap-6 flex-1">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border border-foreground/10 bg-foreground/5`}>
+                    <section.icon className="w-6 h-6 text-foreground/60" />
                   </div>
-                  <div className="text-left">
-                     <h3 className="text-base font-semibold text-slate-900 dark:text-white">{section.title}</h3>
-                     <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{section.subtitle}</p>
+                  <div className="text-left space-y-1">
+                     <h3 className="text-lg font-black uppercase tracking-tight italic">{section.title}</h3>
+                     <p className="text-[10px] font-black uppercase tracking-widest opacity-40 font-mono italic">{section.subtitle}</p>
                   </div>
                 </div>
-                 <div className="flex items-center gap-4">
-                   <span className="text-2xl font-semibold text-slate-900 dark:text-white">
+                 <div className="flex items-center gap-6">
+                   <span className="text-3xl font-black tracking-tight">
                      {section.value}
                    </span>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Button 
-                      variant="ghost" 
+                      variant="outline" 
                       size="icon" 
-                      className="h-8 w-8 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800"
+                      className="h-10 w-10 rounded-xl border border-foreground/10 bg-background/50 hover:bg-foreground/5 backdrop-blur-3xl transition-all active:scale-95 flex items-center justify-center"
                       onClick={(e) => {
                         e.stopPropagation();
                         setFullscreenSection(section.id);
                       }}
                     >
-                      <Maximize2 className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                      <Maximize2 className="w-4 h-4 text-foreground/60" />
                     </Button>
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleSection(section.id);
-                      }}
-                      className="h-8 w-8 flex items-center justify-center"
-                    >
+                    <div className="h-10 w-10 rounded-xl flex items-center justify-center hover:bg-foreground/5 transition-colors">
                       {expandedSections.includes(section.id) ? (
-                        <ChevronUp className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                        <ChevronUp className="w-5 h-5 text-foreground/60" />
                       ) : (
-                        <ChevronDown className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                        <ChevronDown className="w-5 h-5 text-foreground/60" />
                       )}
-                    </button>
+                    </div>
                   </div>
                 </div>
               </button>
 
               {/* Section Content */}
               {expandedSections.includes(section.id) && (
-                <div className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/30 p-6">
+                <div className="border-t border-foreground/5 bg-foreground/[0.01] p-8">
                   {section.component}
                 </div>
               )}
@@ -319,34 +323,33 @@ export default function Monitoring() {
 
       {/* Fullscreen Modal */}
       {fullscreenSection && fullscreenSectionData && (
-        <div className="fixed inset-0 z-50 bg-white dark:bg-slate-950">
+        <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-3xl font-mono">
           {/* Fullscreen Header */}
-          <div className="sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950">
-            <div className="flex items-center justify-between h-16 px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${fullscreenSectionData.bgColor}`}>
-                      <fullscreenSectionData.icon className={`w-5 h-5 ${fullscreenSectionData.color}`} />
+          <div className="sticky top-0 z-10 border-b border-foreground/5 bg-background/80 backdrop-blur-3xl">
+            <div className="flex items-center justify-between h-20 px-8 py-4">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center border border-foreground/10 bg-foreground/5">
+                      <fullscreenSectionData.icon className="w-5 h-5 text-foreground/60" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{fullscreenSectionData.title}</h2>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">{fullscreenSectionData.subtitle}</p>
+                      <h2 className="text-base font-black uppercase tracking-tight italic">{fullscreenSectionData.title}</h2>
+                      <p className="text-[10px] font-black uppercase tracking-widest opacity-40 italic">{fullscreenSectionData.subtitle}</p>
                     </div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-6">
                 <div className="flex flex-col items-end">
-                  <span className="text-xs text-slate-600 dark:text-slate-400">Current Value</span>
-                  <span className="text-2xl font-semibold text-slate-900 dark:text-white">
+                  <span className="text-[8px] font-black uppercase tracking-widest opacity-40 mb-1">Current Value</span>
+                  <span className="text-2xl font-black tracking-tight">
                     {fullscreenSectionData.value}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button onClick={() => refetch()} size="icon" variant="ghost" className="h-10 w-10 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800">
+                <div className="flex items-center gap-3">
+                  <Button onClick={() => refetch()} variant="outline" className="h-12 w-12 rounded-xl border-foreground/10 bg-background/50 hover:bg-foreground/5 backdrop-blur-3xl transition-all active:scale-95 flex items-center justify-center">
                     <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                   </Button>
                   <Button 
-                    variant="ghost" 
-                    size="icon"
-                    className="h-10 w-10 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800"
+                    variant="outline"
+                    className="h-12 w-12 rounded-xl border-foreground/10 bg-background/50 hover:bg-foreground/5 backdrop-blur-3xl transition-all active:scale-95 flex items-center justify-center"
                     onClick={() => setFullscreenSection(null)}
                   >
                     <X className="w-4 h-4" />
@@ -357,8 +360,8 @@ export default function Monitoring() {
           </div>
 
           {/* Fullscreen Content */}
-          <div className="overflow-auto h-[calc(100vh-64px)] p-6">
-            <div className="max-w-7xl mx-auto bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+          <div className="overflow-auto h-[calc(100vh-80px)] p-8">
+            <div className="max-w-7xl mx-auto bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] p-8">
               {fullscreenSectionData.fullscreenComponent}
             </div>
           </div>

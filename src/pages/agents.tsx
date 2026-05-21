@@ -349,19 +349,19 @@ export default function AgentsPage() {
 
         {/* Status Indicators */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-2">
-            <div className="accent-card accent-card-blue p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-3xl space-y-1">
+            <div className="accent-card accent-card-blue p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-xl space-y-1">
                 <span className="text-[10px] font-black uppercase tracking-widest opacity-40">{t('agents.stats.total')}</span>
                 <p className="text-3xl font-black">{agents.length}</p>
             </div>
-            <div className="accent-card accent-card-emerald p-6 bg-emerald-500/5 backdrop-blur-3xl border border-emerald-500/10 rounded-3xl space-y-1">
+            <div className="accent-card accent-card-emerald p-6 bg-emerald-500/5 backdrop-blur-3xl border border-emerald-500/10 rounded-xl space-y-1">
                 <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500 opacity-60">{t('agents.stats.live')}</span>
                 <p className="text-3xl font-black text-emerald-500">{agents.filter(a => a.status === 'online').length}</p>
             </div>
-            <div className="accent-card accent-card-gray p-6 bg-zinc-500/5 backdrop-blur-3xl border border-zinc-500/10 rounded-3xl space-y-1">
+            <div className="accent-card accent-card-gray p-6 bg-zinc-500/5 backdrop-blur-3xl border border-zinc-500/10 rounded-xl space-y-1">
                 <span className="text-[10px] font-black uppercase tracking-widest opacity-40">{t('agents.stats.stale')}</span>
                 <p className="text-3xl font-black opacity-40">{agents.length - agents.filter(a => a.status === 'online').length}</p>
             </div>
-            <div className="accent-card accent-card-emerald p-6 bg-primary/5 backdrop-blur-3xl border border-primary/10 rounded-3xl space-y-1">
+            <div className="accent-card accent-card-emerald p-6 bg-primary/5 backdrop-blur-3xl border border-primary/10 rounded-xl space-y-1">
                 <span className="text-[10px] font-black uppercase tracking-widest opacity-40 text-primary">{t('agents.stats.health')}</span>
                 <p className="text-3xl font-black text-primary">98.4%</p>
             </div>
@@ -375,13 +375,13 @@ export default function AgentsPage() {
               const accentClass = isStale ? 'accent-card-gray' : agent.status === 'online' ? 'accent-card-emerald' : agent.status === 'error' ? 'accent-card-rose' : 'accent-card-gray';
               return (
                 <div key={agent.id} className="group relative">
-                   <div className="absolute inset-0 bg-foreground/5 rounded-[2.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                   <div className={`accent-card ${accentClass} relative h-full bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] p-8 flex flex-col justify-between hover:border-foreground/10 transition-all duration-300`}>
+                   <div className="absolute inset-0 bg-foreground/5 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                   <div className={`accent-card ${accentClass} relative h-full bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-2xl p-8 flex flex-col justify-between hover:border-foreground/10 transition-all duration-300`}>
                       
                       <div className="space-y-6">
                         <div className="flex items-start justify-between">
                             <div className="flex items-center gap-4">
-                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border ${statusInfo.border} ${statusInfo.bg} ${statusInfo.glow} transition-all duration-500`}>
+                                <div className={`shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center border ${statusInfo.border} ${statusInfo.bg} ${statusInfo.glow} transition-all duration-500`}>
                                     <Cpu className={`w-6 h-6 ${statusInfo.color}`} />
                                 </div>
                                 <div>

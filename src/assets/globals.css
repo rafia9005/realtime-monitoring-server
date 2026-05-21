@@ -67,7 +67,7 @@
   --secondary: oklch(0.96 0 0); /* Light silver/grey */
   --secondary-foreground: oklch(0.2 0 0);
   --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.55 0 0); /* Medium grey */
+  --muted-foreground: oklch(0.45 0 0); /* Darker medium grey for better legibility */
   --accent: oklch(0.94 0.01 30); /* Subtle warm silver/copper hint */
   --accent-foreground: oklch(0.2 0 0);
   --destructive: oklch(0.6 0.15 25);
@@ -105,7 +105,7 @@
   --secondary: oklch(0.22 0.01 250); /* Medium space gray */
   --secondary-foreground: oklch(0.9 0 0);
   --muted: oklch(0.22 0.01 250);
-  --muted-foreground: oklch(0.65 0 0); /* Medium gray */
+  --muted-foreground: oklch(0.75 0 0); /* Lighter gray for better legibility */
   --accent: oklch(0.25 0.01 30); /* Dark copper/warm gray */
   --accent-foreground: oklch(0.95 0 0);
   --destructive: oklch(0.5 0.15 25);
@@ -141,7 +141,7 @@
 
   /* Maintain Lyra aesthetic: uppercase labels, tabular nums */
   label, .label, .uppercase-label {
-    @apply uppercase tracking-wider text-[10px] font-bold opacity-70;
+    @apply uppercase tracking-wider text-[10px] font-bold opacity-90;
   }
 
   .tabular-nums {
@@ -264,9 +264,8 @@
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Subtle left border accent strip */
+/* Subtle left border accent strip (disabled per user request) */
 .accent-card::before {
-  content: "";
   position: absolute;
   top: 0;
   left: 0;

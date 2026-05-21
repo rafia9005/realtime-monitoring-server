@@ -2,8 +2,15 @@ import { Languages } from 'lucide-react';
 import { useLanguage } from '../lib/LanguageContext';
 import { Button } from './ui/button';
 
+import { useLocation } from 'react-router-dom';
+
 export function LanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
+  const location = useLocation();
+
+  const isDashboardRoute = ["/dashboard", "/monitoring", "/server", "/terminal", "/agents", "/mcu-sensors"].some(path => location.pathname.startsWith(path));
+
+  if (isDashboardRoute) return null;
 
   return (
     <Button

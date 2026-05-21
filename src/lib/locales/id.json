@@ -233,7 +233,7 @@
     "live": "Langsung",
     "cards": {
       "cpu": {
-        "title": "Daya Pemrosesan",
+        "title": "Penggunaan CPU",
         "normal": "Normal",
         "medium": "Sedang",
         "high": "Tinggi"

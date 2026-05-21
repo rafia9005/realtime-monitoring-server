@@ -58,8 +58,8 @@ export default function About() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto mb-40">
-                        <div className="group p-12 border border-border/40 rounded-[3rem] bg-card/10 hover:bg-card transition-all duration-700">
-                            <Target className="w-12 h-12 text-primary mb-8" />
+                        <div className="accent-card accent-card-indigo group p-12 border border-border/40 rounded-[3rem] bg-card/10 hover:bg-card transition-all duration-700">
+                            <Target className="w-12 h-12 text-indigo-500 mb-8" />
                             <h3 className="text-3xl font-bold mb-6 tracking-tight">
                                 {t('about.mission.title')}
                             </h3>
@@ -67,8 +67,8 @@ export default function About() {
                                 {t('about.mission.desc')}
                             </p>
                         </div>
-                        <div className="group p-12 border border-border/40 rounded-[3rem] bg-card/10 hover:bg-card transition-all duration-700">
-                            <Shield className="w-12 h-12 text-primary mb-8" />
+                        <div className="accent-card accent-card-fuchsia group p-12 border border-border/40 rounded-[3rem] bg-card/10 hover:bg-card transition-all duration-700">
+                            <Shield className="w-12 h-12 text-fuchsia-500 mb-8" />
                             <h3 className="text-3xl font-bold mb-6 tracking-tight">
                                 {t('about.values.title')}
                             </h3>
@@ -86,15 +86,15 @@ export default function About() {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                             {[
-                                { icon: Cpu, label: t("about.architecture.items.lowOverhead"), value: "< 1%", unit: t("about.architecture.items.cpuUsage") },
-                                { icon: Network, label: t("about.architecture.items.globalReach"), value: "Real-time", unit: t("about.architecture.items.telemetry") },
-                                { icon: Zap, label: t("about.architecture.items.fastAlerts"), value: "< 5s", unit: t("about.architecture.items.notification") },
-                                { icon: LayoutDashboard, label: t("about.architecture.items.modernUi"), value: "Zen", unit: t("about.architecture.items.uxDesign") }
+                                { icon: Cpu, label: t("about.architecture.items.lowOverhead"), value: "< 1%", unit: t("about.architecture.items.cpuUsage"), color: "text-indigo-500", accent: "indigo" },
+                                { icon: Network, label: t("about.architecture.items.globalReach"), value: "Real-time", unit: t("about.architecture.items.telemetry"), color: "text-teal-500", accent: "teal" },
+                                { icon: Zap, label: t("about.architecture.items.fastAlerts"), value: "< 5s", unit: t("about.architecture.items.notification"), color: "text-rose-500", accent: "rose" },
+                                { icon: LayoutDashboard, label: t("about.architecture.items.modernUi"), value: "Zen", unit: t("about.architecture.items.uxDesign"), color: "text-blue-500", accent: "blue" }
                             ].map((item, i) => (
-                                <div key={i} className="flex flex-col items-center p-10 border border-border/30 rounded-[2.5rem] bg-muted/10">
-                                    <item.icon className="w-8 h-8 text-muted-foreground/40 mb-6" />
+                                <div key={i} className={`accent-card accent-card-${item.accent} flex flex-col items-center p-10 border border-border/30 rounded-[2.5rem] bg-muted/10`}>
+                                    <item.icon className={`w-8 h-8 ${item.color} mb-6`} />
                                     <div className="text-4xl font-bold tracking-tighter mb-1">{item.value}</div>
-                                    <div className="text-[10px] font-black tracking-[0.2em] uppercase text-primary">{item.label}</div>
+                                    <div className={`text-[10px] font-black tracking-[0.2em] uppercase ${item.color}`}>{item.label}</div>
                                     <div className="text-[10px] font-medium text-muted-foreground/60 mt-1 uppercase tracking-wide">{item.unit}</div>
                                 </div>
                             ))}

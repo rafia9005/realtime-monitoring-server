@@ -31,28 +31,37 @@ export default function Contact() {
                                 label: t("contact.methods.email.label"), 
                                 value: "projects.watchtower@gmail.com",
                                 action: "mailto:projects.watchtower@gmail.com",
-                                desc: t("contact.methods.email.desc")
+                                desc: t("contact.methods.email.desc"),
+                                accent: "indigo",
+                                color: "text-indigo-500",
+                                bgColor: "bg-indigo-500/10"
                             },
                             { 
                                 icon: Phone, 
                                 label: t("contact.methods.phone.label"), 
                                 value: "+62 857-9126-8077",
                                 action: "tel:+6285791268077",
-                                desc: t("contact.methods.phone.desc")
+                                desc: t("contact.methods.phone.desc"),
+                                accent: "teal",
+                                color: "text-teal-500",
+                                bgColor: "bg-teal-500/10"
                             },
                             { 
                                 icon: Globe, 
                                 label: t("contact.methods.presence.label"), 
                                 value: t("contact.methods.presence.value"),
                                 action: "/about",
-                                desc: t("contact.methods.presence.desc")
+                                desc: t("contact.methods.presence.desc"),
+                                accent: "blue",
+                                color: "text-blue-500",
+                                bgColor: "bg-blue-500/10"
                             }
                         ].map((method, i) => (
-                            <div key={i} className="group p-10 border border-border/40 rounded-[2.5rem] bg-card/10 hover:bg-card transition-all duration-500">
-                                <div className="w-14 h-14 rounded-2xl bg-muted/50 flex items-center justify-center mb-8 group-hover:bg-foreground group-hover:text-background transition-colors duration-500">
+                            <div key={i} className={`accent-card accent-card-${method.accent} group p-10 border border-border/40 rounded-[2.5rem] bg-card/10 hover:bg-card transition-all duration-500`}>
+                                <div className={`w-14 h-14 rounded-2xl ${method.bgColor} ${method.color} flex items-center justify-center mb-8 transition-colors duration-500`}>
                                     <method.icon className="w-6 h-6" />
                                 </div>
-                                <div className="text-[10px] font-black tracking-[0.2em] uppercase text-primary mb-2">{method.label}</div>
+                                <div className={`text-[10px] font-black tracking-[0.2em] uppercase ${method.color} mb-2`}>{method.label}</div>
                                 <h3 className="text-xl font-bold mb-4 tracking-tight break-all">{method.value}</h3>
                                 <p className="text-muted-foreground font-medium text-sm leading-relaxed mb-8">
                                     {method.desc}
@@ -64,9 +73,9 @@ export default function Contact() {
                         ))}
                     </div>
 
-                    <div className="mt-40 max-w-4xl mx-auto p-12 rounded-[3.5rem] border border-border/40 bg-muted/10 backdrop-blur-sm relative overflow-hidden">
+                    <div className="accent-card accent-card-orange mt-40 max-w-4xl mx-auto p-12 rounded-[3.5rem] border border-border/40 bg-muted/10 backdrop-blur-sm relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-8">
-                           <Sparkles className="w-8 h-8 text-primary/20" />
+                           <Sparkles className="w-8 h-8 text-orange-500/20" />
                         </div>
                         <div className="flex flex-col md:flex-row gap-12 items-center">
                             <div className="flex-1">

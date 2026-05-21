@@ -147,8 +147,8 @@ export default function Monitoring() {
       icon: Cpu,
       value: `${metrics.cpu.usage_percent.toFixed(1)}%`,
       subtitle: `${metrics.cpu.cores} ${t('monitoring.cpu.cores')} / ${metrics.cpu.threads} ${t('monitoring.cpu.threads')}`,
-      color: "text-foreground/60",
-      bgColor: "bg-foreground/5 border border-foreground/10",
+      color: "text-indigo-500",
+      bgColor: "bg-indigo-500/10 border border-indigo-500/20",
       component: <CPUDetail cpu={metrics.cpu} />,
       fullscreenComponent: <CPUDetail cpu={metrics.cpu} fullscreen />
     },
@@ -158,8 +158,8 @@ export default function Monitoring() {
       icon: MemoryStick,
       value: `${metrics.memory.used_percent.toFixed(1)}%`,
       subtitle: `${formatBytes(metrics.memory.used)} / ${formatBytes(metrics.memory.total)}`,
-      color: "text-foreground/60",
-      bgColor: "bg-foreground/5 border border-foreground/10",
+      color: "text-fuchsia-500",
+      bgColor: "bg-fuchsia-500/10 border border-fuchsia-500/20",
       component: <MemoryDetail memory={metrics.memory} />,
       fullscreenComponent: <MemoryDetail memory={metrics.memory} fullscreen />
     },
@@ -169,8 +169,8 @@ export default function Monitoring() {
       icon: HardDrive,
       value: `${metrics.disk.length} Disk`,
       subtitle: `${formatBytes(metrics.disk.reduce((acc, d) => acc + d.used, 0))} ${t('monitoring.disk.used')}`,
-      color: "text-foreground/60",
-      bgColor: "bg-foreground/5 border border-foreground/10",
+      color: "text-amber-500",
+      bgColor: "bg-amber-500/10 border border-amber-500/20",
       component: <DiskDetail disks={metrics.disk} />,
       fullscreenComponent: <DiskDetail disks={metrics.disk} fullscreen />
     },
@@ -180,8 +180,8 @@ export default function Monitoring() {
       icon: Network,
       value: `${metrics.network.connections.established} ${t('monitoring.network.conn')}`,
       subtitle: `↑ ${formatBytes(metrics.network.bytes_sent)} ↓ ${formatBytes(metrics.network.bytes_recv)}`,
-      color: "text-foreground/60",
-      bgColor: "bg-foreground/5 border border-foreground/10",
+      color: "text-teal-500",
+      bgColor: "bg-teal-500/10 border border-teal-500/20",
       component: <NetworkDetail network={metrics.network} />,
       fullscreenComponent: <NetworkDetail network={metrics.network} fullscreen />
     }
@@ -267,15 +267,15 @@ export default function Monitoring() {
         {/* Collapsible Sections */}
         <div className="space-y-6">
           {sections.map((section) => (
-            <div key={section.id} className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
+            <div key={section.id} className={`accent-card accent-card-${section.id === 'cpu' ? 'indigo' : section.id === 'memory' ? 'fuchsia' : section.id === 'disk' ? 'amber' : 'teal'} bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300`}>
               {/* Section Header */}
               <button
                 onClick={() => toggleSection(section.id)}
                 className="w-full flex items-center justify-between p-8 hover:bg-foreground/[0.02] transition-colors"
               >
                 <div className="flex items-center gap-6 flex-1">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border border-foreground/10 bg-foreground/5`}>
-                    <section.icon className="w-6 h-6 text-foreground/60" />
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${section.bgColor}`}>
+                    <section.icon className={`w-6 h-6 ${section.color}`} />
                   </div>
                   <div className="text-left space-y-1">
                      <h3 className="text-lg font-black uppercase tracking-tight italic">{section.title}</h3>
@@ -327,8 +327,8 @@ export default function Monitoring() {
           <div className="sticky top-0 z-10 border-b border-foreground/5 bg-background/80 backdrop-blur-3xl">
             <div className="flex items-center justify-between h-20 px-8 py-4">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center border border-foreground/10 bg-foreground/5">
-                      <fullscreenSectionData.icon className="w-5 h-5 text-foreground/60" />
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${fullscreenSectionData.bgColor}`}>
+                      <fullscreenSectionData.icon className={`w-5 h-5 ${fullscreenSectionData.color}`} />
                     </div>
                     <div>
                       <h2 className="text-base font-black uppercase tracking-tight italic">{fullscreenSectionData.title}</h2>

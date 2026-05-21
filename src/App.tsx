@@ -53,7 +53,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-8 bg-background relative overflow-hidden font-sans">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(239,68,68,0.05)_0%,transparent_50%)]" />
-        <div className="relative z-10 text-center space-y-8 max-w-md p-12 bg-card/40 backdrop-blur-3xl border border-red-500/20 rounded-[2.5rem] shadow-2xl">
+        <div className="accent-card accent-card-rose relative z-10 text-center space-y-8 max-w-md p-12 bg-card/40 backdrop-blur-3xl border border-red-500/20 rounded-[2.5rem] shadow-2xl">
           <div className="w-20 h-20 bg-red-500/10 rounded-3xl flex items-center justify-center mx-auto border border-red-500/20">
              <Lock className="w-10 h-10 text-red-500" />
           </div>

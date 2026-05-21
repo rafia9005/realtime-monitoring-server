@@ -151,7 +151,7 @@ export default function McuSensorsPage() {
 
         {/* Real-time Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 hover:border-orange-500/20 transition-all duration-500">
+           <div className="accent-card accent-card-orange group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 hover:border-orange-500/20 transition-all duration-500">
               <div className="flex items-center justify-between">
                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('mcuSensors.stats.avgTemp')}</span>
                  <Thermometer className="w-4 h-4 opacity-20 group-hover:text-orange-500 transition-colors" />
@@ -161,7 +161,7 @@ export default function McuSensorsPage() {
                  <span className="text-sm font-black opacity-30 italic">°C</span>
               </div>
            </div>
-           <div className="group p-8 bg-orange-500/[0.03] backdrop-blur-3xl border border-orange-500/10 rounded-[2.5rem] space-y-4">
+           <div className="accent-card accent-card-orange group p-8 bg-orange-500/[0.03] backdrop-blur-3xl border border-orange-500/10 rounded-[2.5rem] space-y-4">
               <div className="flex items-center justify-between font-black uppercase tracking-[0.2em] text-[10px] text-orange-500/60 font-bold">
                  <span>{t('mcuSensors.stats.peakHeat')}</span>
                  <TrendingUp className="w-4 h-4" />
@@ -171,7 +171,7 @@ export default function McuSensorsPage() {
                  <span className="text-sm font-black opacity-30 italic text-orange-500">°C</span>
               </div>
            </div>
-           <div className="group p-8 bg-blue-500/[0.03] backdrop-blur-3xl border border-blue-500/10 rounded-[2.5rem] space-y-4">
+           <div className="accent-card accent-card-blue group p-8 bg-blue-500/[0.03] backdrop-blur-3xl border border-blue-500/10 rounded-[2.5rem] space-y-4">
               <div className="flex items-center justify-between font-black uppercase tracking-[0.2em] text-[10px] text-blue-500/60 font-bold">
                  <span>{t('mcuSensors.stats.trough')}</span>
                  <TrendingUp className="w-4 h-4 rotate-180" />
@@ -181,7 +181,7 @@ export default function McuSensorsPage() {
                  <span className="text-sm font-black opacity-30 italic text-blue-500">°C</span>
               </div>
            </div>
-           <div className="group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 hover:border-cyan-500/20 transition-all duration-500">
+           <div className="accent-card accent-card-blue group p-8 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] space-y-4 hover:border-cyan-500/20 transition-all duration-500">
               <div className="flex items-center justify-between">
                  <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">{t('mcuSensors.stats.humidity')}</span>
                  <Waves className="w-4 h-4 opacity-20 group-hover:text-cyan-500 transition-colors" />
@@ -191,7 +191,7 @@ export default function McuSensorsPage() {
                  <span className="text-sm font-black opacity-30 italic">%</span>
               </div>
            </div>
-           <div className="hidden lg:block group p-8 bg-primary/5 backdrop-blur-3xl border border-primary/10 rounded-[2.5rem] space-y-4 overflow-hidden relative">
+           <div className="accent-card accent-card-indigo hidden lg:block group p-8 bg-primary/5 backdrop-blur-3xl border border-primary/10 rounded-[2.5rem] space-y-4 overflow-hidden relative">
               <div className="absolute inset-0 bg-primary/20 blur-[100px] -mr-32 -mt-32 opacity-20" />
               <div className="relative z-10 flex items-center justify-between text-primary/60 font-black uppercase tracking-[0.2em] text-[10px]">
                  <span>{t('mcuSensors.stats.totalDatapoints')}</span>
@@ -262,7 +262,7 @@ export default function McuSensorsPage() {
         </div>
 
         {/* Visual Analytics */}
-        <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[3rem] p-12 space-y-12 overflow-hidden relative group">
+        <div className="accent-card accent-card-orange bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[3rem] p-12 space-y-12 overflow-hidden relative group">
            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/[0.03] blur-[120px] rounded-full pointer-events-none -mr-64 -mt-64" />
            <div className="flex items-center justify-between relative z-10">
               <div className="space-y-2">
@@ -327,7 +327,7 @@ export default function McuSensorsPage() {
         </div>
 
         {/* Binary Table Section */}
-        <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[3rem] overflow-hidden">
+        <div className="accent-card accent-card-gray bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[3rem] overflow-hidden">
           <div className="px-12 py-10 flex items-center justify-between border-b border-foreground/5">
              <div className="space-y-1">
                 <h3 className="text-2xl font-black tracking-tighter uppercase leading-none italic">{t('mcuSensors.journal.title')}</h3>

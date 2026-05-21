@@ -44,7 +44,7 @@ export default function Index() {
 
         <div className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-1000 delay-200">
           <div className="absolute inset-0 bg-foreground/5 blur-[100px] rounded-full -z-10 opacity-30" />
-          <Card className="border border-foreground/5 bg-card/40 backdrop-blur-3xl overflow-hidden rounded-[3rem] shadow-3xl">
+          <Card className="accent-card accent-card-indigo border border-foreground/5 bg-card/40 backdrop-blur-3xl overflow-hidden rounded-[3rem] shadow-3xl">
             <CardContent className="p-10 pt-12">
               <SignIn
                 appearance={{

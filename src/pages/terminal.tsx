@@ -2,12 +2,14 @@ import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, AlertCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "@/lib/LanguageContext";
 import { Terminal } from "@xterm/xterm";
 import { FitAddon } from "@xterm/addon-fit";
 import { WebLinksAddon } from "@xterm/addon-web-links";
 import "@xterm/xterm/css/xterm.css";
 
 export default function TerminalPage() {
+  const { t } = useLanguage();
   const terminalRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<Terminal | null>(null);
   const fitAddonRef = useRef<FitAddon | null>(null);
@@ -30,7 +32,7 @@ export default function TerminalPage() {
           data: customEvent.detail
         }));
       } else {
-        alert("Koneksi terminal belum aktif!");
+        alert(t('terminal.connectionInactive'));
       }
     };
 
@@ -141,11 +143,13 @@ export default function TerminalPage() {
     fitAddonRef.current = fitAddon;
 
     // Welcome message
-    term.writeln("\x1b[1;32m╔════════════════════════════════════════════╗\x1b[0m");
-    term.writeln("\x1b[1;32m║   Welcome to Kelompok 2 Server Terminal    ║\x1b[0m");
-    term.writeln("\x1b[1;32m╚════════════════════════════════════════════╝\x1b[0m");
+    const welcomeMsg = t('terminal.welcome');
+    const borderStr = "═".repeat(welcomeMsg.length + 6);
+    term.writeln(`\x1b[1;32m╔${borderStr}╗\x1b[0m`);
+    term.writeln(`\x1b[1;32m║   ${welcomeMsg}   ║\x1b[0m`);
+    term.writeln(`\x1b[1;32m╚${borderStr}╝\x1b[0m`);
     term.writeln("");
-    term.writeln("\x1b[33mConnecting to server...\x1b[0m");
+    term.writeln(`\x1b[33m${t('terminal.connecting')}\x1b[0m`);
     term.writeln("");
   };
 
@@ -157,7 +161,7 @@ export default function TerminalPage() {
       ws.onopen = () => {
         setConnected(true);
         if (xtermRef.current) {
-          xtermRef.current.writeln("\x1b[32m✓ Connected to terminal server\x1b[0m");
+          xtermRef.current.writeln(`\x1b[32m${t('terminal.connected')}\x1b[0m`);
           xtermRef.current.writeln("");
         }
       };
@@ -194,9 +198,9 @@ export default function TerminalPage() {
 
       ws.onerror = (error) => {
         console.error("WebSocket error:", error);
-        setError("Connection error occurred");
+        setError(t('terminal.connectionError'));
         if (xtermRef.current) {
-          xtermRef.current.writeln("\x1b[31m✗ Connection error\x1b[0m");
+          xtermRef.current.writeln(`\x1b[31m${t('terminal.connectionError')}\x1b[0m`);
         }
       };
 
@@ -204,16 +208,16 @@ export default function TerminalPage() {
         setConnected(false);
         if (xtermRef.current) {
           xtermRef.current.writeln("");
-          xtermRef.current.writeln("\x1b[33m✗ Disconnected from server\x1b[0m");
+          xtermRef.current.writeln(`\x1b[33m${t('terminal.disconnected')}\x1b[0m`);
         }
       };
 
       wsRef.current = ws;
     } catch (error) {
       console.error("Failed to connect:", error);
-      setError("Failed to connect to terminal server");
+      setError(t('terminal.failedToConnect'));
       if (xtermRef.current) {
-        xtermRef.current.writeln("\x1b[31m✗ Failed to connect\x1b[0m");
+        xtermRef.current.writeln(`\x1b[31m${t('terminal.failedToConnect')}\x1b[0m`);
       }
     }
   };
@@ -254,10 +258,10 @@ export default function TerminalPage() {
               <span className="text-primary">●</span> TTY_SESSION_01
             </div>
             <h1 className="text-6xl font-black tracking-tight uppercase leading-none">
-              Terminal
+              {t('terminal.title')}
             </h1>
             <p className="text-[10px] text-muted-foreground mt-1 uppercase tracking-wider font-bold italic">
-              {connected ? "SECURE_SSH_ESTABLISHED" : "AWAITING_HANDSHAKE"} // TTY: /DEV/PTS/0
+              {connected ? t('terminal.secureSsh') : t('terminal.awaitingHandshake')} // TTY: /DEV/PTS/0
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -265,7 +269,7 @@ export default function TerminalPage() {
               ? "text-emerald-500 border-emerald-500/20 bg-emerald-500/10" 
               : "text-red-500 border-red-500/20 bg-red-500/10"}`}>
               <span className={`w-2 h-2 rounded-full ${connected ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
-              {connected ? "ONLINE" : "OFFLINE"}
+              {connected ? t('terminal.online') : t('terminal.offline')}
             </span>
             <div className="flex items-center gap-3">
               <Button 
@@ -274,7 +278,7 @@ export default function TerminalPage() {
                 className="h-14 px-6 rounded-2xl border-foreground/10 bg-background/50 hover:bg-foreground/5 text-xs font-black uppercase tracking-widest transition-all"
                 disabled={!connected}
               >
-                CLEAR_BUF
+                {t('terminal.clearBuf')}
               </Button>
               <Button 
                 onClick={handleReconnect} 
@@ -291,7 +295,7 @@ export default function TerminalPage() {
         {error && (
           <div className="flex items-center gap-3 p-6 border border-red-500/20 bg-red-500/10 rounded-2xl text-[10px] uppercase font-black text-red-500">
             <AlertCircle className="w-5 h-5" />
-            <span>ERROR: {error}</span>
+            <span>{t('terminal.errorPrefix')} {error}</span>
           </div>
         )}
 

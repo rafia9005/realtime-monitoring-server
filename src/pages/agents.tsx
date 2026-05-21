@@ -1,4 +1,4 @@
-﻿import DashboardLayout from "@/components/DashboardLayout";
+import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { API_BASE_URL } from "@/lib/api";
+import { useLanguage } from "@/lib/LanguageContext";
 
 interface Agent {
   id: string;
@@ -41,6 +42,7 @@ interface Agent {
 }
 
 export default function AgentsPage() {
+  const { t } = useLanguage();
   const [agents, setAgents] = useState<Agent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,7 +75,7 @@ export default function AgentsPage() {
   };
 
   const deleteAgent = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this agent?")) {
+    if (!confirm(t('agents.alert.confirmDelete'))) {
       return;
     }
 
@@ -82,17 +84,17 @@ export default function AgentsPage() {
         method: "DELETE",
       });
       if (!response.ok) {
-        throw new Error("Failed to delete agent");
+        throw new Error(t('agents.alert.deleteFailed'));
       }
       await fetchAgents();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete agent");
+      alert(err instanceof Error ? err.message : t('agents.alert.deleteFailed'));
     }
   };
 
   const addAgent = async () => {
     if (!newAgent.name || !newAgent.host) {
-      alert("Please fill in required fields: Name and Host");
+      alert(t('agents.alert.requiredFields'));
       return;
     }
 
@@ -117,7 +119,7 @@ export default function AgentsPage() {
 
       if (!response.ok) {
         const result = await response.json();
-        throw new Error(result.message || "Failed to register agent");
+        throw new Error(result.message || t('agents.alert.addFailed'));
       }
 
       const result = await response.json();
@@ -133,7 +135,7 @@ export default function AgentsPage() {
 
       await fetchAgents();
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to add agent");
+      alert(err instanceof Error ? err.message : t('agents.alert.addFailed'));
     } finally {
       setAddingAgent(false);
     }
@@ -159,10 +161,10 @@ export default function AgentsPage() {
     const diffHours = Math.floor(diffMs / 3600000);
     const diffDays = Math.floor(diffMs / 86400000);
 
-    if (diffMins < 1) return "Just now";
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    return `${diffDays}d ago`;
+    if (diffMins < 1) return t('agents.card.justNow');
+    if (diffMins < 60) return t('agents.card.minsAgo', { count: diffMins });
+    if (diffHours < 24) return t('agents.card.hoursAgo', { count: diffHours });
+    return t('agents.card.daysAgo', { count: diffDays });
   };
 
   const getStatusColor = (status: string, lastSeen: string) => {
@@ -177,7 +179,7 @@ export default function AgentsPage() {
         bg: "bg-zinc-500/10", 
         border: "border-zinc-500/20", 
         glow: "shadow-[0_0_10px_rgba(113,113,122,0.3)]",
-        label: "TERMINATED" 
+        label: t('agents.card.terminated')
       };
     }
 
@@ -187,7 +189,7 @@ export default function AgentsPage() {
         bg: "bg-emerald-500/10", 
         border: "border-emerald-500/20", 
         glow: "shadow-[0_0_10px_rgba(16,185,129,0.3)]",
-        label: "ACTIVE" 
+        label: t('agents.card.active')
       };
     }
     if (status === "error") {
@@ -196,7 +198,7 @@ export default function AgentsPage() {
         bg: "bg-red-500/10", 
         border: "border-red-500/20", 
         glow: "shadow-[0_0_10px_rgba(239,68,68,0.3)]",
-        label: "FAULT" 
+        label: t('agents.card.fault')
       };
     }
     return { 
@@ -204,7 +206,7 @@ export default function AgentsPage() {
       bg: "bg-zinc-500/10", 
       border: "border-zinc-500/20", 
       glow: "shadow-[0_0_10px_rgba(113,113,122,0.3)]",
-      label: "INACTIVE" 
+      label: t('agents.card.inactive')
     };
   };
 
@@ -217,7 +219,7 @@ export default function AgentsPage() {
              <Activity className="absolute inset-0 m-auto w-6 h-6 text-foreground/20 animate-pulse" />
           </div>
           <div className="text-center space-y-2">
-            <h2 className="text-sm font-black tracking-[0.3em] uppercase opacity-50">Synchronizing Nodes</h2>
+            <h2 className="text-sm font-black tracking-[0.3em] uppercase opacity-50">{t('agents.loading')}</h2>
             <div className="flex items-center gap-1 justify-center">
               {[1,2,3].map(i => <div key={i} className="w-1 h-1 bg-foreground rounded-full animate-bounce" style={{animationDelay: `${i*0.2}s`}} />)}
             </div>
@@ -237,13 +239,13 @@ export default function AgentsPage() {
               <div className="p-2 bg-foreground/5 rounded-xl backdrop-blur-3xl border border-foreground/10">
                 <ShieldCheck className="w-5 h-5 opacity-60" />
               </div>
-              <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-40">Network Security Tier-1</span>
+              <span className="text-[10px] font-black tracking-[0.4em] uppercase opacity-40">{t('agents.header.securityTier')}</span>
             </div>
             <h1 className="text-6xl font-black tracking-tight uppercase leading-none">
-              System <span className="text-foreground/20">Nodes</span>
+              {t('agents.header.title')} <span className="text-foreground/20">{t('agents.header.titleHighlight')}</span>
             </h1>
             <p className="text-sm text-muted-foreground font-medium max-w-md uppercase tracking-wider opacity-60">
-               Managing {agents.length} deployment targets across decrypted segments.
+               {t('agents.header.desc', { count: agents.length })}
             </p>
           </div>
           
@@ -262,7 +264,7 @@ export default function AgentsPage() {
               <DialogTrigger asChild>
                 <Button className="h-14 px-8 bg-foreground text-background rounded-2xl font-black tracking-[0.1em] uppercase hover:bg-foreground/90 transition-all active:scale-95 shadow-2xl flex gap-3">
                   <Plus className="w-5 h-5" />
-                  Request Clearance
+                  {t('agents.dialog.trigger')}
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[550px] bg-background/80 backdrop-blur-3xl border-foreground/10 rounded-[2.5rem] shadow-3xl p-8 overflow-hidden">
@@ -270,14 +272,14 @@ export default function AgentsPage() {
                 {!showInstructions ? (
                   <>
                     <DialogHeader className="space-y-4">
-                      <DialogTitle className="text-3xl font-black tracking-tighter uppercase">Initialize Node</DialogTitle>
+                      <DialogTitle className="text-3xl font-black tracking-tighter uppercase">{t('agents.dialog.title')}</DialogTitle>
                       <DialogDescription className="text-xs uppercase tracking-widest font-bold opacity-50">
-                        ESTABLISHING SECURE HANDSHAKE PROTOCOL
+                        {t('agents.dialog.subtitle')}
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-6 py-8">
                       <div className="space-y-2">
-                        <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Node Identifier</Label>
+                        <Label htmlFor="name" className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">{t('agents.dialog.nodeId')}</Label>
                         <Input
                           id="name"
                           placeholder="e.g. ALPHA-SERVER-01"
@@ -287,7 +289,7 @@ export default function AgentsPage() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="host" className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Network Entry Point</Label>
+                        <Label htmlFor="host" className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">{t('agents.dialog.entryPoint')}</Label>
                         <Input
                           id="host"
                           placeholder="10.0.0.1:9090"
@@ -298,7 +300,7 @@ export default function AgentsPage() {
                       </div>
                       <div className="grid grid-cols-1 gap-6">
                         <div className="space-y-2">
-                          <Label htmlFor="tags" className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Metadata Tags</Label>
+                          <Label htmlFor="tags" className="text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">{t('agents.dialog.tags')}</Label>
                           <Input
                             id="tags"
                             placeholder="PROD, EDGE, API"
@@ -310,9 +312,9 @@ export default function AgentsPage() {
                       </div>
                     </div>
                     <DialogFooter className="flex-col sm:flex-row gap-4">
-                      <Button variant="ghost" onClick={closeDialog} className="h-14 rounded-2xl font-black uppercase tracking-widest text-[10px] flex-1">Abort</Button>
+                      <Button variant="ghost" onClick={closeDialog} className="h-14 rounded-2xl font-black uppercase tracking-widest text-[10px] flex-1">{t('agents.dialog.abort')}</Button>
                       <Button onClick={addAgent} disabled={addingAgent} className="h-14 rounded-2xl bg-foreground text-background font-black uppercase tracking-widest text-[10px] px-12 flex-1 shadow-xl">
-                        {addingAgent ? "Processing..." : "Deploy Node"}
+                        {addingAgent ? t('agents.dialog.processing') : t('agents.dialog.deploy')}
                       </Button>
                     </DialogFooter>
                   </>
@@ -323,8 +325,8 @@ export default function AgentsPage() {
                         <CheckCircle className="w-12 h-12 text-emerald-500 animate-in zoom-in duration-500" />
                       </div>
                       <div className="space-y-2">
-                        <h2 className="text-3xl font-black tracking-tighter uppercase">Deployment Success</h2>
-                        <p className="text-xs font-bold uppercase tracking-widest opacity-40">Handshake Verified by Watchtower</p>
+                        <h2 className="text-3xl font-black tracking-tighter uppercase">{t('agents.dialog.success')}</h2>
+                        <p className="text-xs font-bold uppercase tracking-widest opacity-40">{t('agents.dialog.successSub')}</p>
                       </div>
                       <div className="w-full p-6 bg-foreground/[0.03] rounded-3xl border border-foreground/5 text-left space-y-4">
                          <div className="flex justify-between items-center group">
@@ -336,31 +338,31 @@ export default function AgentsPage() {
                             <span className="font-mono text-sm font-bold tracking-tight">{createdAgent?.host}</span>
                          </div>
                       </div>
-                      <Button onClick={closeDialog} className="w-full h-14 rounded-2xl bg-foreground text-background font-black uppercase tracking-widest text-[10px] shadow-2xl">Confirm Receipt</Button>
+                      <Button onClick={closeDialog} className="w-full h-14 rounded-2xl bg-foreground text-background font-black uppercase tracking-widest text-[10px] shadow-2xl">{t('agents.dialog.confirmReceipt')}</Button>
                     </div>
                   </>
                 )}
               </DialogContent>
-            </Dialog>
+             </Dialog>
           </div>
         </div>
 
         {/* Status Indicators */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-2">
             <div className="p-6 bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-3xl space-y-1">
-                <span className="text-[10px] font-black uppercase tracking-widest opacity-40">Total Capacity</span>
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-40">{t('agents.stats.total')}</span>
                 <p className="text-3xl font-black">{agents.length}</p>
             </div>
             <div className="p-6 bg-emerald-500/5 backdrop-blur-3xl border border-emerald-500/10 rounded-3xl space-y-1">
-                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500 opacity-60">Live Connections</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-500 opacity-60">{t('agents.stats.live')}</span>
                 <p className="text-3xl font-black text-emerald-500">{agents.filter(a => a.status === 'online').length}</p>
             </div>
             <div className="p-6 bg-zinc-500/5 backdrop-blur-3xl border border-zinc-500/10 rounded-3xl space-y-1">
-                <span className="text-[10px] font-black uppercase tracking-widest opacity-40">Stale Nodes</span>
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-40">{t('agents.stats.stale')}</span>
                 <p className="text-3xl font-black opacity-40">{agents.length - agents.filter(a => a.status === 'online').length}</p>
             </div>
             <div className="p-6 bg-primary/5 backdrop-blur-3xl border border-primary/10 rounded-3xl space-y-1">
-                <span className="text-[10px] font-black uppercase tracking-widest opacity-40 text-primary">Global Health</span>
+                <span className="text-[10px] font-black uppercase tracking-widest opacity-40 text-primary">{t('agents.stats.health')}</span>
                 <p className="text-3xl font-black text-primary">98.4%</p>
             </div>
         </div>
@@ -393,14 +395,14 @@ export default function AgentsPage() {
                         <div className="space-y-4 pt-4">
                             <div className="flex items-end justify-between border-b border-foreground/5 pb-4 group/row">
                                 <div className="space-y-1">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-30">Entry Pointer</p>
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-30">{t('agents.card.entryPointer')}</p>
                                     <p className="text-sm font-bold tracking-tight opacity-70 font-mono italic">{agent.host}</p>
                                 </div>
                                 <Signal className="w-4 h-4 opacity-10" />
                             </div>
                             <div className="flex items-end justify-between border-b border-foreground/5 pb-4 group/row">
                                 <div className="space-y-1">
-                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-30">Last Pulsar</p>
+                                    <p className="text-[9px] font-black uppercase tracking-widest opacity-30">{t('agents.card.lastPulsar')}</p>
                                     <p className="text-sm font-bold tracking-tight opacity-70 uppercase italic">{formatDate(agent.last_seen)}</p>
                                 </div>
                                 <Activity className="w-4 h-4 opacity-10" />
@@ -420,7 +422,7 @@ export default function AgentsPage() {
 
                       <div className="flex items-center justify-between pt-8 mt-auto">
                          <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-black tracking-[0.2em] opacity-30">VER.ID</span>
+                            <span className="text-[9px] font-black tracking-[0.2em] opacity-30">{t('agents.card.ver')}</span>
                             <span className="px-2 py-0.5 bg-foreground/5 rounded-md text-[9px] font-bold opacity-60 italic">{agent.version}</span>
                          </div>
                          <Button
@@ -447,12 +449,12 @@ export default function AgentsPage() {
                     <Server className="w-10 h-10 opacity-20" />
                 </div>
                 <div className="space-y-3">
-                    <h3 className="text-2xl font-black tracking-tighter uppercase">No Active Nodes</h3>
-                    <p className="text-xs font-bold uppercase tracking-widest opacity-40 max-w-xs mx-auto">The network segment is currently vacant. Deploy a new agent to initiate monitoring.</p>
+                    <h3 className="text-2xl font-black tracking-tighter uppercase">{t('agents.empty.title')}</h3>
+                    <p className="text-xs font-bold uppercase tracking-widest opacity-40 max-w-xs mx-auto">{t('agents.empty.desc')}</p>
                 </div>
                 <Button onClick={() => setDialogOpen(true)} className="h-14 px-10 bg-foreground text-background rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-2xl">
                     <Plus className="w-5 h-5 mr-3" />
-                    Secure First Endpoint
+                    {t('agents.empty.btn')}
                 </Button>
              </div>
           </div>

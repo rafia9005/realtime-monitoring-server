@@ -3,6 +3,8 @@ import { MessageCircle, X, Send, Bot, User, Loader2, TerminalSquare, Copy } from
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useLanguage } from "../lib/LanguageContext";
+import i18n from "i18next";
 
 const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
 const genAI = new GoogleGenerativeAI(apiKey);
@@ -21,7 +23,7 @@ const CodeBlock = ({ node, inline, className, children, ...props }: any) => {
   const emitToTerminal = () => {
     // Memastikan user di navigasi ke halaman terminal dan mengirim command
     if (window.location.pathname !== "/terminal") {
-      alert("Harap buka halaman Terminal di sidebar untuk mengeksekusi perintah langsung.");
+      alert(i18n.t("chat.terminalAlert"));
       return;
     }
     const event = new CustomEvent("run-terminal-command", { detail: codeString + "\r" });
@@ -66,6 +68,7 @@ const CodeBlock = ({ node, inline, className, children, ...props }: any) => {
 };
 
 export default function ChatWidget() {
+  const { t, language } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -104,7 +107,8 @@ Saat ini pengguna sedang membuka halaman route: ${currentPath}.
 - Berikan bantuan relevan sesuai halaman tempat pengguna berada. Contoh: di /dashboard bahas ringkasan statistik, di /server bahas metrik server, di /agents bahas daftar agen, dll.
 - Jika di /terminal atau diminta command, WAJIB gunakan format \`bash\` Markdown block. ADA fitur yang bisa mengeksekusi langsung blok bash pengguna! (Tombol "Run" akan muncul).
 - Output terminal saat ini: ${termContext.__TERMINAL_OUTPUT__ ? `\n"""\n${termContext.__TERMINAL_OUTPUT__}\n"""\nGunakan log ini untuk membantu men-debug.` : "Tidak ada output."}
-Bahasakan dengan natural, profesional dan santai.`;
+Bahasakan dengan natural, profesional dan santai.
+Harap balas dalam bahasa: ${language === 'id' ? 'Indonesia' : 'Inggris'}.`;
 
       // Setup model gemini-2.5-flash with systemInstruction
       const model = genAI.getGenerativeModel({
@@ -135,7 +139,7 @@ Bahasakan dengan natural, profesional dan santai.`;
         {
           id: Date.now().toString() + "-err",
           role: "model",
-          text: "Maaf, terjadi kesalahan saat menghubungi AI. Coba lagi nanti.",
+          text: t("chat.error"),
         },
       ]);
     } finally {
@@ -153,7 +157,7 @@ Bahasakan dengan natural, profesional dan santai.`;
             <div className="flex items-center gap-2">
               <Bot className="w-5 h-5" />
               <div className="flex flex-col">
-                <span className="font-semibold text-sm leading-tight">Asisten AI</span>
+                <span className="font-semibold text-sm leading-tight">{t("chat.title")}</span>
                 <span className="text-[10px] opacity-80">Gemini 2.5 Flash</span>
               </div>
             </div>
@@ -191,7 +195,7 @@ Bahasakan dengan natural, profesional dan santai.`;
                         remarkPlugins={[remarkGfm]}
                         components={{ code: CodeBlock as any }}
                       >
-                        {msg.text}
+                        {msg.id === "welcome" ? t("chat.welcome") : msg.text}
                       </ReactMarkdown>
                     </div>
                   ) : (
@@ -227,7 +231,7 @@ Bahasakan dengan natural, profesional dan santai.`;
                   handleSubmit(e);
                 }
               }}
-              placeholder="Tanya sesuatu..."
+              placeholder={t("chat.placeholder")}
               className="flex-1 max-h-32 min-h-[44px] bg-muted/50 resize-none rounded-xl border border-border focus:outline-none focus:ring-2 focus:ring-primary/50 px-4 text-sm"
               rows={1}
             />

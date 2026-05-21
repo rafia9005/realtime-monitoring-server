@@ -3,9 +3,11 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/theme-provider";
 import { Moon, Sun, Shield } from "lucide-react";
+import { useLanguage } from "@/lib/LanguageContext";
 
 export default function Index() {
   const { theme, setTheme } = useTheme();
+  const { t } = useLanguage();
 
   return (
     <div className="max-h-screen top-12 flex items-center justify-center bg-background relative overflow-hidden font-sans">
@@ -37,7 +39,7 @@ export default function Index() {
             <img src="/img/amazetwoDark.png" alt="AmazeTwo" className="hidden dark:block" />
           </div>
           <h1 className="text-5xl font-black tracking-[-0.05em] mb-2 uppercase leading-none">WATCHTOWER</h1>
-          <p className="text-[10px] font-black tracking-[0.4em] uppercase opacity-40 italic">Initialize Secure Session</p>
+          <p className="text-[10px] font-black tracking-[0.4em] uppercase opacity-40 italic">{t('index.subtitle')}</p>
         </div>
 
         <div className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-1000 delay-200">
@@ -75,7 +77,7 @@ export default function Index() {
         <div className="text-center mt-2 space-y-6 animate-in fade-in duration-1000 delay-500">
           <div className="flex items-center gap-4 justify-center text-emerald-500 bg-emerald-500/5 px-6 py-3 rounded-full border border-emerald-500/10 backdrop-blur-3xl">
             <Shield className="w-5 h-5" />
-            <span className="text-[10px] font-black tracking-[0.4em] uppercase italic">Shield Active</span>
+            <span className="text-[10px] font-black tracking-[0.4em] uppercase italic">{t('index.shieldActive')}</span>
           </div>
         </div>
         <p className="text-[10px] font-black text-muted-foreground/30 tracking-[0.5em] uppercase italic mt-2">

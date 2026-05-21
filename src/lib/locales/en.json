@@ -1,0 +1,476 @@
+{
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "monitoring": "Monitoring",
+    "server": "Server",
+    "mcuSensors": "MCU Sensors",
+    "terminal": "Terminal",
+    "agents": "Agents"
+  },
+  "status": {
+    "active": "Active",
+    "online": "Online"
+  },
+  "header": {
+    "sysTime": "SYS_TIME:",
+    "theme": {
+      "light": "LIGHT_MODE",
+      "dark": "DARK_MODE",
+      "system": "SYSTEM_DEFAULT"
+    }
+  },
+  "publicLayout": {
+    "login": "Log In",
+    "accountSettings": "Account Settings",
+    "footer": {
+      "desc": "Designed for speed, built for reliability. Monitoring infrastructure has never felt this effortless. Experience the zen of system health.",
+      "platform": "Platform",
+      "company": "Company",
+      "legal": "Legal",
+      "operational": "ALL SYSTEMS OPERATIONAL",
+      "deployed": "PROUDLY DEPLOYED GLOBALLY."
+    },
+    "menu": {
+      "home": "Home",
+      "dashboard": "Dashboard",
+      "agents": "Agents",
+      "about": "About",
+      "contact": "Contact",
+      "ourVision": "Our Vision",
+      "support": "Support",
+      "privacy": "Privacy",
+      "security": "Security",
+      "terms": "Terms",
+      "license": "License",
+      "liveView": "Live View",
+      "agentsList": "Agents List",
+      "remoteShell": "Remote Shell"
+    },
+    "modals": {
+      "privacy": {
+        "title": "Privacy Policy",
+        "desc": "SECURE METADATA PRIVACY PROTOCOL",
+        "p1": "Watchtower is committed to safeguarding your infrastructure telemetry. Our systems only collect essential system-level metrics such as CPU loads, memory segments, storage IO, and network status from your monitored nodes.",
+        "p2": "No personally identifiable information (PII) is gathered, transmitted, or stored, except for the minimal profile data required to authenticate your secure session via Clerk.",
+        "p3": "All raw telemetry is stored securely within encrypted databases and is never shared, sold, or rented to any third-party entities."
+      },
+      "security": {
+        "title": "Security Protocols",
+        "desc": "MULTI-TIER ENCRYPTION AND AUTHORIZATION",
+        "p1": "Encryption in Transit: All telemetry communications between your local monitoring agents and the central Watchtower platform are strictly encrypted using high-grade TLS protocols (HTTPS/WSS).",
+        "p2": "Isolated Access Control: Access to the Watchtower control panels is fully gated by Clerk authentication, supporting multi-factor authentication (MFA) to minimize risk of unauthorized entry.",
+        "p3": "Agent Sandboxing: The monitoring agent code runs in an isolated user space with read-only privileges to system statistics. It does not accept or execute inbound arbitrary commands by default."
+      },
+      "terms": {
+        "title": "Terms of Service",
+        "desc": "WATCHTOWER PLATFORM TERMS OF USE",
+        "p1": "Lawful Monitoring: You agree to install and deploy the Watchtower monitoring agent only on machines, servers, or network assets that you legally own or for which you have explicit written permission.",
+        "p2": "Service Integrity: You must not manipulate, flood, or reverse-engineer the metrics ingestion APIs to disrupt the stability of Watchtower infrastructure.",
+        "p3": "Limitation of Liability: Watchtower is provided \"as is\" without warranty of any kind. We are not liable for any data loss, system damage, or financial setbacks resulting from the use of this software."
+      },
+      "license": {
+        "title": "Software License",
+        "desc": "WATCHTOWER OPEN SOURCE MIT LICENSE",
+        "p1": "Copyright (c) 2026 WATCHTOWER INDUSTRIES",
+        "p2": "Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the \"Software\"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, subject to the following conditions:",
+        "p3": "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software."
+      }
+    }
+  },
+  "home": {
+    "hero": {
+      "observe": "Observe. Analyze.",
+      "optimize": "Optimize.",
+      "desc": "Watchtower delivers elite infrastructure intelligence. Real-time telemetry, predictive diagnostics, and unified control.",
+      "btnInit": "Initialize",
+      "btnExplore": "Explore"
+    },
+    "node": {
+      "synchronized": "Synchronized",
+      "offline": "Offline",
+      "neuralEngine": "Neural Engine",
+      "memorySegment": "Memory Segment",
+      "networkPulse": "Network Pulse",
+      "statusOptimal": "OPTIMAL",
+      "statusHigh": "HIGH",
+      "statusCritical": "CRITICAL",
+      "statusStable": "STABLE",
+      "statusWarning": "WARNING",
+      "statusActive": "ACTIVE",
+      "statusIdle": "IDLE",
+      "precisionUptime": "Precision Uptime",
+      "securityProtocol": "Security Protocol"
+    },
+    "stats": {
+      "activeNodes": "Active Nodes",
+      "stations": "STATIONS",
+      "globalCpu": "Global CPU",
+      "percentage": "PERCENTAGE",
+      "networkIo": "Network IO",
+      "latency": "LATENCY",
+      "dailyCycles": "Daily Cycles",
+      "telemetry": "TELEMETRY"
+    },
+    "capabilities": {
+      "title": "System Capabilities",
+      "subtitle": "Precision Tools.",
+      "telemetryIngestion": {
+        "title": "Telemetry Ingestion",
+        "desc": "Native agent-based data collection with zero-footprint overhead on your target nodes."
+      },
+      "unifiedStorage": {
+        "title": "Unified Storage",
+        "desc": "Centralized metric aggregation with historical persistence for deep trend analysis."
+      },
+      "visualSynthesis": {
+        "title": "Visual Synthesis",
+        "desc": "Transforming raw streams into human-readable intelligence through minimalist design."
+      },
+      "edgeConnectivity": {
+        "title": "Edge Connectivity",
+        "desc": "Global monitoring coverage with localized agents reporting to a unified control center."
+      },
+      "thresholdAlerts": {
+        "title": "Threshold Alerts",
+        "desc": "Intelligent notification routing via Telegram, ensuring critical events reach you instantly."
+      },
+      "endToEndGuard": {
+        "title": "End-to-End Guard",
+        "desc": "Secured through Clerk auth and HTTPS encryption, keeping your infrastructure private."
+      }
+    }
+  },
+  "about": {
+    "genesis": "Protocol Genesis",
+    "title": "Simplicity in",
+    "subtitle": "Infrastructure.",
+    "desc": "Watchtower was forged from the need for clarity in an increasingly complex digital landscape. We build tools that make system health intuitive.",
+    "mission": {
+      "title": "Our Mission",
+      "desc": "To democratize server monitoring. We believe that critical infrastructure data should be accessible, beautiful, and actionable for teams of all sizes."
+    },
+    "values": {
+      "title": "Our Values",
+      "desc": "Privacy by design, reliability as standard, and aesthetics as a core functional requirement. We don't just process metrics; we craft visibility."
+    },
+    "architecture": {
+      "title": "The Architecture of Watchtower",
+      "items": {
+        "lowOverhead": "Low Overhead",
+        "cpuUsage": "CPU Usage",
+        "globalReach": "Global Reach",
+        "telemetry": "Telemetry",
+        "fastAlerts": "Fast Alerts",
+        "notification": "Notification",
+        "modernUi": "Modern UI",
+        "uxDesign": "UX Design"
+      }
+    },
+    "team": {
+      "title": "Meet the Team",
+      "classified": "[CLASSIFIED FILE: The masterminds behind the scenes]",
+      "wantedDesc": "For building awesome UIs",
+      "case": "CASE #9942",
+      "roles": {
+        "webEngineer": "Website Engineer",
+        "wordpressDev": "Wordpress Dev",
+        "modelMaker": "Model Maker",
+        "lead": "Lead",
+        "leadInvestigator": "Lead Investigator",
+        "webDev": "Web Developer"
+      },
+      "labels": {
+        "suspect1": "SUSPECT #1",
+        "suspect": "SUSPECT",
+        "witness": "WITNESS",
+        "accomplice": "ACCOMPLICE",
+        "mastermind": "MASTERMIND",
+        "informant": "INFORMANT",
+        "missing": "MISSING",
+        "topSecret": "TOP SECRET",
+        "underCover": "UNDER COVER",
+        "wanted": "WANTED",
+        "solved": "SOLVED",
+        "urgent": "URGENT"
+      }
+    }
+  },
+  "contact": {
+    "protocol": "Support Protocol",
+    "title": "Establish",
+    "subtitle": "Connection.",
+    "desc": "Our team of infrastructure specialists is standing by. Whether you need technical support, architectural advice, or enterprise inquiries.",
+    "methods": {
+      "email": {
+        "label": "Electronic Mail",
+        "desc": "Primary communication channel for non-urgent technical inquiries."
+      },
+      "phone": {
+        "label": "Voice Frequency",
+        "desc": "Direct line for critical support and architectural consultations."
+      },
+      "presence": {
+        "label": "Global Presence",
+        "value": "Open Status",
+        "desc": "We operate across multiple timezones to ensure perpetual coverage."
+      },
+      "btnInit": "Initialize"
+    },
+    "enterprise": {
+      "title": "Enterprise Inquiries",
+      "desc": "Requiring high-scale deployment or custom monitoring solutions? Our systems architects are available for dedicated consultation.",
+      "btnRequest": "Request Proposal"
+    }
+  },
+  "dashboard": {
+    "loading": "Loading metrics...",
+    "error": {
+      "title": "Connection Error",
+      "retry": "Try Again"
+    },
+    "overview": "System Overview v4.2",
+    "status": "Status",
+    "live": "Live",
+    "cards": {
+      "cpu": {
+        "title": "Processing Power",
+        "normal": "Normal",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "memory": {
+        "title": "Active Memory",
+        "normal": "Normal",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "disk": {
+        "title": "Storage",
+        "good": "Good",
+        "warning": "Warning",
+        "critical": "Critical"
+      },
+      "network": {
+        "title": "Network",
+        "connections": "Connections",
+        "active": "Active",
+        "sent": "Sent:",
+        "received": "Received:",
+        "connLabel": "CONN"
+      }
+    },
+    "info": {
+      "uptime": "Uptime",
+      "loadAverage": "Load Average",
+      "processes": "Processes",
+      "temperature": "Temperature"
+    },
+    "sensors": {
+      "title": "Sensors Array",
+      "connected": "CONNECTED"
+    },
+    "servers": {
+      "title": "Connected Servers",
+      "manageAll": "Manage All",
+      "online": "● Online",
+      "offline": "○ Offline",
+      "ipAddress": "IP Address",
+      "lastSeen": "Last Seen"
+    },
+    "quickNav": {
+      "metrics": {
+        "title": "Detailed Metrics",
+        "desc": "View real-time charts"
+      },
+      "terminal": {
+        "title": "Terminal",
+        "desc": "Direct access"
+      }
+    }
+  },
+  "monitoring": {
+    "loading": "Loading metrics...",
+    "error": {
+      "title": "Connection Error",
+      "retry": "Try Again"
+    },
+    "overview": "Telemetry Array v4.2",
+    "title": "Detailed Metrics",
+    "cpu": {
+      "title": "Processing Power",
+      "cores": "cores",
+      "threads": "threads"
+    },
+    "memory": {
+      "title": "Active Memory"
+    },
+    "disk": {
+      "title": "Storage",
+      "used": "used"
+    },
+    "network": {
+      "title": "Network",
+      "conn": "Conn."
+    },
+    "serverSelector": {
+      "localSrc": "This Computer",
+      "selectServer": "Select a Server",
+      "selectServerShort": "Select Server",
+      "realtimeUpdates": "Real-time updates",
+      "available": "Available"
+    },
+    "live": "Live",
+    "currentValue": "Current Value"
+  },
+  "server": {
+    "loading": "SCANNING_SYSTEM_ARCH...",
+    "error": {
+      "title": "HW_SCAN_FAILURE",
+      "retry": "RETRY_SCAN"
+    },
+    "manifest": "HW_MANIFEST",
+    "inventoryId": "INVENTORY_ID",
+    "status": "STATUS",
+    "online": "ONLINE",
+    "offline": "OFFLINE",
+    "localSrc": "LOCAL_SRC",
+    "srvIndex": "SRV_INDEX",
+    "sysManifest": "SYS_MANIFEST",
+    "cpuConfig": "CPU_CONFIG",
+    "loadAvg": "LOAD_AVG",
+    "memSnapshot": "MEM_SNAPSHOT",
+    "fsTable": "FS_TABLE",
+    "activePartitions": "ACTIVE_PARTITIONS",
+    "uptimeParts": {
+      "days": "days",
+      "hours": "hours",
+      "minutes": "minutes",
+      "justStarted": "Just started"
+    }
+  },
+  "terminal": {
+    "welcome": "Welcome to Kelompok 2 Server Terminal",
+    "connecting": "Connecting to server...",
+    "connectionInactive": "Terminal connection not active!",
+    "connected": "✓ Connected to terminal server",
+    "disconnected": "✗ Disconnected from server",
+    "connectionError": "✗ Connection error",
+    "failedToConnect": "✗ Failed to connect",
+    "title": "Terminal",
+    "secureSsh": "SECURE_SSH_ESTABLISHED",
+    "awaitingHandshake": "AWAITING_HANDSHAKE",
+    "online": "ONLINE",
+    "offline": "OFFLINE",
+    "clearBuf": "CLEAR_BUF",
+    "errorPrefix": "ERROR:"
+  },
+  "agents": {
+    "loading": "Synchronizing Nodes",
+    "alert": {
+      "confirmDelete": "Are you sure you want to delete this agent?",
+      "deleteFailed": "Failed to delete agent",
+      "requiredFields": "Please fill in required fields: Name and Host",
+      "addFailed": "Failed to add agent"
+    },
+    "header": {
+      "securityTier": "Network Security Tier-1",
+      "title": "System",
+      "titleHighlight": "Nodes",
+      "desc": "Managing {{count}} deployment targets across decrypted segments."
+    },
+    "dialog": {
+      "trigger": "Request Clearance",
+      "title": "Initialize Node",
+      "subtitle": "ESTABLISHING SECURE HANDSHAKE PROTOCOL",
+      "nodeId": "Node Identifier",
+      "entryPoint": "Network Entry Point",
+      "tags": "Metadata Tags",
+      "abort": "Abort",
+      "deploy": "Deploy Node",
+      "processing": "Processing...",
+      "success": "Deployment Success",
+      "successSub": "Handshake Verified by Watchtower",
+      "confirmReceipt": "Confirm Receipt"
+    },
+    "stats": {
+      "total": "Total Capacity",
+      "live": "Live Connections",
+      "stale": "Stale Nodes",
+      "health": "Global Health"
+    },
+    "card": {
+      "terminated": "TERMINATED",
+      "active": "ACTIVE",
+      "glow": "Glow",
+      "fault": "FAULT",
+      "inactive": "INACTIVE",
+      "entryPointer": "Entry Pointer",
+      "lastPulsar": "Last Pulsar",
+      "justNow": "Just now",
+      "minsAgo": "{{count}}m ago",
+      "hoursAgo": "{{count}}h ago",
+      "daysAgo": "{{count}}d ago",
+      "ver": "VER.ID"
+    },
+    "empty": {
+      "title": "No Active Nodes",
+      "desc": "The network segment is currently vacant. Deploy a new agent to initiate monitoring.",
+      "btn": "Secure First Endpoint"
+    }
+  },
+  "mcuSensors": {
+    "loading": "Reading Environmental Array",
+    "header": {
+      "subtitle": "Environmental Telemetry v4.2",
+      "title": "Sensors",
+      "titleHighlight": "Array",
+      "dumpLogs": "DUMP_LOGS"
+    },
+    "stats": {
+      "avgTemp": "Avg Temp",
+      "peakHeat": "Peak Heat",
+      "trough": "Trough",
+      "humidity": "Humidity",
+      "totalDatapoints": "Total Datapoints"
+    },
+    "filters": {
+      "title": "System Filters",
+      "range": "Capture Range",
+      "identity": "Node Identity",
+      "start": "Epoch Start",
+      "end": "Epoch End",
+      "options": {
+        "allHistory": "ALL_HISTORY",
+        "last24h": "LAST_24_HOURS",
+        "last7d": "LAST_7_DAYS",
+        "last30d": "LAST_30_DAYS",
+        "globalArray": "GLOBAL_ARRAY"
+      }
+    },
+    "chart": {
+      "title": "Telemetry Visualization",
+      "subtitle": "Environmental Waveforms",
+      "temp": "Temp",
+      "humidity": "Humidity",
+      "unavailable": "Historical Data Unavailable"
+    },
+    "journal": {
+      "title": "Log Journal",
+      "subtitle": "Binary Array Serialization",
+      "live": "Live Stream",
+      "totalEntries": "Total Entries: {{count}}",
+      "table": {
+        "target": "Target Identity",
+        "thermal": "Thermal",
+        "moisture": "Moisture",
+        "timestamp": "Local Timestamp"
+      },
+      "empty": "Sector Empty // No Response",
+      "pagination": "Segment {{current}} of {{total}} // Index {{count}}"
+    }
+  },
+  "index": {
+    "subtitle": "Initialize Secure Session",
+    "shieldActive": "Shield Active"
+  }
+}

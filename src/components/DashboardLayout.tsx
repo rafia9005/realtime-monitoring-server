@@ -32,15 +32,15 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { setTheme } = useTheme();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
-  const { language } = useLanguage();
+  const { t } = useLanguage();
 
   const menuItems = [
-    { icon: Home, label: language === 'id' ? "Dasbor" : "Dashboard", href: "/dashboard" },
-    { icon: Activity, label: language === 'id' ? "Pemantauan" : "Monitoring", href: "/monitoring" },
-    { icon: Server, label: language === 'id' ? "Server" : "Server", href: "/server" },
-    { icon: Thermometer, label: language === 'id' ? "Sensor MCU" : "MCU Sensors", href: "/mcu-sensors" },
-    { icon: Terminal, label: language === 'id' ? "Terminal" : "Terminal", href: "/terminal" },
-    { icon: Boxes, label: language === 'id' ? "Agen" : "Agents", href: "/agents" },
+    { icon: Home, label: t("sidebar.dashboard"), href: "/dashboard" },
+    { icon: Activity, label: t("sidebar.monitoring"), href: "/monitoring" },
+    { icon: Server, label: t("sidebar.server"), href: "/server" },
+    { icon: Thermometer, label: t("sidebar.mcuSensors"), href: "/mcu-sensors" },
+    { icon: Terminal, label: t("sidebar.terminal"), href: "/terminal" },
+    { icon: Boxes, label: t("sidebar.agents"), href: "/agents" },
   ];
 
   return (
@@ -113,7 +113,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </p>
                 <div className="flex items-center gap-1">
                   <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                  <span className="text-[8px] text-muted-foreground uppercase font-black">{language === 'id' ? 'Aktif' : 'Online'}</span>
+                  <span className="text-[8px] text-muted-foreground uppercase font-black">{t('status.online')}</span>
                 </div>
               </div>
             </div>
@@ -136,13 +136,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <div className="hidden sm:flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-foreground/20 rounded-full" />
                 <h1 className="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 italic">
-                  {menuItems.find(item => item.href === location.pathname)?.label || (language === 'id' ? "Dasbor" : "Dashboard")}
+                  {menuItems.find(item => item.href === location.pathname)?.label || t("sidebar.dashboard")}
                 </h1>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1 text-[9px] font-black uppercase tracking-[0.2em] text-muted-foreground mr-4 hidden md:flex italic">
-                <span className="opacity-40">{language === 'id' ? 'WAKTU_SISTEM:' : 'SYS_TIME:'}</span>
+                <span className="opacity-40">{t('header.sysTime')}</span>
                 <span>{new Date().toLocaleTimeString([], { hour12: false })}</span>
               </div>
               
@@ -157,13 +157,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="font-mono text-xs rounded-2xl border-foreground/10 bg-background/80 backdrop-blur-3xl p-2 min-w-[150px]">
                   <DropdownMenuItem onClick={() => setTheme("light")} className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-2">
-                    {language === 'id' ? 'MODE_TERANG' : 'LIGHT_MODE'}
+                    {t('header.theme.light')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("dark")} className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-2">
-                    {language === 'id' ? 'MODE_GELAP' : 'DARK_MODE'}
+                    {t('header.theme.dark')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setTheme("system")} className="rounded-xl focus:bg-foreground/5 focus:text-foreground cursor-pointer uppercase font-black text-[10px] tracking-wider py-2">
-                    {language === 'id' ? 'STANDAR_SISTEM' : 'SYSTEM_DEFAULT'}
+                    {t('header.theme.system')}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

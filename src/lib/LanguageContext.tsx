@@ -1,38 +1,34 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import './i18n';
 
 type Language = 'en' | 'id';
 
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, options?: any) => string;
 }
-
-const translations: Record<Language, Record<string, string>> = {
-  en: {},
-  id: {}
-};
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>(() => {
-    const saved = localStorage.getItem('language');
-    return (saved === 'en' || saved === 'id') ? saved : 'en';
-  });
+  const { i18n, t } = useTranslation();
+
+  const language = (i18n.language || 'en') as Language;
+
+  const setLanguage = (lang: Language) => {
+    i18n.changeLanguage(lang);
+    localStorage.setItem('language', lang);
+    document.documentElement.lang = lang;
+  };
 
   useEffect(() => {
-    localStorage.setItem('language', language);
-    // Optional: add class to html for global css rules
     document.documentElement.lang = language;
   }, [language]);
 
-  const t = (key: string) => {
-    return translations[language][key] || key;
-  };
-
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t: t as any }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -45,3 +41,4 @@ export function useLanguage() {
   }
   return context;
 }
+

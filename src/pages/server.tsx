@@ -200,10 +200,10 @@ export default function ServerPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* System Information */}
-          <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
+          <div className="accent-card accent-card-gray bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
             <div className="p-6 border-b border-foreground/5 bg-foreground/5">
               <div className="flex items-center gap-2">
-                <Server className="w-4 h-4 text-primary" />
+                <Server className="w-4 h-4 text-muted-foreground" />
                 <h2 className="text-[10px] font-black uppercase tracking-[0.25em] opacity-80">{t('server.sysManifest')}</h2>
               </div>
             </div>
@@ -222,10 +222,10 @@ export default function ServerPage() {
 
           <div className="space-y-8">
             {/* CPU Information */}
-            <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
+            <div className="accent-card accent-card-indigo bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
               <div className="p-6 border-b border-foreground/5 bg-foreground/5">
                 <div className="flex items-center gap-2">
-                  <Cpu className="w-4 h-4 text-primary" />
+                  <Cpu className="w-4 h-4 text-indigo-500" />
                   <h2 className="text-[10px] font-black uppercase tracking-[0.25em] opacity-80">{t('server.cpuConfig')}</h2>
                 </div>
               </div>
@@ -256,10 +256,10 @@ export default function ServerPage() {
             </div>
 
             {/* Load Average */}
-            <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
+            <div className="accent-card accent-card-blue bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
               <div className="p-6 border-b border-foreground/5 bg-foreground/5">
                 <div className="flex items-center gap-2">
-                  <Activity className="w-4 h-4 text-primary" />
+                  <Activity className="w-4 h-4 text-blue-500" />
                   <h2 className="text-[10px] font-black uppercase tracking-[0.25em] opacity-80">{t('server.loadAvg')}</h2>
                 </div>
               </div>
@@ -291,10 +291,10 @@ export default function ServerPage() {
         </div>
 
         {/* Memory Information */}
-        <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
+        <div className="accent-card accent-card-fuchsia bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
           <div className="p-6 border-b border-foreground/5 bg-foreground/5">
             <div className="flex items-center gap-2">
-              <MemoryStick className="w-4 h-4 text-primary" />
+              <MemoryStick className="w-4 h-4 text-fuchsia-500" />
               <h2 className="text-[10px] font-black uppercase tracking-[0.25em] opacity-80">{t('server.memSnapshot')}</h2>
             </div>
           </div>
@@ -321,10 +321,10 @@ export default function ServerPage() {
         </div>
 
         {/* Storage Information */}
-        <div className="bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
+        <div className="accent-card accent-card-amber bg-card/40 backdrop-blur-3xl border border-foreground/5 rounded-[2.5rem] overflow-hidden hover:border-foreground/10 transition-all duration-300">
           <div className="p-6 border-b border-foreground/5 bg-foreground/5 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <HardDrive className="w-4 h-4 text-primary" />
+              <HardDrive className="w-4 h-4 text-amber-500" />
               <h2 className="text-[10px] font-black uppercase tracking-[0.25em] opacity-80">{t('server.fsTable')}</h2>
             </div>
             <span className="text-[8px] font-black uppercase tracking-widest opacity-60">{filteredDisks.length} {t('server.activePartitions')}</span>

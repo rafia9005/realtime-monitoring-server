@@ -300,7 +300,7 @@ export default function TerminalPage() {
         )}
 
         {/* Terminal Container */}
-        <div className="flex-1 bg-black border border-foreground/10 rounded-[2.5rem] p-8 relative overflow-hidden shadow-2xl">
+        <div className="accent-card accent-card-emerald flex-1 bg-black border border-foreground/10 rounded-[2.5rem] p-8 relative overflow-hidden shadow-2xl">
           {/* Decorative terminal elements */}
           <div className="absolute top-6 right-8 opacity-20 pointer-events-none z-10">
             <div className="text-[8px] text-right font-mono tracking-wider leading-relaxed">

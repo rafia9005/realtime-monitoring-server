@@ -256,3 +256,100 @@
 .animate-delay-300 { animation-delay: 0.3s; }
 .animate-delay-400 { animation-delay: 0.4s; }
 .animate-delay-500 { animation-delay: 0.5s; }
+
+/* Premium Card Accent Utilities */
+.accent-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Subtle left border accent strip */
+.accent-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  opacity: 0.15;
+  transition: opacity 0.5s, width 0.5s;
+}
+
+.accent-card:hover::before {
+  opacity: 0.8;
+  width: 6px;
+}
+
+/* Accent color overrides (Solid, Cozy Warm Pastels) */
+.accent-card-indigo::before {
+  background: #a5b4fc; /* Cozy Pastel Indigo/Lavender */
+}
+.accent-card-indigo:hover {
+  border-color: rgba(165, 180, 252, 0.3) !important;
+  box-shadow: 0 10px 30px -10px rgba(165, 180, 252, 0.15), 0 1px 1px rgba(165, 180, 252, 0.05) !important;
+}
+
+.accent-card-fuchsia::before {
+  background: #fbcfe8; /* Cozy Pastel Fuchsia/Pink */
+}
+.accent-card-fuchsia:hover {
+  border-color: rgba(251, 207, 232, 0.3) !important;
+  box-shadow: 0 10px 30px -10px rgba(251, 207, 232, 0.15), 0 1px 1px rgba(251, 207, 232, 0.05) !important;
+}
+
+.accent-card-amber::before {
+  background: #fde047; /* Cozy Pastel Yellow/Amber */
+}
+.accent-card-amber:hover {
+  border-color: rgba(253, 224, 71, 0.3) !important;
+  box-shadow: 0 10px 30px -10px rgba(253, 224, 71, 0.15), 0 1px 1px rgba(253, 224, 71, 0.05) !important;
+}
+
+.accent-card-teal::before {
+  background: #99f6e4; /* Cozy Pastel Teal/Mint */
+}
+.accent-card-teal:hover {
+  border-color: rgba(153, 246, 228, 0.3) !important;
+  box-shadow: 0 10px 30px -10px rgba(153, 246, 228, 0.15), 0 1px 1px rgba(153, 246, 228, 0.05) !important;
+}
+
+.accent-card-blue::before {
+  background: #bfdbfe; /* Cozy Pastel Sky Blue */
+}
+.accent-card-blue:hover {
+  border-color: rgba(191, 219, 254, 0.3) !important;
+  box-shadow: 0 10px 30px -10px rgba(191, 219, 254, 0.15), 0 1px 1px rgba(191, 219, 254, 0.05) !important;
+}
+
+.accent-card-emerald::before {
+  background: #a7f3d0; /* Cozy Pastel Emerald/Mint */
+}
+.accent-card-emerald:hover {
+  border-color: rgba(167, 243, 208, 0.3) !important;
+  box-shadow: 0 10px 30px -10px rgba(167, 243, 208, 0.15), 0 1px 1px rgba(167, 243, 208, 0.05) !important;
+}
+
+.accent-card-rose::before {
+  background: #fecdd3; /* Cozy Pastel Rose/Coral */
+}
+.accent-card-rose:hover {
+  border-color: rgba(254, 205, 211, 0.3) !important;
+  box-shadow: 0 10px 30px -10px rgba(254, 205, 211, 0.15), 0 1px 1px rgba(254, 205, 211, 0.05) !important;
+}
+
+.accent-card-orange::before {
+  background: #fed7aa; /* Cozy Pastel Peach/Orange */
+}
+.accent-card-orange:hover {
+  border-color: rgba(254, 215, 170, 0.3) !important;
+  box-shadow: 0 10px 30px -10px rgba(254, 215, 170, 0.15), 0 1px 1px rgba(254, 215, 170, 0.05) !important;
+}
+
+.accent-card-gray::before {
+  background: #cbd5e1; /* Cozy Pastel Gray */
+}
+.accent-card-gray:hover {
+  border-color: rgba(203, 213, 225, 0.3) !important;
+  box-shadow: 0 10px 30px -10px rgba(203, 213, 225, 0.15), 0 1px 1px rgba(203, 213, 225, 0.05) !important;
+}

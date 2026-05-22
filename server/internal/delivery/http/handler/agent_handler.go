@@ -187,8 +187,24 @@ func (h *AgentHandler) DeleteAgent(c *echo.Context) error {
 	ctx := (*c).Request().Context()
 	id := (*c).Param("id")
 
+	// Fetch agent before deletion to send notification
+	agent, err := h.agentRepo.GetByID(ctx, id)
+	if err != nil {
+		return response.Error(c, http.StatusInternalServerError, "Failed to fetch agent", err)
+	}
+
+	if agent == nil {
+		return response.Error(c, http.StatusNotFound, "Agent not found", nil)
+	}
+
+	// Delete the agent
 	if err := h.agentRepo.Delete(ctx, id); err != nil {
 		return response.Error(c, http.StatusInternalServerError, "Failed to delete agent", err)
+	}
+
+	// Send removal notification after successful deletion
+	if h.notificationManager != nil {
+		go h.notificationManager.NotifyAgentRemoved(agent)
 	}
 
 	return response.Success(c, http.StatusOK, "Agent deleted successfully", nil)

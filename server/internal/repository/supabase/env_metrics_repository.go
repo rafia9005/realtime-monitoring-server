@@ -3,6 +3,7 @@ package supabase
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/rafia9005/realtime-monitoring-server/internal/domain"
 	"github.com/supabase-community/postgrest-go"
@@ -22,40 +23,40 @@ func NewEnvMetricsRepository(client *supabase.Client) *EnvMetricsRepository {
 }
 
 func (r *EnvMetricsRepository) GetLatest(ctx context.Context) ([]domain.EnvMetrics, error) {
-	var result []domain.EnvMetrics
+	var rows []domain.EnvMetrics
 
-	// Ambil 50 data terakhir untuk mendapatkan data MCU secara menyeluruh
+	// Ambil 500 data terbaru dari tabel env_metrics, cukup untuk menampung semua MCU
 	_, err := r.client.From(r.table).Select("*", "", false).
 		Order("created_at", &postgrest.OrderOpts{Ascending: false}).
-		Limit(50, "").
-		ExecuteTo(&result)
+		Limit(500, "").
+		ExecuteTo(&rows)
 
 	if err != nil {
+		log.Printf("[EnvMetrics] GetLatest error: %v", err)
 		return nil, fmt.Errorf("failed to get latest env metrics: %w", err)
 	}
 
-	if len(result) == 0 {
-		return nil, nil // Return nil if no data
+	if len(rows) == 0 {
+		log.Println("[EnvMetrics] GetLatest: tidak ada data di tabel env_metrics")
+		return []domain.EnvMetrics{}, nil
 	}
 
-	// Filter agar hanya mendapatkan 1 data terbaru untuk setiap MCU
-	latestPerMcu := make(map[string]domain.EnvMetrics)
-	for _, metric := range result {
-		mcuID := metric.McuID
+	// Deduplikasi: ambil hanya 1 data terbaru per mcu_id
+	seen := make(map[string]bool)
+	var latest []domain.EnvMetrics
+	for _, m := range rows {
+		mcuID := m.McuID
 		if mcuID == "" {
 			mcuID = "unknown"
 		}
-		if _, exists := latestPerMcu[mcuID]; !exists {
-			latestPerMcu[mcuID] = metric
+		if !seen[mcuID] {
+			seen[mcuID] = true
+			latest = append(latest, m)
 		}
 	}
 
-	var filteredResult []domain.EnvMetrics
-	for _, metric := range latestPerMcu {
-		filteredResult = append(filteredResult, metric)
-	}
-
-	return filteredResult, nil
+	log.Printf("[EnvMetrics] GetLatest: ditemukan %d MCU unik dari %d total baris", len(latest), len(rows))
+	return latest, nil
 }
 
 // GetAll retrieves all env metrics records

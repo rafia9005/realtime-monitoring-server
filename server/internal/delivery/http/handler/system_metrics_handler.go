@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -44,12 +45,12 @@ func (h *SystemMetricsHandler) GetMetrics(c *echo.Context) error {
 	envMetrics, err := h.envRepo.GetLatest(ctx)
 	if err != nil {
 		// Log error but don't fail the request
-		println("Error getting env metrics:", err.Error())
+		log.Printf("[SystemMetrics] Error getting env metrics: %v", err)
 	}
 	if envMetrics != nil && len(envMetrics) > 0 {
-		println("Found env metrics with count:", len(envMetrics))
+		log.Printf("[SystemMetrics] Found %d env metrics entries", len(envMetrics))
 	} else {
-		println("No env metrics found in database")
+		log.Println("[SystemMetrics] No env metrics found in database")
 	}
 
 	// Get CPU metrics

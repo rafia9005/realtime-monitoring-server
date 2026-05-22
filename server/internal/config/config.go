@@ -18,6 +18,11 @@ type TelegramConfig struct {
 	ChatIDs  []string
 }
 
+type DiscordConfig struct {
+	BotToken  string
+	ChannelID string
+}
+
 type TemperatureConfig struct {
 	CPUThreshold float64
 	MCUThreshold float64
@@ -38,6 +43,7 @@ type Config struct {
 	DB             *sql.DB          // SQLite for agents
 	SupabaseClient *supabase.Client // Supabase for env_metrics
 	Telegram       TelegramConfig
+	Discord        DiscordConfig
 	Temperature    TemperatureConfig
 	CORS           CORSConfig
 	HTTPS          HTTPSConfig
@@ -60,6 +66,8 @@ func Load() (*Config, error) {
 	supabaseKey := getEnv("SUPABASE_KEY", "")
 	botToken := getEnv("BOT_TELEGRAM_TOKEN", "")
 	telegramIDsStr := getEnv("TELEGRAM_ID", "[]")
+	discordBotToken := getEnv("BOT_DISCORD_TOKEN", "")
+	discordChannelID := getEnv("DISCORD_CHANNEL_ID", "")
 	corsOriginsStr := getEnv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:5173")
 	corsMethods := getEnv("CORS_ALLOWED_METHODS", "GET,POST,PUT,DELETE,OPTIONS,PATCH")
 	corsHeaders := getEnv("CORS_ALLOWED_HEADERS", "Content-Type,Authorization,Accept,Origin")
@@ -168,6 +176,10 @@ func Load() (*Config, error) {
 		Telegram: TelegramConfig{
 			BotToken: botToken,
 			ChatIDs:  chatIDs,
+		},
+		Discord: DiscordConfig{
+			BotToken:  discordBotToken,
+			ChannelID: discordChannelID,
 		},
 		Temperature: TemperatureConfig{
 			CPUThreshold: cpuTempThreshold,

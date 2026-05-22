@@ -70,8 +70,35 @@ func main() {
 		log.Println("Warning: Telegram notifier not configured")
 	}
 
-	// Initialize notification manager
-	notificationManager := service.NewNotificationManager(telegramNotifier)
+	// Initialize Discord notifier
+	var discordNotifier *service.DiscordNotifier
+	if cfg.Discord.BotToken != "" && cfg.Discord.ChannelID != "" {
+		var err error
+		discordNotifier, err = service.NewDiscordNotifier(cfg.Discord.BotToken, cfg.Discord.ChannelID)
+		if err != nil {
+			log.Printf("Warning: Failed to initialize Discord notifier: %v", err)
+		} else {
+			if err := discordNotifier.Open(); err != nil {
+				log.Printf("Warning: Failed to open Discord connection: %v", err)
+				discordNotifier = nil
+			} else {
+				log.Println("Discord notifier initialized and connected")
+				// Ensure Discord connection is closed on shutdown
+				go func() {
+					<-sigChan
+					if discordNotifier != nil {
+						discordNotifier.Close()
+					}
+					os.Exit(0)
+				}()
+			}
+		}
+	} else {
+		log.Println("Warning: Discord notifier not configured")
+	}
+
+	// Initialize notification manager with both Telegram and Discord
+	notificationManager := service.NewNotificationManager(telegramNotifier, discordNotifier)
 
 	// Initialize temperature monitor with thresholds from config
 	temperatureMonitor := service.NewTemperatureMonitor(notificationManager, cfg.Temperature.CPUThreshold, cfg.Temperature.MCUThreshold)
@@ -147,6 +174,11 @@ func main() {
 
 	// Stop the poller
 	poller.Stop()
+
+	// Close Discord connection
+	if discordNotifier != nil {
+		discordNotifier.Close()
+	}
 
 	// Close database
 	cfg.DB.Close()

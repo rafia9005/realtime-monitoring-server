@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/rafia9005/realtime-monitoring-server/internal/domain"
 )
 
@@ -15,6 +16,7 @@ type NotificationType string
 const (
 	NotificationTypeTemperature  NotificationType = "temperature"
 	NotificationTypeAgentAdded   NotificationType = "agent_added"
+	NotificationTypeAgentRemoved NotificationType = "agent_removed"
 	NotificationTypeAgentOffline NotificationType = "agent_offline"
 	NotificationTypeAgentOnline  NotificationType = "agent_online"
 	NotificationTypeHighCPU      NotificationType = "high_cpu"
@@ -32,18 +34,20 @@ type Notification struct {
 	Data      interface{}      `json:"data,omitempty"`
 }
 
-// NotificationManager manages all notifications and sends them to Telegram
+// NotificationManager manages all notifications and sends them to Telegram and Discord
 type NotificationManager struct {
 	telegramNotifier *TelegramNotifier
+	discordNotifier  *DiscordNotifier
 	subscribers      map[string][]chan *Notification
 	subscribersMu    sync.RWMutex
 	mu               sync.Mutex
 }
 
 // NewNotificationManager creates a new notification manager
-func NewNotificationManager(telegramNotifier *TelegramNotifier) *NotificationManager {
+func NewNotificationManager(telegramNotifier *TelegramNotifier, discordNotifier *DiscordNotifier) *NotificationManager {
 	return &NotificationManager{
 		telegramNotifier: telegramNotifier,
+		discordNotifier:  discordNotifier,
 		subscribers:      make(map[string][]chan *Notification),
 	}
 }
@@ -133,6 +137,13 @@ func (nm *NotificationManager) NotifyTemperature(agentName string, currentTemp f
 			log.Printf("Failed to send temperature notification to Telegram: %v", err)
 		}
 	}
+
+	// Send to Discord
+	if nm.discordNotifier != nil {
+		if err := nm.discordNotifier.SendTemperatureAlert(agentName, currentTemp, threshold); err != nil {
+			log.Printf("Failed to send temperature notification to Discord: %v", err)
+		}
+	}
 }
 
 // NotifyAgentAdded sends notification when agent is added
@@ -171,6 +182,56 @@ func (nm *NotificationManager) NotifyAgentAdded(agent *domain.Agent) {
 			log.Printf("Failed to send agent registration notification to Telegram: %v", err)
 		}
 	}
+
+	// Send to Discord
+	if nm.discordNotifier != nil {
+		if err := nm.discordNotifier.SendAgentAlert(agent, "added"); err != nil {
+			log.Printf("Failed to send agent registration notification to Discord: %v", err)
+		}
+	}
+}
+
+// NotifyAgentRemoved sends notification when agent is removed
+func (nm *NotificationManager) NotifyAgentRemoved(agent *domain.Agent) {
+	notification := &Notification{
+		Type:      NotificationTypeAgentRemoved,
+		Title:     fmt.Sprintf("🗑️ Agent Removed - %s", agent.Name),
+		Message:   fmt.Sprintf("Host: %s (IP: %s)", agent.Host, agent.IPAddress),
+		Severity:  "info",
+		Timestamp: time.Now(),
+		Data:      agent,
+	}
+
+	nm.publish(notification)
+
+	// Send to Telegram
+	if nm.telegramNotifier != nil {
+		message := fmt.Sprintf(
+			"<b>🗑️ Agent Removed</b>\n"+
+				"<code>%s</code>\n\n"+
+				"<b>Agent Name:</b> %s\n"+
+				"<b>Host:</b> <code>%s</code>\n"+
+				"<b>Hostname:</b> %s\n"+
+				"<b>IP Address:</b> <code>%s</code>\n"+
+				"<b>Version:</b> <code>%s</code>",
+			time.Now().Format("2006-01-02 15:04:05"),
+			agent.Name,
+			agent.Host,
+			agent.Hostname,
+			agent.IPAddress,
+			agent.Version,
+		)
+		if err := nm.telegramNotifier.SendMessage(message); err != nil {
+			log.Printf("Failed to send agent removal notification to Telegram: %v", err)
+		}
+	}
+
+	// Send to Discord
+	if nm.discordNotifier != nil {
+		if err := nm.discordNotifier.SendAgentAlert(agent, "removed"); err != nil {
+			log.Printf("Failed to send agent removal notification to Discord: %v", err)
+		}
+	}
 }
 
 // NotifyAgentOffline sends notification when agent goes offline
@@ -207,6 +268,13 @@ func (nm *NotificationManager) NotifyAgentOffline(agent *domain.Agent) {
 			log.Printf("Failed to send agent offline notification to Telegram: %v", err)
 		}
 	}
+
+	// Send to Discord
+	if nm.discordNotifier != nil {
+		if err := nm.discordNotifier.SendAgentAlert(agent, "offline"); err != nil {
+			log.Printf("Failed to send agent offline notification to Discord: %v", err)
+		}
+	}
 }
 
 // NotifyAgentOnline sends notification when agent comes back online
@@ -241,6 +309,13 @@ func (nm *NotificationManager) NotifyAgentOnline(agent *domain.Agent) {
 			log.Printf("Failed to send agent online notification to Telegram: %v", err)
 		}
 	}
+
+	// Send to Discord
+	if nm.discordNotifier != nil {
+		if err := nm.discordNotifier.SendAgentAlert(agent, "online"); err != nil {
+			log.Printf("Failed to send agent online notification to Discord: %v", err)
+		}
+	}
 }
 
 // NotifyAgentError sends notification when agent error occurs
@@ -272,6 +347,31 @@ func (nm *NotificationManager) NotifyAgentError(agentName string, errorMessage s
 		)
 		if err := nm.telegramNotifier.SendMessage(message); err != nil {
 			log.Printf("Failed to send agent error notification to Telegram: %v", err)
+		}
+	}
+
+	// Send to Discord
+	if nm.discordNotifier != nil {
+		embed := &discordgo.MessageEmbed{
+			Title:       fmt.Sprintf("⚠️ Agent Error - %s", agentName),
+			Color:       16711680, // Red
+			Description: errorMessage,
+			Fields: []*discordgo.MessageEmbedField{
+				{
+					Name:   "Agent",
+					Value:  agentName,
+					Inline: true,
+				},
+				{
+					Name:   "Timestamp",
+					Value:  fmt.Sprintf("`%s`", time.Now().Format("2006-01-02 15:04:05")),
+					Inline: true,
+				},
+			},
+			Timestamp: time.Now().Format(time.RFC3339),
+		}
+		if err := nm.discordNotifier.SendEmbed(embed); err != nil {
+			log.Printf("Failed to send agent error notification to Discord: %v", err)
 		}
 	}
 }

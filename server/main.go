@@ -83,14 +83,6 @@ func main() {
 				discordNotifier = nil
 			} else {
 				log.Println("Discord notifier initialized and connected")
-				// Ensure Discord connection is closed on shutdown
-				go func() {
-					<-sigChan
-					if discordNotifier != nil {
-						discordNotifier.Close()
-					}
-					os.Exit(0)
-				}()
 			}
 		}
 	} else {
@@ -111,6 +103,10 @@ func main() {
 	// Initialize agent status tracker
 	agentStatusTracker := service.NewAgentStatusTracker(agentRepo, notificationManager, temperatureListener)
 	agentStatusTracker.Start()
+
+	// Initialize MCU metrics monitor for Supabase MCU temperature alerts
+	mcuMetricsMonitor := service.NewMCUMetricsMonitor(envMetricsRepo, notificationManager, temperatureMonitor)
+	mcuMetricsMonitor.Start()
 
 	// Initialize handlers
 	systemMetricsHandler := handler.NewSystemMetricsHandler(envMetricsRepo, telegramNotifier)
@@ -168,6 +164,9 @@ func main() {
 	// Wait for interrupt signal
 	<-sigChan
 	log.Println("\n🛑 Shutting down gracefully...")
+
+	// Stop the MCU metrics monitor
+	mcuMetricsMonitor.Stop()
 
 	// Stop the agent status tracker
 	agentStatusTracker.Stop()

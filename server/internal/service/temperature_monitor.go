@@ -61,6 +61,16 @@ func NewTemperatureMonitor(notificationManager *NotificationManager, cpuThreshol
 	}
 }
 
+// GetMCUThreshold returns the MCU temperature threshold
+func (tm *TemperatureMonitor) GetMCUThreshold() float64 {
+	return tm.mcuThreshold
+}
+
+// GetCPUThreshold returns the CPU temperature threshold
+func (tm *TemperatureMonitor) GetCPUThreshold() float64 {
+	return tm.cpuThreshold
+}
+
 // RegisterAgent registers an agent for temperature monitoring
 func (tm *TemperatureMonitor) RegisterAgent(agentID, agentName string) {
 	tm.agentsMu.Lock()

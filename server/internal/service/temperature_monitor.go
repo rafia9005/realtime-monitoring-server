@@ -210,8 +210,10 @@ func (tl *TemperatureListener) Start() {
 					// Update CPU temperature in monitor
 					tl.monitor.UpdateTemperature(update.AgentID, update.Metrics.Temperature.CPUTemp)
 
-					// Find MCU temperature from environment metrics
+					// Find MCU temperature from environment metrics or thermal metrics
 					mcuTemp := 0.0
+
+					// First try to get from Environment field (EnvMetrics)
 					if update.Metrics.Environment != nil && len(update.Metrics.Environment) > 0 {
 						for _, env := range update.Metrics.Environment {
 							if env.Temperature != nil && *env.Temperature > 0 {
@@ -219,6 +221,11 @@ func (tl *TemperatureListener) Start() {
 								break
 							}
 						}
+					}
+
+					// If not found, try to get from Temperature.MCUTemp field (ThermalMetrics)
+					if mcuTemp == 0 && update.Metrics.Temperature.MCUTemp > 0 {
+						mcuTemp = update.Metrics.Temperature.MCUTemp
 					}
 
 					// Update MCU temperature if found

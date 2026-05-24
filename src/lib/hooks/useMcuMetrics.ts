@@ -56,3 +56,4 @@ export function useMcuMetrics(
     refetch: fetchMetrics,
   };
 }
+

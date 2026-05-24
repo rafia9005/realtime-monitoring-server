@@ -32,6 +32,7 @@ func SetupRouter(e *echo.Echo, systemMetricsHandler *handler.SystemMetricsHandle
 	// Temperature endpoints
 	v1.GET("/temperature/status", temperatureHandler.GetTemperatureStatus)
 	v1.GET("/temperature/stream", temperatureHandler.TemperatureStream)
+	v1.GET("/temperature/thresholds", temperatureHandler.GetThresholds)
 
 	// Agent endpoints
 	agents := v1.Group("/agents")

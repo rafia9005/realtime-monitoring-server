@@ -93,8 +93,8 @@ func main() {
 	notificationManager := service.NewNotificationManager(telegramNotifier, discordNotifier)
 
 	// Initialize temperature monitor with thresholds from config
-	temperatureMonitor := service.NewTemperatureMonitor(notificationManager, cfg.Temperature.CPUThreshold, cfg.Temperature.MCUThreshold)
-	log.Printf("Temperature monitor initialized - CPU: %.1f°C, MCU: %.1f°C", cfg.Temperature.CPUThreshold, cfg.Temperature.MCUThreshold)
+	temperatureMonitor := service.NewTemperatureMonitor(notificationManager, cfg.Temperature.CPUThreshold, cfg.Temperature.MCUThreshold, cfg.Humidity.SafeMin, cfg.Humidity.SafeMax)
+	log.Printf("Temperature monitor initialized - CPU: %.1f°C, MCU: %.1f°C, Humidity: %.1f%%-%.1f%%", cfg.Temperature.CPUThreshold, cfg.Temperature.MCUThreshold, cfg.Humidity.SafeMin, cfg.Humidity.SafeMax)
 
 	// Initialize temperature listener and start it
 	temperatureListener := service.NewTemperatureListener(temperatureMonitor)

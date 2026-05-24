@@ -8,15 +8,25 @@ import (
 	"github.com/labstack/echo/v5"
 	"github.com/rafia9005/realtime-monitoring-server/internal/domain"
 	"github.com/rafia9005/realtime-monitoring-server/internal/pkg/response"
+	"github.com/rafia9005/realtime-monitoring-server/internal/service"
 )
 
 type McuMetricsHandler struct {
-	envMetricsRepo domain.EnvMetricsRepository
+	envMetricsRepo     domain.EnvMetricsRepository
+	temperatureMonitor *service.TemperatureMonitor
 }
 
 func NewMcuMetricsHandler(envMetricsRepo domain.EnvMetricsRepository) *McuMetricsHandler {
 	return &McuMetricsHandler{
 		envMetricsRepo: envMetricsRepo,
+	}
+}
+
+// NewMcuMetricsHandlerWithTemp creates handler with temperature monitor
+func NewMcuMetricsHandlerWithTemp(envMetricsRepo domain.EnvMetricsRepository, temperatureMonitor *service.TemperatureMonitor) *McuMetricsHandler {
+	return &McuMetricsHandler{
+		envMetricsRepo:     envMetricsRepo,
+		temperatureMonitor: temperatureMonitor,
 	}
 }
 

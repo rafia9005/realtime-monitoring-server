@@ -36,6 +36,22 @@ func (h *TemperatureHandler) GetTemperatureStatus(c *echo.Context) error {
 	return response.Success(c, http.StatusOK, "Temperature status retrieved", result)
 }
 
+// GetThresholds returns current temperature and humidity thresholds
+func (h *TemperatureHandler) GetThresholds(c *echo.Context) error {
+	monitor := h.temperatureListener.GetMonitor()
+	thresholds := map[string]interface{}{
+		"temperature": map[string]float64{
+			"mcu": monitor.GetMCUThreshold(),
+			"cpu": monitor.GetCPUThreshold(),
+		},
+		"humidity": map[string]float64{
+			"min": monitor.GetHumidityMinThreshold(),
+			"max": monitor.GetHumidityMaxThreshold(),
+		},
+	}
+	return response.Success(c, http.StatusOK, "Temperature and humidity thresholds retrieved", thresholds)
+}
+
 // TemperatureStream handles Server-Sent Events streaming of temperature updates
 func (h *TemperatureHandler) TemperatureStream(c *echo.Context) error {
 	agentID := c.QueryParam("agent_id")

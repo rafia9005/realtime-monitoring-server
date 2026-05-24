@@ -16,6 +16,8 @@ type TemperatureMonitor struct {
 	agentsMu            sync.RWMutex
 	cpuThreshold        float64
 	mcuThreshold        float64
+	humidityMinThreshold float64
+	humidityMaxThreshold float64
 	checkInterval       time.Duration
 	stopChan            chan struct{}
 }
@@ -50,12 +52,14 @@ type TemperatureData struct {
 }
 
 // NewTemperatureMonitor creates a new temperature monitor
-func NewTemperatureMonitor(notificationManager *NotificationManager, cpuThreshold, mcuThreshold float64) *TemperatureMonitor {
+func NewTemperatureMonitor(notificationManager *NotificationManager, cpuThreshold, mcuThreshold, humidityMin, humidityMax float64) *TemperatureMonitor {
 	return &TemperatureMonitor{
 		notificationManager: notificationManager,
 		agents:              make(map[string]*AgentTempStatus),
 		cpuThreshold:        cpuThreshold,
 		mcuThreshold:        mcuThreshold,
+		humidityMinThreshold: humidityMin,
+		humidityMaxThreshold: humidityMax,
 		checkInterval:       10 * time.Second,
 		stopChan:            make(chan struct{}),
 	}
@@ -69,6 +73,16 @@ func (tm *TemperatureMonitor) GetMCUThreshold() float64 {
 // GetCPUThreshold returns the CPU temperature threshold
 func (tm *TemperatureMonitor) GetCPUThreshold() float64 {
 	return tm.cpuThreshold
+}
+
+// GetHumidityMinThreshold returns the minimum humidity threshold
+func (tm *TemperatureMonitor) GetHumidityMinThreshold() float64 {
+	return tm.humidityMinThreshold
+}
+
+// GetHumidityMaxThreshold returns the maximum humidity threshold
+func (tm *TemperatureMonitor) GetHumidityMaxThreshold() float64 {
+	return tm.humidityMaxThreshold
 }
 
 // RegisterAgent registers an agent for temperature monitoring
@@ -210,6 +224,11 @@ func NewTemperatureListener(monitor *TemperatureMonitor) *TemperatureListener {
 		monitor:          monitor,
 		stopChan:         make(chan struct{}),
 	}
+}
+
+// GetMonitor returns the underlying TemperatureMonitor
+func (tl *TemperatureListener) GetMonitor() *TemperatureMonitor {
+	return tl.monitor
 }
 
 // Start starts listening to metric updates

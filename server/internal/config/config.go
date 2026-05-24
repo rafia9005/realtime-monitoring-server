@@ -28,6 +28,11 @@ type TemperatureConfig struct {
 	MCUThreshold float64
 }
 
+type HumidityConfig struct {
+	SafeMin float64
+	SafeMax float64
+}
+
 type CORSConfig struct {
 	AllowedOrigins []string
 	AllowedMethods []string
@@ -39,14 +44,15 @@ type HTTPSConfig struct {
 }
 
 type Config struct {
-	App            AppConfig
-	DB             *sql.DB          // SQLite for agents
+	App        AppConfig
+	DB         *sql.DB          // SQLite for agents
 	SupabaseClient *supabase.Client // Supabase for env_metrics
-	Telegram       TelegramConfig
-	Discord        DiscordConfig
-	Temperature    TemperatureConfig
-	CORS           CORSConfig
-	HTTPS          HTTPSConfig
+	Telegram   TelegramConfig
+	Discord    DiscordConfig
+	Temperature TemperatureConfig
+	Humidity   HumidityConfig
+	CORS       CORSConfig
+	HTTPS      HTTPSConfig
 }
 
 type AppConfig struct {
@@ -76,6 +82,10 @@ func Load() (*Config, error) {
 	// Parse temperature thresholds
 	cpuTempThreshold := parseFloat64(getEnv("TEMP_ALERT_CPU_THRESHOLD", "80.0"), 80.0)
 	mcuTempThreshold := parseFloat64(getEnv("TEMP_ALERT_MCU_THRESHOLD", "45.0"), 45.0)
+
+	// Parse humidity thresholds
+	humidityMin := parseFloat64(getEnv("HUMIDITY_SAFE_MIN", "40.0"), 40.0)
+	humidityMax := parseFloat64(getEnv("HUMIDITY_SAFE_MAX", "60.0"), 60.0)
 
 	// Parse Telegram chat IDs
 	var chatIDs []string
@@ -184,6 +194,10 @@ func Load() (*Config, error) {
 		Temperature: TemperatureConfig{
 			CPUThreshold: cpuTempThreshold,
 			MCUThreshold: mcuTempThreshold,
+		},
+		Humidity: HumidityConfig{
+			SafeMin: humidityMin,
+			SafeMax: humidityMax,
 		},
 		CORS: CORSConfig{
 			AllowedOrigins: corsOrigins,

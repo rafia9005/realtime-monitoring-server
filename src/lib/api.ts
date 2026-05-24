@@ -1,5 +1,16 @@
 import type { SystemMetrics, ApiResponse, Agent, AgentMetrics, EnvMetrics } from "@/types/metrics";
 
+export interface SensorThresholds {
+  temperature: {
+    mcu: number;
+    cpu: number;
+  };
+  humidity: {
+    min: number;
+    max: number;
+  };
+}
+
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
 
 class ApiError extends Error {
@@ -51,6 +62,9 @@ export const api = {
     const endpoint = query ? `/api/v1/mcu-metrics?${query}` : "/api/v1/mcu-metrics";
     return fetchApi<EnvMetrics[]>(endpoint);
   },
+  
+  // Sensor Thresholds API
+  getSensorThresholds: () => fetchApi<SensorThresholds>("/api/v1/temperature/thresholds"),
   
   // Agent APIs
   getAgents: () => fetchApi<Agent[]>("/api/v1/agents"),

@@ -222,11 +222,33 @@ func (ast *AgentStatusTracker) UpdateMetricsWithNotifications(
 		ast.temperatureListener.ReceiveMetricsUpdate(agentID, agentName, metrics)
 	}
 
-	// Log metrics
-	log.Printf("✓ Metrics received from agent %s: CPU=%.1f%% MEM=%.1f%% TEMP=%.1f°C",
-		agentName,
-		metrics.CPU.UsagePercent,
-		metrics.Memory.UsedPercent,
-		metrics.Temperature.CPUTemp,
-	)
+	// Log metrics including MCU temperature if available
+	mcuTemp := 0.0
+	if metrics.Temperature.MCUTemp > 0 {
+		mcuTemp = metrics.Temperature.MCUTemp
+	} else if metrics.Environment != nil && len(metrics.Environment) > 0 {
+		for _, env := range metrics.Environment {
+			if env.Temperature != nil && *env.Temperature > 0 {
+				mcuTemp = *env.Temperature
+				break
+			}
+		}
+	}
+	
+	if mcuTemp > 0 {
+		log.Printf("✓ Metrics received from agent %s: CPU=%.1f%% MEM=%.1f%% CPU_TEMP=%.1f°C MCU_TEMP=%.1f°C",
+			agentName,
+			metrics.CPU.UsagePercent,
+			metrics.Memory.UsedPercent,
+			metrics.Temperature.CPUTemp,
+			mcuTemp,
+		)
+	} else {
+		log.Printf("✓ Metrics received from agent %s: CPU=%.1f%% MEM=%.1f%% CPU_TEMP=%.1f°C",
+			agentName,
+			metrics.CPU.UsagePercent,
+			metrics.Memory.UsedPercent,
+			metrics.Temperature.CPUTemp,
+		)
+	}
 }

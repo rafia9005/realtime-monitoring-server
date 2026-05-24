@@ -111,9 +111,11 @@ func (tm *TemperatureMonitor) updateCPUTemperature(agentID string, temperature f
 			status.LastCPUAlertTime = time.Now()
 
 			// Send notification asynchronously
+			log.Printf("🌡️  CPU Temperature ALERT: %s - Current: %.1f°C > Threshold: %.1f°C", status.AgentName, temperature, tm.cpuThreshold)
 			go tm.notificationManager.NotifyTemperature(status.AgentName, temperature, tm.cpuThreshold)
 		} else if temperature <= tm.cpuThreshold && status.CPUAlertSent {
 			// Temperature back to normal, reset alert
+			log.Printf("✅ CPU Temperature back to normal: %s - Current: %.1f°C <= Threshold: %.1f°C", status.AgentName, temperature, tm.cpuThreshold)
 			status.CPUAlertSent = false
 		}
 	}
@@ -140,9 +142,11 @@ func (tm *TemperatureMonitor) UpdateMCUTemperature(agentID string, temperature f
 
 			// Send notification asynchronously
 			mcuName := status.AgentName + " (MCU)"
+			log.Printf("🌡️  MCU Temperature ALERT: %s - Current: %.1f°C > Threshold: %.1f°C", mcuName, temperature, tm.mcuThreshold)
 			go tm.notificationManager.NotifyTemperature(mcuName, temperature, tm.mcuThreshold)
 		} else if temperature <= tm.mcuThreshold && status.MCUAlertSent {
 			// Temperature back to normal, reset alert
+			log.Printf("✅ MCU Temperature back to normal: %s - Current: %.1f°C <= Threshold: %.1f°C", status.AgentName, temperature, tm.mcuThreshold)
 			status.MCUAlertSent = false
 		}
 	}

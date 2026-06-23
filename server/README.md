@@ -650,6 +650,62 @@ while True:
     time.sleep(5)
 ```
 
+## Reverse Proxy Configuration
+
+### WebSocket Support
+
+WebSocket connections require specific proxy configuration. Without it, clients will receive a **400 Bad Request** error when connecting to `/api/v1/terminal`.
+
+#### Nginx
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://localhost:8080;
+        proxy_http_version 1.1;
+
+        # Required for WebSocket support
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # Increase timeouts for long-lived WebSocket connections
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+    }
+}
+```
+
+#### Nginx Proxy Manager
+
+In the **Advanced** tab of your proxy host, add the following custom Nginx configuration:
+
+```nginx
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection "upgrade";
+proxy_read_timeout 3600s;
+proxy_send_timeout 3600s;
+```
+
+Also enable the **WebSockets Support** toggle in the proxy host settings.
+
+#### Cloudflare Tunnel
+
+When using Cloudflare Tunnel (`cloudflared`), enable WebSocket support in the Cloudflare dashboard:
+
+1. Go to **Networks → Tunnels** and select your tunnel.
+2. Open the **Public Hostname** for your backend service.
+3. Under **Additional application settings → HTTP Settings**, enable **HTTP/2 Connection** and **No TLS Verify** if using a self-signed certificate.
+
+> **Note:** Cloudflare's free plan supports WebSocket. No additional cost is required.
+
 ## Architecture
 
 Project menggunakan **Clean Architecture**:

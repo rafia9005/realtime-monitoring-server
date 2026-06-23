@@ -23,6 +23,8 @@ type TerminalSession struct {
 	ID      string
 	cmd     *exec.Cmd
 	ptmx    *os.File
+	ws      *websocket.Conn
+	wsMu    sync.Mutex
 	mu      sync.Mutex
 	lastUse time.Time
 }
@@ -103,7 +105,10 @@ func (h *TerminalHandler) HandleTerminal(c *echo.Context) error {
 		Data:    "Terminal connected",
 		Session: sessionID,
 	}
-	if err := ws.WriteJSON(connectMsg); err != nil {
+	session.wsMu.Lock()
+	err = ws.WriteJSON(connectMsg)
+	session.wsMu.Unlock()
+	if err != nil {
 		return err
 	}
 
@@ -128,10 +133,17 @@ func (h *TerminalHandler) HandleTerminal(c *echo.Context) error {
 					h.handleResize(sessionID, msg.Rows, msg.Cols)
 				}
 			case "ping":
-				ws.WriteJSON(TerminalResponse{
+				session.wsMu.Lock()
+				err := ws.WriteJSON(TerminalResponse{
 					Type:    "pong",
 					Session: sessionID,
 				})
+				session.wsMu.Unlock()
+				if err != nil {
+					log.Printf("Error writing pong: %v", err)
+					h.closeSession(sessionID)
+					return
+				}
 			case "close":
 				h.closeSession(sessionID)
 				return
@@ -202,6 +214,7 @@ func (h *TerminalHandler) createSession(sessionID string, ws *websocket.Conn) (*
 		ID:      sessionID,
 		cmd:     cmd,
 		ptmx:    ptmx,
+		ws:      ws,
 		lastUse: time.Now(),
 	}
 
@@ -211,7 +224,7 @@ func (h *TerminalHandler) createSession(sessionID string, ws *websocket.Conn) (*
 
 	// Stream output from PTY to WebSocket
 	go func() {
-		buf := make([]byte, 1024)
+		buf := make([]byte, 4096)
 		for {
 			n, err := ptmx.Read(buf)
 			if err != nil {
@@ -227,7 +240,10 @@ func (h *TerminalHandler) createSession(sessionID string, ws *websocket.Conn) (*
 					Data:    string(buf[:n]),
 					Session: sessionID,
 				}
-				if err := ws.WriteJSON(response); err != nil {
+				session.wsMu.Lock()
+				err := ws.WriteJSON(response)
+				session.wsMu.Unlock()
+				if err != nil {
 					log.Printf("Error writing output: %v", err)
 					break
 				}
